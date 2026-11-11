@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablero NAIRA</title>
+<script src="lib/plotly-2.35.2.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f7f7f5; --surface: #ffffff; --ink: #121212; --ink-2: #4f4e4a; --muted: #85837d;
+  --grid: #e4e3dc; --axis: #c3c2b7; --ring: rgba(18,18,18,0.10); --wash: rgba(18,18,18,0.035); --shadow: 0 10px 28px rgba(18,18,18,0.14);
+  --cat-temporal: #2a78d6; --cat-conversacional: #eb6834; --cat-lexica: #1baf7a; --cat-semantica: #6250d6;
+  --cat-acustica: #eda100; --cat-prosodica: #008300;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+  --pos: #2a78d6; --neg: #e34948; --neu: #b9b8b1; --warn: #d99400;
+  --q1: #cde2fb; --q2: #9ec5f4; --q3: #6da7ec; --q4: #3987e5; --q5: #256abf; --q6: #184f95; --q7: #0d366b;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r: 10px; --barh: 0px;
+}
+/* el tablero sale siempre claro; el tema oscuro se activa a mano desde «Opciones» */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0f0f0e; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #8f8d87;
+  --grid: #2c2c2a; --axis: #3a3a37; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.045); --shadow: 0 10px 28px rgba(0,0,0,0.55);
+  --cat-temporal: #3987e5; --cat-conversacional: #d95926; --cat-lexica: #199e70; --cat-semantica: #9085e9;
+  --cat-acustica: #c98500; --cat-prosodica: #008300;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  --pos: #3987e5; --neg: #e66767; --neu: #5a5a56; --warn: #e0a526;
+  --q1: #0d366b; --q2: #104281; --q3: #184f95; --q4: #256abf; --q5: #3987e5; --q6: #6da7ec; --q7: #b7d3f6;
+}
+* { box-sizing: border-box; }
+html { scrollbar-gutter: stable; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 14px/1.5 var(--sans); }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 56px; }
+button { font: inherit; color: inherit; }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.005em; }
+:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+
+/* ---------- cabecera ---------- */
+.top { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: baseline; justify-content: space-between; padding: 22px 0 10px; }
+.top h1 { margin: 0; font-size: 24px; }
+.top .sub { color: var(--ink-2); margin: 2px 0 0; max-width: 760px; }
+.meta { color: var(--muted); font-size: 12px; text-align: right; }
+
+/* ---------- barra fija: pestañas + filtros ---------- */
+.bar { position: sticky; top: 0; z-index: 20; background: var(--page); border-bottom: 1px solid var(--grid); margin: 0 -20px 18px; padding: 0 20px; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; display: inline-flex; align-items: center; gap: 7px; background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 12px 9px;
+       cursor: pointer; color: var(--ink-2); font-weight: 600; transition: color .15s, border-color .15s; }
+.tab:hover { color: var(--ink); }
+.tab .dot { width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--c); }
+.tab .n { font-size: 11px; font-weight: 600; color: var(--muted); }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0 10px; border-top: 1px solid var(--grid); }
+.dd { position: relative; }
+.dd-btn { display: inline-flex; align-items: center; gap: 8px; width: 188px; background: var(--surface); border: 1px solid var(--ring); border-radius: 8px;
+          padding: 6px 10px; cursor: pointer; text-align: left; transition: background .12s, border-color .12s; }
+.dd-btn:hover { background: var(--wash); }
+.dd-btn .k { flex: none; color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.dd-btn .v { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.dd-btn .car { flex: none; color: var(--muted); font-size: 11px; transition: transform .15s; }
+.dd.on .dd-btn { border-color: var(--ink-2); }
+.dd.open .dd-btn .car { transform: rotate(180deg); }
+.dd-panel { position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; min-width: 250px; max-height: min(360px, 60vh); overflow: auto; background: var(--surface);
+            border: 1px solid var(--ring); border-radius: var(--r); box-shadow: var(--shadow); padding: 6px;
+            opacity: 0; transform: translateY(-4px); visibility: hidden; transition: opacity .12s, transform .12s, visibility 0s .12s; }
+.dd.open .dd-panel { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
+.dd-panel label { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+.dd-panel label:hover { background: var(--wash); }
+.dd-panel label.off { opacity: .4; }
+.dd-panel .small { color: var(--muted); font-size: 12px; margin-left: auto; padding-left: 10px; white-space: nowrap; }
+.dd-all { width: 100%; background: transparent; border: 1px solid var(--ring); border-radius: 6px; padding: 4px; margin-bottom: 4px; cursor: pointer; font-size: 12px; }
+.dd-all:hover { background: var(--wash); }
+.link { background: none; border: 0; color: var(--ink-2); padding: 6px 6px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-size: 13px; }
+.link:disabled { color: var(--muted); opacity: .5; cursor: default; text-decoration: none; }
+.spacer { flex: 1; }
+.menu .dd-btn { width: auto; }
+.menu .dd-panel { left: auto; right: 0; width: 330px; padding: 10px; }
+.menu fieldset { border: 0; margin: 0 0 10px; padding: 0 0 10px; border-bottom: 1px solid var(--grid); }
+.menu fieldset:last-of-type { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+.menu legend { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 0; margin-bottom: 4px; }
+.seg { display: flex; border: 1px solid var(--ring); border-radius: 8px; overflow: hidden; }
+.seg label { flex: 1; text-align: center; padding: 5px 6px; cursor: pointer; font-size: 13px; border-radius: 0; justify-content: center; }
+.seg label + label { border-left: 1px solid var(--ring); }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label:has(input:checked) { background: var(--ink); color: var(--page); }
+.exp-btn { display: block; width: 100%; text-align: left; background: transparent; border: 0; border-radius: 6px; padding: 6px 8px; cursor: pointer; }
+.exp-btn:hover { background: var(--wash); }
+
+/* ---------- bloques comunes ---------- */
+main { min-height: 50vh; }
+.panel { background: var(--surface); border: 1px solid var(--ring); border-radius: var(--r); padding: 16px 18px; margin-bottom: 16px; }
+.panel-h { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 10px; }
+.panel-h h2 { margin: 0; font-size: 19px; }
+.panel-h .sub2 { color: var(--muted); font-size: 12.5px; }
+.muted { color: var(--muted); font-size: 12.5px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--ring); border-radius: var(--r); padding: 12px 14px; }
+.kpi .v { font-size: 26px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.kpi .l { color: var(--ink-2); font-size: 12.5px; }
+.status { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--ring); border-radius: 999px; padding: 3px 10px; }
+.chip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.warn-i { color: var(--warn); }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--ring); color: var(--ink-2); white-space: nowrap; }
+.mic { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px dashed var(--ring); color: var(--muted); white-space: nowrap; }
+.st-sus { border-color: color-mix(in srgb, var(--s4) 55%, transparent); }
+.st-exp { border-color: color-mix(in srgb, var(--s2) 55%, transparent); }
+.st-na { border-style: dashed; color: var(--muted); }
+details > summary { cursor: pointer; }
+.empty { padding: 26px 12px; text-align: center; color: var(--muted); }
+.warn::before { content: "⚠ "; color: var(--warn); }
+
+/* ---------- tarjetas de gráfico ---------- */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 500px), 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: var(--r); padding: 12px 14px 10px; min-width: 0; }
+.card.wide { grid-column: 1 / -1; }
+.card-h { display: flex; align-items: center; gap: 8px; }
+.card-h h3 { margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.card-h h3 .dot { width: 8px; height: 8px; border-radius: 2px; background: var(--c); flex: none; }
+.unit { color: var(--muted); font-size: 12px; margin: 1px 0 0 16px; }
+.info-btn { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--ring); background: var(--surface); color: var(--ink-2);
+            font: italic 600 12px/1 var(--serif); cursor: pointer; }
+.info-btn:hover, .info-btn[aria-expanded="true"] { background: var(--ink); color: var(--page); border-color: var(--ink); }
+.card-info { color: var(--ink-2); font-size: 12.5px; margin: 8px 0 4px; padding: 9px 11px; background: var(--wash); border-radius: 8px; }
+.card-info p { margin: 0 0 4px; }
+.card-info b { color: var(--ink); font-weight: 600; }
+.card-info .dims { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; align-items: center; }
+.dimtag { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--ring); color: var(--ink-2); background: var(--surface); cursor: help; }
+.why { color: var(--muted); font-style: italic; }
+.plot { width: 100%; }
+.donuts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px; }
+.notes { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+.nt { color: var(--muted); font-size: 12px; }
+.na-card .plot .empty { text-align: left; padding: 10px 0 4px; }
+
+/* ---------- síntesis descriptiva ---------- */
+.seg.small label { padding: 3px 12px; font-size: 12.5px; white-space: nowrap; flex: none; }
+.about { font-size: 12.5px; color: var(--ink-2); background: var(--wash); border-radius: 8px; padding: 9px 11px; margin: 0 0 10px; }
+.slist { max-height: min(62vh, 620px); overflow: auto; border-top: 1px solid var(--grid); overscroll-behavior: contain; }
+.srow { border-bottom: 1px solid var(--grid); }
+.srow > summary { list-style: none; display: grid; grid-template-columns: minmax(150px, 220px) 150px 1fr 16px; gap: 12px; align-items: baseline; padding: 9px 6px; border-radius: 6px; }
+.srow > summary::-webkit-details-marker { display: none; }
+.srow > summary:hover { background: var(--wash); }
+.srow > summary::after { content: "▾"; color: var(--muted); font-size: 11px; transition: transform .15s; justify-self: end; }
+.srow[open] > summary::after { transform: rotate(180deg); }
+.srow .who { font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.srow .cod { font-weight: 500; color: var(--muted); font-size: 12px; margin-left: 4px; }
+.srow .where { color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+.srow .perf { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.srow[open] .perf { white-space: normal; color: var(--ink); }
+.srow.nodata > summary { cursor: default; pointer-events: none; }
+.srow.nodata > summary::after { content: ""; }
+.srow.nodata .perf { color: var(--muted); font-style: italic; }
+.sbody { padding: 2px 8px 14px; color: var(--ink-2); font-size: 13px; }
+.sbody > p { margin: 4px 0 10px; color: var(--ink); max-width: 900px; }
+.sgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 8px 18px; }
+.sgrid p { margin: 0; }
+.sdim { border-left: 3px solid var(--c, var(--axis)); padding-left: 9px; }
+.sdim b { color: var(--ink); display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.ssug { margin-top: 10px; }
+.ssug b { color: var(--ink); }
+.ssug ul { margin: 4px 0 0 18px; padding: 0; }
+.scal { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 8px; }
+
+/* ---------- tabla ---------- */
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 12.5px; width: 100%; }
+th, td { padding: 6px 8px; border-bottom: 1px solid var(--grid); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+th.l, td.l { text-align: left; }
+td.wr { white-space: normal; min-width: 220px; }
+th { color: var(--ink-2); font-weight: 600; background: var(--surface); position: sticky; top: 0; }
+td.na { color: var(--muted); }
+tr.sinvoz td { color: var(--muted); }
+
+/* ---------- subproceso GQM ---------- */
+.dimhead { background: var(--surface); border: 1px solid var(--ring); border-left: 4px solid var(--c); border-radius: var(--r); padding: 14px 18px; margin-bottom: 18px; }
+.kick { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.dimhead h2 { margin: 2px 0 2px; font-size: 22px; }
+.dimhead .def { margin: 0 0 8px; color: var(--ink-2); max-width: 900px; }
+.dimhead details { margin: 0 0 10px; }
+.dimhead details summary { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.dimhead details p { margin: 6px 0 0; color: var(--ink-2); max-width: 900px; }
+.qnav { display: flex; flex-wrap: wrap; gap: 6px; }
+.qnav a { font-size: 12.5px; color: var(--ink-2); text-decoration: none; border: 1px solid var(--ring); border-radius: 999px; padding: 3px 10px; background: var(--wash); }
+.qnav a:hover { border-color: var(--c); color: var(--ink); }
+.qnav a b { color: var(--ink); }
+section.q { margin: 0 0 26px; scroll-margin-top: calc(var(--barh) + 14px); }
+.qh { display: flex; align-items: center; gap: 10px; }
+.qh h3 { margin: 0; font-size: 18px; }
+.qid { flex: none; font: 700 12.5px/1 var(--sans); color: #fff; background: var(--c); border-radius: 6px; padding: 5px 8px; }
+.qt { margin: 6px 0 12px; color: var(--ink-2); max-width: 960px; }
+.qt .lbl, .lbl { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-right: 8px; }
+.flow { list-style: none; margin: 0 0 10px; padding: 0; display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 10px; align-items: start; }
+.flow > li { min-width: 0; }
+.step { display: flex; gap: 10px; background: var(--surface); border: 1px solid var(--ring); border-radius: var(--r); padding: 12px 14px; min-width: 0; }
+.step .n { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 700 12px/1 var(--sans);
+           color: var(--c); border: 1.5px solid var(--c); margin-top: 1px; }
+.step h4 { margin: 0 0 4px; font-size: 14px; }
+details.step { display: block; padding: 0; }
+details.step > summary { display: flex; align-items: center; gap: 10px; padding: 12px 14px; list-style: none; border-radius: var(--r); }
+details.step > summary::-webkit-details-marker { display: none; }
+details.step > summary:hover { background: var(--wash); }
+details.step > summary::after { content: "▾"; color: var(--muted); font-size: 11px; transition: transform .15s; margin-left: auto; }
+details.step[open] > summary::after { transform: rotate(180deg); }
+details.step > summary h4 { margin: 0; }
+details.step > summary .n { margin-top: 0; }
+details.step > :not(summary) { margin: 0 14px 12px 46px; }
+details.step > ul { padding-left: 16px; }
+.step p { margin: 0; color: var(--ink-2); font-size: 13px; }
+.step ul { margin: 0; padding-left: 16px; color: var(--ink-2); font-size: 13px; }
+.step li { margin: 1px 0; }
+.step .grow { flex: 1; min-width: 0; }
+.cnt { font: 600 11px/1 var(--sans); color: var(--muted); border: 1px solid var(--ring); border-radius: 999px; padding: 2px 6px; vertical-align: 2px; }
+.mlist { list-style: none; padding: 0 !important; }
+.mlist li { display: flex; gap: 6px; align-items: baseline; justify-content: space-between; }
+.tech { background: var(--surface); border: 1px solid var(--ring); border-radius: var(--r); padding: 9px 14px; margin: 0 0 10px; }
+.tech summary { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.tech table { margin-top: 8px; }
+.tech td { vertical-align: top; }
+.tech code { font-size: 11.5px; color: var(--muted); }
+.result { margin-bottom: 10px; background: transparent; border: 0; padding: 4px 0 0; }
+.result .hint { margin: 0 0 8px; }
+.interp p + p { margin-top: 6px; }
+.famtbl { background: var(--surface); border: 1px solid var(--ring); border-radius: var(--r); padding: 10px 14px; margin-top: 8px; }
+.famtbl summary { font-weight: 600; font-size: 13.5px; }
+.famtbl .tbl { margin-top: 10px; max-height: 70vh; }
+.intro { background: var(--surface); border: 1px solid var(--ring); border-left: 4px solid var(--c); border-radius: var(--r); padding: 12px 16px; margin-bottom: 14px; color: var(--ink-2); }
+.intro b { color: var(--ink); }
+
+/* ---------- pie ---------- */
+footer { margin-top: 28px; }
+footer details { background: var(--surface); border: 1px solid var(--ring); border-radius: var(--r); padding: 10px 14px; color: var(--ink-2); font-size: 13px; }
+footer summary { font-weight: 600; color: var(--ink); }
+footer ul { margin: 8px 0 2px; padding-left: 18px; }
+footer li { margin: 3px 0; }
+footer code { font-size: 12px; }
+
+@media (max-width: 980px) { .flow { grid-template-columns: 1fr; } }
+@media (max-width: 720px) {
+  .wrap { padding: 0 16px 48px; }
+  .bar { position: static; margin: 0 -16px 16px; padding: 0 16px; }
+  .meta { text-align: left; }
+  .filters { position: relative; }
+  .dd { flex: 1 1 calc(50% - 8px); position: static; }
+  .dd-panel { left: 0; right: 0; min-width: 0; }
+  .dd-btn { width: 100%; }
+  .menu { flex: 1 1 100%; } .menu .dd-btn { width: 100%; } .menu .dd-panel { left: 0; right: 0; width: auto; }
+  .spacer { display: none; }
+  .srow > summary { grid-template-columns: 1fr 16px; }
+  .srow .where, .srow .perf { grid-column: 1; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Tablero NAIRA</h1>
+      <p class="sub">Indicadores computacionales del habla de adultos mayores en sesiones grupales, organizados según la metodología GQM de la tesis.</p>
+    </div>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <div class="bar" id="bar">
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Secciones"></nav>
+    <section class="filters" aria-label="Filtros">
+      <div class="dd" id="dd-sesion"></div>
+      <div class="dd" id="dd-grupo"></div>
+      <div class="dd" id="dd-part"></div>
+      <button class="link" id="limpiar" type="button">Limpiar filtros</button>
+      <span class="spacer"></span>
+      <div class="dd menu" id="opciones">
+        <button class="dd-btn" type="button" aria-haspopup="true" aria-expanded="false"><span class="v">Opciones</span><span class="car" aria-hidden="true">▾</span></button>
+        <div class="dd-panel">
+          <fieldset><legend>Organizar las pestañas por</legend>
+            <div class="seg"><label><input type="radio" name="vista" value="gqm">Subproceso (GQM)</label><label><input type="radio" name="vista" value="cat">Familia de variables</label></div></fieldset>
+          <fieldset><legend>Orden de las barras</legend>
+            <div class="seg"><label><input type="radio" name="orden" value="grupo">Por grupo</label><label><input type="radio" name="orden" value="valor">Por valor</label></div></fieldset>
+          <fieldset><legend>Tema</legend>
+            <div class="seg"><label><input type="radio" name="tema" value="light">Claro</label><label><input type="radio" name="tema" value="dark">Oscuro</label></div></fieldset>
+          <fieldset><legend>Exportar lo filtrado</legend>
+            <button class="exp-btn" type="button" data-f="md"><b>Markdown (.md)</b></button>
+            <button class="exp-btn" type="button" data-f="json"><b>JSON (.json)</b></button>
+            <button class="exp-btn" type="button" data-f="csv"><b>CSV (.csv)</b></button>
+          </fieldset>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <main id="vista"></main>
+
+  <footer>
+    <details>
+      <summary>Notas metodológicas</summary>
+      <ul>
+        <li>Son indicadores exploratorios calculados automáticamente desde el audio de cada sesión grupal. No constituyen diagnóstico; orientan y complementan la evaluación profesional.</li>
+        <li>Solo se muestran participantes (adultos mayores). Moderadores, técnica y acompañantes no se evalúan.</li>
+        <li><span class="warn-i">⚠</span> Datos insuficientes: menos de 50 palabras reconocidas. Esas participaciones aparecen en los conteos (minutos, palabras, turnos), pero no en los gráficos de proporciones, tasas o voz, porque sus valores no son interpretables.</li>
+        <li>Las variables acústicas y prosódicas dependen del micrófono (Jabra o Zoom H2essential): solo se comparan participantes grabados con el mismo. La intensidad del Jabra no es válida por su control automático de ganancia.</li>
+        <li>Si un grupo se grabó con los dos micrófonos, se usa una sola fuente (el Zoom H2essential si existe). La comparación entre micrófonos está aparte.</li>
+        <li>Las definiciones vienen del catálogo de NAIRA (<code>metrics_catalog.yaml</code>) y de <code>metricas_explicadas.md</code>. Para actualizar con sesiones nuevas: <code>conda run -n naira-audio python generar_tablero.py</code>.</li>
+      </ul>
+    </details>
+  </footer>
+</div>
+
+<script>
+const D = /*__DATOS__*/null;
+const C = Object.fromEntries(D.columnas.map((c, i) => [c, i]));
+const FLAG = { n_insuficiente: "datos insuficientes", perfil_provisional: "perfil de voz provisional", cobertura_baja: "cobertura léxica baja",
+  fuente_con_dsp: "micrófono Jabra (procesado)", exploratoria: "exploratoria", sustituto: "sustituto", desconocido: "voz desconocida",
+  no_valida_por_dsp: "no válida en el Jabra", no_disponible: "no disponible" };
+const DEV = { jabra: "Jabra", h2n: "Zoom H2essential", other: "otro" };
+const SEXO = { F: "mujer", M: "hombre" };
+const $ = s => document.querySelector(s);
+
+// ---------- registros: uno por participante y grupo ----------
+const REC = new Map();
+for (const r of D.filas) {
+  const key = r[C.sid] + "|" + r[C.p];
+  if (!REC.has(key)) {
+    const m = /sesion(\d+)_grupo(\d+)/.exec(r[C.sid]);
+    REC.set(key, { key, sid: r[C.sid], sesion: r[C.sesion], grupo: r[C.grupo], p: r[C.p], dev: r[C.dev], sexo: D.sexo[key] || "",
+      corto: m ? `S${m[1]}·G${m[2]}` : r[C.sid], vals: {} });
+  }
+  REC.get(key).vals[r[C.m] + "." + r[C.c]] = { v: r[C.v], u: r[C.u], f: r[C.f] };
+}
+const nat = (a, b) => a.localeCompare(b, "es", { numeric: true });
+const uniq = a => [...new Set(a)];
+// los participantes se identifican solo por su código de enrolamiento (P1, P2, …): el tablero no muestra nombres
+const ANGOSTO = innerWidth < 500;      // en móvil las etiquetas del eje y van en dos líneas (código / grupo)
+const porCodigo = (a, b) => nat(a, b);
+const ALL = [...REC.values()].sort((a, b) => nat(a.sid, b.sid) || nat(a.p, b.p));
+// los valores que NAIRA marca como no válidos (intensidad del Jabra) no se grafican ni se tabulan
+const INVALIDA = /no_valida_por_dsp/;
+const invalida = (r, k) => INVALIDA.test(r?.vals[k]?.f || "");
+const val = (r, k) => { const x = r && r.vals[k]; return x && x.v != null && isFinite(x.v) && !INVALIDA.test(x.f || "") ? x.v : null; };
+for (const r of ALL) {
+  const w = val(r, "LEX_WORD_COUNT.n");
+  r.insuf = w == null || w < 50;
+  r.prov = Object.values(r.vals).some(x => (x.f || "").includes("perfil_provisional"));
+  // la etiqueta se calcula al dibujar, no al cargar: si se fijara aquí, el botón «P#» no llegaría a los
+  // gráficos de los subprocesos, que la reutilizan tal como hubiera quedado la primera vez
+  Object.defineProperty(r, "label", { enumerable: true,
+    get() { return `${this.insuf ? "⚠ " : ""}${this.p}${ANGOSTO ? "<br>" : " · "}${this.corto}`; } });
+}
+const SG = sid => { const m = /sesion(\d+)_grupo(\d+)/.exec(sid); return m ? [`Sesión ${m[1]}`, `Grupo ${m[2]}`, `S${m[1]}·G${m[2]}`] : [sid, "", sid]; };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = (v, d = 1) => v == null ? "—" : v.toLocaleString("es-CL", { maximumFractionDigits: d, minimumFractionDigits: d });
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+function flagsText(r, keys) {
+  const fl = uniq(keys.flatMap(k => (r.vals[k]?.f || "").split(";").filter(Boolean)).map(f => FLAG[f] || f));
+  return fl.length ? "Marcas: " + fl.join(", ") : "";
+}
+
+// ---------- biblioteca de gráficos: cada uno se define una vez y lo usan la vista GQM y la vista por familia ----------
+// v: variables cuya explicación se muestra · why: por qué se eligió esa forma · todos: conteo que se grafica aunque haya datos insuficientes
+const ESTAD = [["max", "máximo"], ["min", "mínimo"], ["mediana", "mediana"], ["asimetria", "asimetría"], ["curtosis", "curtosis"]];
+const NOTA_Z = "Los estadísticos están normalizados por hablante (z), así que la media siempre es 0 y la desviación estándar 1: por eso no se muestran.";
+const CH = {
+  donas: { t: "donas", k: "TMP_SPEECH_DUR.pct_sesion", v: ["TMP_SPEECH_DUR"], titulo: "Reparto del habla en cada grupo", u: "% del habla del grupo", wide: true, todos: true,
+    why: "gráfico circular (dona), porque muestra partes de un todo: el 100 % del habla de cada grupo. El gris es el equipo (moderadores, técnica, acompañantes) y las voces no atribuidas." },
+  minutos: { t: "bar", k: "TMP_SPEECH_DUR.segundos", f: v => v / 60, v: ["TMP_SPEECH_DUR"], titulo: "Minutos de habla", u: "min", d: 1, todos: true, why: "barras desde cero, porque es una cantidad." },
+  ritmo: { t: "scatter", x: "TMP_ARTIC_RATE.silabas_s", y: "TMP_SPEECH_RATE.palabras_min", v: ["TMP_SPEECH_RATE", "TMP_ARTIC_RATE"],
+    titulo: "Ritmo: articulación frente a tasa de habla", xl: "tasa de articulación (sílabas/s)", yl: "tasa de habla (palabras/min)", u: "",
+    why: "dispersión, para ver las dos medidas de ritmo a la vez: quien articula rápido pero tiene baja tasa de habla hace muchas pausas dentro de sus turnos." },
+  tasaHabla: { t: "dot", k: "TMP_SPEECH_RATE.palabras_min", v: ["TMP_SPEECH_RATE"], titulo: "Tasa de habla", u: "palabras/min", d: 0, med: true, why: "gráfico de puntos con la mediana como referencia." },
+  turnos: { t: "bar", k: "CNV_TURNS.n", v: ["CNV_TURNS"], titulo: "Número de turnos", u: "turnos", d: 0, todos: true, why: "barras desde cero, porque es un conteo." },
+  turnos10: { t: "dot", k: "CNV_TURNS.por_10min", v: ["CNV_TURNS"], titulo: "Turnos por 10 minutos", u: "turnos/10 min", d: 1, med: true,
+    why: "gráfico de puntos con la mediana como referencia; la tasa por 10 min permite comparar sesiones de distinta duración." },
+  enunciados: { t: "bar", k: "CNV_UTTERANCES.n", v: ["CNV_UTTERANCES"], titulo: "Número de enunciados", u: "enunciados", d: 0, todos: true, why: "barras desde cero, porque es un conteo." },
+  backch: { t: "dot", k: "CNV_BACKCHANNEL.por_10min", v: ["CNV_BACKCHANNEL"], titulo: "Retrocanalizaciones por 10 min", u: "por 10 min", d: 1, med: true, why: "gráfico de puntos con la mediana como referencia." },
+  solape: { t: "bar", k: "CNV_OVERLAP.pct_habla", v: ["CNV_OVERLAP"], titulo: "Habla en solape", u: "% de su habla", d: 1, why: "barras desde cero: es un porcentaje de su propio tiempo de habla." },
+  interrup: { t: "mariposa", izq: { k: "CNV_INTERRUPT.como_interrumpido_por_10min", n: "es interrumpida", c: "--s2" }, der: { k: "CNV_INTERRUPT.como_interruptor_por_10min", n: "interrumpe", c: "--s1" },
+    v: ["CNV_INTERRUPT"], titulo: "Interrupciones: recibe ← → hace", u: "por 10 min", d: 1,
+    why: "mariposa (barras divergentes): a la izquierda las interrupciones que recibe y a la derecha las que hace, para ver el balance de cada participante." },
+  repar: { t: "bar", k: "CNV_REPAIR_INIT.por_10min", v: ["CNV_REPAIR_INIT"], titulo: "Iniciación de reparación por 10 min", u: "por 10 min", d: 1, tag: "exploratoria", why: "barras desde cero." },
+  palabras: { t: "bar", k: "LEX_WORD_COUNT.n", v: ["LEX_WORD_COUNT"], titulo: "Número de palabras", u: "palabras", d: 0, todos: true, why: "barras desde cero, porque es un conteo." },
+  tipos: { t: "bar", k: "LEX_TYPES.n", v: ["LEX_TYPES"], titulo: "Palabras distintas", u: "lemas", d: 0, why: "barras desde cero, porque es un conteo." },
+  mattr: { t: "dot", k: "LEX_TTR.mattr_50", v: ["LEX_TTR"], titulo: "Riqueza léxica (MATTR)", u: "0–1", d: 3, med: true,
+    why: "gráfico de puntos con eje ajustado: son proporciones muy cercanas entre sí y con barras desde cero las diferencias no se verían." },
+  mtld: { t: "dot", k: "LEX_MTLD.mtld", v: ["LEX_MTLD"], titulo: "Diversidad léxica (MTLD)", u: "palabras/factor", d: 1, med: true, why: "gráfico de puntos con la mediana como referencia." },
+  mlu: { t: "dot", k: "LEX_MLU.palabras_enunciado", v: ["LEX_MLU"], titulo: "Longitud media del enunciado", u: "palabras/enunciado", d: 1, med: true, why: "gráfico de puntos con la mediana como referencia." },
+  pron: { t: "heat", series: [["LEX_PRON_1SG.pct", "yo"], ["LEX_PRON_1PL.pct", "nosotros"], ["LEX_PRON_2.pct", "tú/usted"], ["LEX_PRON_3SG.pct", "él/ella"],
+                              ["LEX_PRON_3PL.pct", "ellos/ellas"], ["LEX_PRON_IMPERS.pct", "impersonal"], ["LEX_PRON_PERS.pct", "personales"], ["LEX_PRON_TOTAL.pct", "total"]],
+    v: ["LEX_PRON_1SG", "LEX_PRON_1PL", "LEX_PRON_2", "LEX_PRON_3SG", "LEX_PRON_IMPERS"], soloLeer: true, titulo: "Pronombres por persona gramatical", u: "% de sus palabras", d: 1, wide: true,
+    intro: "Los pronombres muestran a quién se refiere la persona cuando habla: a sí misma (yo), al grupo (nosotros), al interlocutor (tú/usted) o a terceros (él, ellos).",
+    why: "mapa de calor: cada fila es una participante y cada columna una persona gramatical; más oscuro = más uso." },
+  emoPN: { t: "mariposa", izq: { k: "LEX_EMO_NEG_PCT.pct", n: "negativas", c: "--neg" }, der: { k: "LEX_EMO_POS_PCT.pct", n: "positivas", c: "--pos" },
+    v: ["LEX_EMO_POS_PCT", "LEX_EMO_NEG_PCT"], intro: "Qué parte de sus palabras se asocia a emociones positivas (alegría, confianza…) o negativas (tristeza, miedo, rabia…), según el léxico NRC EmoLex en español.", titulo: "Palabras emocionales: negativas ← → positivas", u: "% de sus palabras", d: 1,
+    why: "barras divergentes: lo negativo a la izquierda y lo positivo a la derecha, como en las escalas de actitud." },
+  emoTot: { t: "bar", k: "LEX_EMO_WORDS.pct", v: ["LEX_EMO_WORDS"], titulo: "Palabras emocionales (total)", u: "% de sus palabras", d: 1, why: "barras desde cero." },
+  simil: { t: "dot", k: "SEM_SIMILARITY.media", v: ["SEM_SIMILARITY"], titulo: "Similitud con el turno anterior", u: "coseno", d: 3, med: true, why: "gráfico de puntos con eje ajustado y la mediana como referencia." },
+  mental: { t: "apilada", agrupada: true, series: [["SEM_MENTAL_TERMS.cognicion", "cognición", "--s1"], ["SEM_MENTAL_TERMS.emocion", "emoción", "--s2"], ["SEM_MENTAL_TERMS.volicion", "volición", "--s3"]],
+    v: ["SEM_MENTAL_TERMS"], titulo: "Términos de estados mentales por tipo", u: "por 100 palabras", d: 2, tag: "sustituto",
+    why: "barras agrupadas: una por tipo (pensar/saber, sentir, querer). No se apilan porque un mismo término puede pertenecer a más de un tipo mientras que la métrica lo cuenta una sola vez, de modo que los tres no suman el total." },
+  conceptos: { t: "bar", k: "SEM_MAIN_CONCEPTS.pct", v: ["SEM_MAIN_CONCEPTS"], titulo: "Conceptos principales de la actividad", u: "%", d: 0, tag: "sustituto", max: 100,
+    why: "barras de 0 a 100 %: muestra qué parte de los conceptos centrales de la tarea alcanzó a mencionar." },
+  empath: { t: "heat", series: ["joy:alegría", "trust:confianza", "anticipation:anticipación", "surprise:sorpresa", "sadness:tristeza", "fear:miedo", "anger:enojo", "disgust:asco"]
+      .map(s => ["SEM_EMPATH." + s.split(":")[0], s.split(":")[1]]), v: ["SEM_EMPATH"], titulo: "Emociones en el contenido (categorías NRC)", u: "proporción de sus palabras", d: 3, wide: true, tag: "sustituto",
+    why: "mapa de calor: muestra qué emociones predominan en el vocabulario de cada participante (más oscuro = más presente)." },
+  defcomp: { t: "bar", k: "SEM_DEF_COMPETENCE.similitud_media", v: ["SEM_DEF_COMPETENCE"], titulo: "Competencia definicional", u: "0–1", d: 2, tag: "no disponible", why: "" },
+  sentim: { t: "sentimiento", v: ["AFF_SENTIMENT"], titulo: "Sentimiento de los enunciados", u: "% de enunciados", d: 0, wide: true,
+    why: "barras apiladas divergentes (la forma recomendada para escalas negativo–neutro–positivo): lo negativo a la izquierda del cero, lo positivo a la derecha y lo neutro repartido en el centro." },
+  lexVal: { t: "dot", k: "AFF_LEX_VALENCE.media", v: ["AFF_LEX_VALENCE"], titulo: "Valencia léxica", u: "1 desagradable – 9 agradable", d: 2, med: true,
+    why: "gráfico de puntos con eje ajustado y la mediana como referencia: los promedios de valencia quedan cerca entre sí." },
+  planoTexto: { t: "scatter", x: "AFF_LEX_VALENCE.media", y: "AFF_AROUSAL.texto", v: ["AFF_LEX_VALENCE", "AFF_AROUSAL"], titulo: "Plano emocional del texto (valencia × activación)",
+    xl: "valencia léxica (1 desagradable – 9 agradable)", yl: "activación (1 calma – 9 intensa)", u: "", refx: 5, refy: 5,
+    cuad: ["intensa y desagradable", "intensa y agradable", "calmada y desagradable", "calmada y agradable"],
+    why: "plano de valencia × activación; las líneas marcan el punto neutro (5)." },
+  planoTextoPS: { t: "scatter", x: "AFF_VALENCE.texto", y: "AFF_AROUSAL.texto", v: ["AFF_VALENCE", "AFF_AROUSAL"], titulo: "Plano emocional del texto (valencia × activación)",
+    xl: "valencia del texto (−1 negativa – 1 positiva)", yl: "activación del texto (1 calma – 9 intensa)", u: "", refx: 0, refy: 5,
+    cuad: ["intensa, tono negativo", "intensa, tono positivo", "calmada, tono negativo", "calmada, tono positivo"],
+    why: "plano de valencia × activación; las líneas marcan el punto neutro de cada escala (0 en valencia, 5 en activación)." },
+  planoVoz: { t: "scatter", x: "AFF_VALENCE.voz", y: "AFF_AROUSAL.voz", v: ["AFF_VALENCE", "AFF_AROUSAL"], titulo: "Plano emocional de la voz (valencia × activación)",
+    xl: "valencia de la voz (0–1)", yl: "activación de la voz (0–1)", u: "", refx: 0.5, refy: 0.5, tag: "exploratoria", micro: true,
+    cuad: ["intensa, tono negativo", "intensa, tono positivo", "calmada, tono negativo", "calmada, tono positivo"],
+    why: "el mismo plano, estimado desde el sonido de la voz; las líneas marcan el centro de la escala (0,5)." },
+  balanceTexto: { t: "bar", k: "AFF_VALENCE.texto", v: ["AFF_VALENCE"], titulo: "Balance emocional del texto", u: "−1 a 1", d: 2,
+    why: "barras desde el cero: hacia la derecha predomina lo positivo, hacia la izquierda lo negativo." },
+  jitShim: { t: "scatter", x: "ACU_JITTER.local_pct", y: "ACU_SHIMMER.local_pct", v: ["ACU_JITTER", "ACU_SHIMMER"], titulo: "Perturbación de la voz: jitter × shimmer",
+    xl: "jitter (%)", yl: "shimmer (%)", u: "", micro: true, wide: true, medref: true,
+    why: "dispersión: jitter y shimmer se interpretan juntos como perturbación de la voz; arriba a la derecha = voz menos estable en tono y en volumen. Las líneas punteadas son las medianas de cada micrófono." },
+  hnr: { t: "dot", k: "ACU_HNR.db", v: ["ACU_HNR"], titulo: "Relación armónicos-ruido (HNR)", u: "dB", d: 1, porDev: true,
+    why: "gráfico de puntos separado por micrófono, porque los valores en dB solo se comparan dentro de la misma grabación." },
+  intens: { t: "dot", k: "ACU_INTENSITY_MEAN.db", v: ["ACU_INTENSITY_MEAN"], titulo: "Intensidad media", u: "dB (relativa)", d: 1, porDev: true, why: "gráfico de puntos separado por micrófono." },
+  mfcc: { t: "heat", zcol: true, micro: true, wide: true, d: 1, series: Array.from({ length: 13 }, (_, i) => [`ACU_MFCC.mfcc${i + 1}_media`, `MFCC${i + 1}`]),
+    v: ["ACU_MFCC"], titulo: "Coeficientes cepstrales (MFCC 1–13, media)", u: "valor en la celda; color = z por columna",
+    why: "mapa de calor divergente: cada columna es un coeficiente con su propia escala, así que el color compara a la participante con las demás en esa columna (rojo = sobre el promedio, azul = bajo), dentro del mismo micrófono. Las desviaciones estándar de cada coeficiente están en la tabla." },
+  energia: { t: "heat", zcol: true, micro: true, wide: true, d: 2, series: [["ACU_ENERGY_STATS.media_bruto", "media<br>(dBFS)"], ["ACU_ENERGY_STATS.de_bruto", "DE<br>(dB)"], ...ESTAD.map(([c, n]) => ["ACU_ENERGY_STATS." + c, n])],
+    v: ["ACU_ENERGY_STATS"], titulo: "Energía: estadísticos descriptivos", u: "color = z por columna", nota: "Media y DE en dB sin normalizar; el resto normalizado por hablante (z), donde la media es 0 y la DE 1.",
+    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+  jitterStats: { t: "heat", zcol: true, micro: true, d: 2, series: ESTAD.map(([c, n]) => ["ACU_JITTER_STATS." + c, n]), v: ["ACU_JITTER_STATS"], titulo: "Jitter: estadísticos descriptivos", u: "z; color = z por columna", nota: NOTA_Z,
+    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+  shimmerStats: { t: "heat", zcol: true, micro: true, d: 2, series: ESTAD.map(([c, n]) => ["ACU_SHIMMER_STATS." + c, n]), v: ["ACU_SHIMMER_STATS"], titulo: "Shimmer: estadísticos descriptivos", u: "z; color = z por columna", nota: NOTA_Z,
+    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+  logf0Stats: { t: "heat", zcol: true, micro: true, d: 2, series: ESTAD.map(([c, n]) => ["PRO_LOGF0_STATS." + c, n]), v: ["PRO_LOGF0_STATS"], titulo: "Tono logarítmico: estadísticos descriptivos", u: "z; color = z por columna", nota: NOTA_Z,
+    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+  mfccStats: { t: "heat", zcol: true, micro: true, wide: true, d: 2, series: Array.from({ length: 12 }, (_, i) => [`ACU_MFCC_STATS.mfcc${i + 1}_asimetria`, `MFCC${i + 1}`]),
+    v: ["ACU_MFCC_STATS"], titulo: "MFCC 1–12: asimetría de cada coeficiente", u: "z; color = z por columna", nota: NOTA_Z + " Aquí se muestra la asimetría; máximo, mínimo, mediana y curtosis de cada coeficiente están en la tabla.",
+    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+  rangoF0: { t: "rango", v: ["PRO_F0"], titulo: "Rango habitual del tono", u: "semitonos", wide: true,
+    why: "barra flotante: va del percentil 20 al 80 del tono de cada participante, con la mediana marcada; una barra larga = voz más melódica." },
+  f0media: { t: "dot", k: "PRO_F0_MEAN.hz", v: ["PRO_F0_MEAN"], titulo: "Tono medio (F0)", u: "Hz", d: 0, porSexo: true,
+    why: "gráfico de puntos separado por sexo, porque el tono medio solo se compara entre personas del mismo sexo." },
+  f0sd: { t: "dot", k: "PRO_F0_SD.st", v: ["PRO_F0_SD"], titulo: "Variación del tono", u: "semitonos", d: 2, med: true, why: "gráfico de puntos con la mediana como referencia." },
+  prosEmo: { t: "scatter", x: "PRO_EMO_PROSODY.valence_media", y: "PRO_EMO_PROSODY.arousal_media", v: ["PRO_EMO_PROSODY"], titulo: "Prosodia emocional (valencia × activación)",
+    xl: "valencia (0–1)", yl: "activación (0–1)", u: "", refx: 0.5, refy: 0.5, tag: "exploratoria", micro: true,
+    cuad: ["intensa, tono negativo", "intensa, tono positivo", "calmada, tono negativo", "calmada, tono positivo"],
+    why: "plano valencia × activación estimado desde la voz; la dominancia aparece al pasar el mouse." },
+};
+
+// ---------- vista por familia de variables ----------
+// las familias son exactamente las seis de metrics_catalog.yaml: la tabla completa de cada pestaña
+// sale de ahí (familia === id). Lo afectivo no es una familia aparte: AFF_LEX_VALENCE y AFF_AROUSAL
+// son léxicas, AFF_SENTIMENT y AFF_VALENCE semánticas, y PRO_EMO_PROSODY prosódica.
+const CATS = [
+  { id: "resumen", nombre: "Resumen", c: "--ink-2" },
+  { id: "temporal", nombre: "Temporales", c: "--cat-temporal",
+    intro: "<b>Cuánto y a qué ritmo habla cada participante.</b> Se calculan con los tiempos de la voz, así que casi no dependen de los errores de transcripción.",
+    charts: ["donas", "minutos", "tasaHabla", "ritmo"] },
+  { id: "conversacional", nombre: "Conversacionales", c: "--cat-conversacional",
+    intro: "<b>Cómo participa en la conversación:</b> turnos, enunciados, apoyos al que habla, solapes e interrupciones.",
+    charts: ["turnos", "turnos10", "enunciados", "backch", "solape", "interrup", "repar"] },
+  { id: "lexica", nombre: "Léxicas", c: "--cat-lexica",
+    intro: "<b>Qué palabras usa:</b> cantidad, riqueza del vocabulario, longitud de los enunciados, pronombres y el tono emocional de su vocabulario (palabras emocionales, valencia y activación). Dependen de la transcripción automática.",
+    charts: ["palabras", "tipos", "mattr", "mtld", "mlu", "pron", "emoPN", "emoTot", "lexVal", "planoTexto"] },
+  { id: "semantica", nombre: "Semánticas", c: "--cat-semantica",
+    intro: "<b>De qué habla y cómo conecta con lo que se dice:</b> coherencia con el turno anterior, estados mentales, conceptos, y el sentimiento y las emociones del contenido.",
+    charts: ["simil", "mental", "conceptos", "defcomp", "empath", "sentim", "balanceTexto"] },
+  { id: "acustica", nombre: "Acústicas", c: "--cat-acustica", micro: true,
+    intro: "<b>Calidad y estabilidad de la voz.</b> Dependen del micrófono: los gráficos separan Jabra y Zoom H2essential. Se miden sobre habla conversacional, no sobre vocales sostenidas, por eso no se comparan con valores clínicos de referencia.",
+    charts: ["jitShim", "hnr", "intens", "mfcc", "energia", "jitterStats", "shimmerStats", "mfccStats"] },
+  { id: "prosodica", nombre: "Prosódicas", c: "--cat-prosodica", micro: true,
+    intro: "<b>La melodía del habla:</b> tono, cuánto varía y la emoción que transmite la voz. El tono depende del sexo: los gráficos lo separan.",
+    charts: ["rangoF0", "f0media", "f0sd", "prosEmo", "planoVoz", "logf0Stats"] },
+];
+const FAM = Object.fromEntries(CATS.map(c => [c.id, c]));
+
+// ---------- vista GQM de la tesis: subproceso → objetivo → preguntas → métricas ----------
+// textos (definición, objetivo, preguntas, procedimiento) desde gqm.yaml; métricas de cada pregunta, desde el catálogo (pregunta_gqm)
+const DIMC = { ToM: "--s7", EMP: "--s5", PS: "--s4", CS: "--s2" };
+const GQM_CH = {
+  "ToM Q1": ["mlu", "mtld"], "ToM Q2": ["pron"], "ToM Q3": ["mental", "defcomp"], "ToM Q4": ["mfcc"],
+  "EMP Q1": ["palabras", "emoPN", "emoTot"], "EMP Q2": ["sentim", "empath", "lexVal"], "EMP Q3": ["energia", "jitterStats", "shimmerStats", "logf0Stats", "mfccStats"],
+  "PS Q1": ["palabras", "ritmo"], "PS Q2": ["jitShim", "hnr", "intens", "mfcc"], "PS Q3": ["rangoF0", "f0media", "f0sd", "prosEmo"], "PS Q4": ["planoTextoPS", "planoVoz"],
+  "CS Q1": ["palabras", "tipos", "mattr", "mlu"], "CS Q2": ["simil", "conceptos"], "CS Q3": ["donas", "minutos", "tasaHabla", "f0media", "f0sd"],
+  "CS Q4": ["turnos", "turnos10", "enunciados", "backch", "solape", "interrup", "repar"],
+};
+// textos de los datos de entrada y de los métodos del catálogo (insumos y metodo de metrics_catalog.yaml)
+const INSUMO = {
+  "02_enrollment/segments_identified.json": "Segmentos de voz atribuidos a cada participante (separación automática de voces e identificación por perfil de voz, revisada por la investigadora)",
+  "04_alignment/words.json": "Transcripción automática (Whisper large-v3) alineada palabra a palabra con el audio (wav2vec2 en español)",
+  "05_units/ipus.json": "Enunciados: palabras seguidas de la misma persona sin pausas de 0,3 s o más",
+  "05_units/turns.json": "Turnos: enunciados seguidos de la misma persona con pausas menores de 1 s",
+  "00_ingest/audio_16k.wav": "Señal de audio (16 kHz) en los tramos donde habla solo esa persona",
+  "data/recursos/nrc_emolex_es.tsv": "Léxico de emociones NRC EmoLex en español",
+  "data/recursos/stadthagen_2017.csv": "Normas de valencia y activación de palabras en español (Stadthagen-González et al., 2017)",
+  "data/labels/<sesion>/conceptos.yaml": "Lista de conceptos de la actividad (no existe: se usan los sustantivos más frecuentes del grupo)",
+  "data/labels/<sesion>/definiciones.yaml": "Tarea de definición de palabras (no incluida en las sesiones)",
+};
+const METODO = {
+  conteo: "conteo sobre palabras, enunciados y turnos", intervalos: "cruce de los intervalos de habla de cada persona", regla_temporal: "regla temporal sobre los solapes",
+  reglas_inventario: "reglas con inventario de formas de reparación", segmentos_identificados: "suma de la duración de los segmentos",
+  silabificacion_ortografica: "silabificación ortográfica del español", spacy_es_core_news_lg: "spaCy es_core_news_lg (lemas y rasgos gramaticales)",
+  nrc_emolex_es: "léxico NRC EmoLex", lexico_propio: "léxico de estados mentales del proyecto", lemas_frecuentes: "lemas sustantivos más frecuentes del grupo",
+  sbert_multilingual: "sentence-transformers multilingüe (similitud coseno)", pysentimiento_robertuito: "pysentimiento (RoBERTuito)",
+  normas_stadthagen_2017: "normas afectivas de Stadthagen-González (2017)", ser_audeering: "modelo de emoción en la voz de audEERING (wav2vec2)",
+  praat_parselmouth: "Praat (parselmouth)", librosa: "librosa",
+};
+const ESTADO = { implementada: ["implementada", ""], sustituto: ["sustituto", "st-sus"], exploratoria: ["exploratoria", "st-exp"], no_disponible: ["no disponible", "st-na"] };
+const badge = e => e && e !== "implementada" ? `<span class="tag ${ESTADO[e]?.[1] || ""}">${ESTADO[e]?.[0] || e}</span>` : "";
+const DIMS = D.gqm.subprocesos.map(d => ({ ...d, c: DIMC[d.id] }));
+const TAB_GQM = [{ id: "resumen", nombre: "Resumen", c: "--ink-2" }, ...DIMS.map(d => ({ id: d.id, nombre: d.nombre, c: d.c, n: d.n_metricas }))];
+const TABS = () => S.vista === "gqm" ? TAB_GQM : CATS;
+
+// ---------- estado ----------
+const S = { sesion: new Set(), grupo: new Set(), part: new Set(), tab: "resumen", vista: "gqm", orden: "grupo", open: null, sint: "grupos", tema: "light" };
+const guardar = (k, v) => { try { localStorage.setItem("naira-tablero-" + k, v); } catch (e) {} };
+const leer = k => { try { return localStorage.getItem("naira-tablero-" + k); } catch (e) { return null; } };
+const tabOk = id => TABS().some(t => t.id === id);
+if (leer("vista") === "cat") S.vista = "cat";
+if (leer("sint") === "part") S.sint = "part";
+if (leer("tema") === "dark") S.tema = "dark";      // lo guardado de versiones anteriores que no sea «dark» vuelve a claro
+{ const t = leer("tab"); if (t && tabOk(t)) S.tab = t; }
+{ // un enlace con #pestaña (o #q-ToM-Q2) abre esa pestaña, en la vista que la tenga
+  const h0 = location.hash.slice(1), h = h0.startsWith("q-") ? h0.split("-")[1] : h0;
+  if (h && !tabOk(h)) { S.vista = S.vista === "gqm" ? "cat" : "gqm"; if (!tabOk(h)) S.vista = S.vista === "gqm" ? "cat" : "gqm"; }
+  if (h && tabOk(h)) S.tab = h; else if (!tabOk(S.tab)) S.tab = "resumen";
+}
+// los filtros sobreviven a un refresco de la página: solo los borra «Limpiar filtros» o
+// «Mostrar todos», que pasan por actualizar() y guardan ahí la selección ya vacía
+const FILTROS = [["sesion", S.sesion, r => r.sesion], ["grupo", S.grupo, r => r.grupo], ["part", S.part, r => r.p]];
+const guardarFiltros = () => { for (const [k, set] of FILTROS) guardar("f-" + k, JSON.stringify([...set])); };
+for (const [k, set, campo] of FILTROS) {   // se descarta lo que ya no exista en los datos
+  const hay = new Set(ALL.map(campo));
+  try { (JSON.parse(leer("f-" + k)) || []).forEach(v => hay.has(v) && set.add(v)); } catch (e) {}
+}
+const aplicarTema = () => document.documentElement.setAttribute("data-theme", S.tema);
+aplicarTema();
+const pasaFiltro = (sid, p) => { const [ses, gru] = SG(sid); return (!S.sesion.size || S.sesion.has(ses)) && (!S.grupo.size || S.grupo.has(gru)) && (!p || !S.part.size || S.part.has(p)); };
+const filtered = () => ALL.filter(r => pasaFiltro(r.sid, r.p));
+// presentes en el grupo sin voz captada (en el roster pero sin ningún valor)
+const sinVoz = () => D.presentes.filter(([sid, p]) => pasaFiltro(sid, p) && !REC.has(sid + "|" + p));
+
+// ---------- filtros: listas desplegables que se construyen una vez y se actualizan sin moverse ----------
+const DD = {};
+function buildDropdown(id, nombre, values, set, info, rot = v => v) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="k">${nombre}</span><span class="v">Todos</span><span class="car" aria-hidden="true">▾</span></button>
+    <div class="dd-panel" role="listbox" aria-label="${nombre}"><button class="dd-all" type="button">Mostrar todos</button>${
+      values.map(v => `<label data-v="${esc(v)}"><input type="checkbox" value="${esc(v)}"><span>${esc(rot(v))}</span>${info?.[v] ? `<span class="small">${info[v]}</span>` : ""}</label>`).join("")}</div>`;
+  el.querySelector(".dd-btn").onclick = e => { e.stopPropagation(); abrir(S.open === id ? null : id); };
+  el.querySelector(".dd-panel").onclick = e => e.stopPropagation();
+  el.querySelectorAll("input").forEach(i => i.onchange = () => { i.checked ? set.add(i.value) : set.delete(i.value); actualizar(); });
+  el.querySelector(".dd-all").onclick = () => { set.clear(); actualizar(); };
+  DD[id] = { el, set, values, rot };
+}
+function abrir(id) {
+  S.open = id;
+  for (const k of [...Object.keys(DD), "opciones"]) {
+    const el = document.getElementById(k), on = S.open === k;
+    el.classList.toggle("open", on); el.querySelector(".dd-btn").setAttribute("aria-expanded", on);
+  }
+  if (!S.open) $("#vista").style.minHeight = "";       // al cerrar el filtro se libera la altura reservada
+}
+document.addEventListener("click", () => S.open && abrir(null));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && S.open) { const b = document.getElementById(S.open).querySelector(".dd-btn"); abrir(null); b.focus(); } });
+function syncFilters() {
+  const enSes = ALL.filter(r => !S.sesion.size || S.sesion.has(r.sesion));
+  const base = enSes.filter(r => !S.grupo.size || S.grupo.has(r.grupo));
+  const avail = { "dd-sesion": null, "dd-grupo": new Set(enSes.map(r => r.grupo)), "dd-part": new Set(base.map(r => r.p)) };
+  for (const [id, d] of Object.entries(DD)) {
+    const sel = d.values.filter(v => d.set.has(v));
+    d.el.querySelector(".v").textContent = !sel.length ? "Todos" : sel.length === 1 ? d.rot(sel[0]) : `${sel.length} seleccionados`;
+    d.el.classList.toggle("on", sel.length > 0);
+    d.el.querySelectorAll("label").forEach(l => { l.querySelector("input").checked = d.set.has(l.dataset.v); l.classList.toggle("off", !!avail[id] && !avail[id].has(l.dataset.v)); });
+  }
+  $("#limpiar").disabled = !(S.sesion.size || S.grupo.size || S.part.size);
+  for (const n of ["vista", "orden", "tema"]) document.querySelectorAll(`input[name="${n}"]`).forEach(i => i.checked = i.value === S[n]);
+}
+function renderTabs() {
+  const nav = $("#tabs"), tabs = TABS();
+  if (nav.dataset.vista !== S.vista) {
+    nav.dataset.vista = S.vista; nav.innerHTML = "";
+    for (const c of tabs) {
+      const b = document.createElement("button");
+      b.className = "tab"; b.type = "button"; b.setAttribute("role", "tab"); b.dataset.id = c.id; b.style.setProperty("--c", `var(${c.c})`);
+      b.innerHTML = `<span class="dot"></span>${c.nombre}${c.n ? `<span class="n">${c.n}</span>` : ""}`;
+      b.onclick = () => irA(c.id);
+      nav.appendChild(b);
+    }
+  }
+  nav.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.id === S.tab));
+}
+function irA(id) {
+  S.tab = id; history.replaceState(null, "", "#" + id); guardar("tab", id);
+  const top = $("#bar").offsetTop;
+  renderTabs(); renderView(false);
+  if (scrollY > top) scrollTo({ top, behavior: "instant" });
+}
+
+// ---------- tarjeta: título, unidad y explicación bajo demanda ----------
+function explicacion(spec) {
+  const ids = spec.v || [], E = D.explicacion;
+  const multi = uniq(ids.map(i => E[i]?.que)).length > 1, nom = i => multi ? `<i>${cap(D.catalogo[i]?.nombre || i)}:</i> ` : "";
+  const ques = uniq(ids.filter(i => E[i]?.que).map(i => nom(i) + cap(E[i].que)));
+  const leerl = uniq(ids.filter(i => E[i]?.leer).map(i => (uniq(ids.map(j => E[j]?.leer)).length > 1 ? nom(i) : "") + cap(E[i].leer)));
+  const claves = [spec.k, spec.x, spec.y, spec.izq?.k, spec.der?.k, ...(spec.series || []).map(s => s[0])].filter(Boolean);
+  const usadas = uniq([...claves.map(k => k.split(".")[0]), ...ids]).filter(i => D.catalogo[i]);
+  const dims = usadas.map(i => {
+    const qs = D.catalogo[i].preguntas || [];
+    const tip = qs.length ? "Pregunta GQM: " + qs.map(q => { const [d, n] = q.split(" "), dd = DIMS.find(x => x.id === d);
+      return `${dd ? dd.nombre : d} ${n}${dd ? " · " + (dd.preguntas.find(x => x.id === n)?.titulo || "") : ""}`; }).join(" | ") : "";
+    return `<span class="dimtag" title="${esc(tip)}">${cap(D.catalogo[i].nombre)} · ${i}</span>`;
+  }).join("");
+  const q = spec.intro ? `<p><b>Qué muestra:</b> ${spec.intro}</p>` : spec.soloLeer ? "" : ques.map(x => `<p><b>Qué muestra:</b> ${x}</p>`).join("");
+  const l = leerl.map(x => `<p><b>Cómo leerlo:</b> ${x}</p>`).join("");
+  return `${q}${l}${dims ? `<div class="dims"><b>${usadas.length > 1 ? "Variables" : "Variable"}:</b>${dims}</div>` : ""}`;
+}
+function card(parent, spec, cvar) {
+  const d = document.createElement("div");
+  d.className = "card" + (spec.wide ? " wide" : ""); d.style.setProperty("--c", `var(${cvar})`);
+  const info = explicacion(spec) + (spec.nota ? `<p class="why">${spec.nota}</p>` : "") + (spec.why ? `<p class="why">Forma del gráfico: ${spec.why}</p>` : "");
+  d.innerHTML = `<div class="card-h"><h3><span class="dot"></span>${spec.titulo}</h3>${spec.tag ? `<span class="tag">${spec.tag}</span>` : ""}${
+      info ? `<button class="info-btn" type="button" aria-expanded="false" aria-label="Qué muestra y cómo leerlo" title="Qué muestra y cómo leerlo">i</button>` : ""}</div>
+    ${spec.u ? `<div class="unit">${spec.u}</div>` : ""}<div class="card-info" hidden>${info}</div><div class="plot"></div><div class="notes"></div>`;
+  const b = d.querySelector(".info-btn");
+  if (b) b.onclick = () => { const i = d.querySelector(".card-info"); i.hidden = !i.hidden; b.setAttribute("aria-expanded", !i.hidden); };
+  parent.appendChild(d); return d;
+}
+// micrófono: cuando todas las tomas representadas comparten dispositivo, se anuncia una sola vez
+// en la cabecera, junto al botón de información, en lugar de repetirlo en cada etiqueta del eje
+function micCabecera(d, rs) {
+  const devs = uniq(rs.map(r => DEV[r.dev] || r.dev));
+  if (devs.length !== 1) return false;
+  const h = d.querySelector(".card-h"), s = document.createElement("span");
+  s.className = "mic"; s.textContent = devs[0];
+  s.title = "Micrófono de todas las tomas representadas en este gráfico";
+  h.insertBefore(s, h.querySelector(".info-btn"));
+  return true;
+}
+const note = (d, html) => { if (!html) return; const s = document.createElement("span"); s.className = "nt"; s.innerHTML = html; d.querySelector(".notes").appendChild(s); };
+const lista = rs => rs.map(r => `${r.p} (${r.corto})`).join(", ");
+function missNote(d, miss, keys) {
+  const inval = miss.filter(r => keys.some(k => invalida(r, k))), resto = miss.filter(r => !inval.includes(r));
+  if (inval.length) note(d, `No válida con el micrófono Jabra (control automático de ganancia): ${lista(inval)}`);
+  if (resto.length) note(d, `Sin valor: ${lista(resto)}`);
+}
+const empty = (d, t = "Sin valores para la selección actual.") => { d.querySelector(".plot").innerHTML = `<div class="empty">${t}</div>`; return d; };
+
+// ---------- dibujo ----------
+// tamano del texto de los graficos: FS para ejes y titulos de eje, FS_VAL para las etiquetas de valor sobre los datos
+const FS = 13, FS_VAL = 12;
+const CFG = { displayModeBar: false, responsive: true };
+const QUEUE = [];
+const MED = document.createElement("canvas").getContext("2d");
+// margen izquierdo según la etiqueta más larga del eje y (si no, en pantallas angostas se corta)
+function margenY(traces, layout) {
+  const ys = layout.yaxis?.ticktext || traces.flatMap(t => t.type !== "pie" && Array.isArray(t.y) ? t.y : []);
+  const dos = ys.some(y => /<br>/.test(y)), txt = ys.filter(y => typeof y === "string").flatMap(y => y.split("<br>"));
+  if (dos && layout.height) layout.height = Math.round(layout.height * 1.3);
+  if (!txt.length) return;
+  MED.font = `${FS}px system-ui, -apple-system, Segoe UI, sans-serif`;
+  const w = Math.ceil(Math.max(...txt.map(t => MED.measureText(t).width))) + 16;
+  layout.margin.l = Math.max(layout.margin.l || 0, Math.min(w, Math.floor(layout.width * 0.82)));
+}
+function draw(el, traces, layout) {   // se dibuja cuando ya están todas las tarjetas, con el ancho real de la suya
+  QUEUE.push(() => { layout.width = Math.max(240, Math.floor(el.getBoundingClientRect().width)); margenY(traces, layout); Plotly.newPlot(el, traces, layout, CFG); });
+}
+function flush() { while (QUEUE.length) QUEUE.shift()(); }
+const ax = (extra = {}) => Object.assign({ gridcolor: css("--grid"), zerolinecolor: css("--axis"), linecolor: css("--axis"), tickfont: { color: css("--muted") } }, extra);
+function baseLayout(h, extra = {}) {
+  return Object.assign({
+    height: h, margin: { l: 120, r: 46, t: 8, b: 40 }, paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)", separators: ",.",
+    font: { family: "system-ui, -apple-system, Segoe UI, sans-serif", size: FS, color: css("--ink-2") },
+    xaxis: ax(), yaxis: { automargin: true, gridcolor: "rgba(0,0,0,0)", linecolor: css("--axis"), tickfont: { color: css("--ink-2") } },
+    barcornerradius: 4, bargap: 0.42, showlegend: false,
+    hoverlabel: { bgcolor: css("--surface"), bordercolor: css("--axis"), font: { color: css("--ink") } },
+    legend: { orientation: "h", y: 1.0, yanchor: "bottom", x: 0, font: { color: css("--ink-2") } },
+  }, extra);
+}
+function order(recs, key) {
+  if (S.orden !== "valor" || !key) return recs;
+  return [...recs].sort((a, b) => (val(b, key) ?? -Infinity) - (val(a, key) ?? -Infinity));
+}
+const hoverHead = "<b>%{customdata[0]}</b> · %{customdata[1]} · %{customdata[2]}";
+const cd = (r, keys) => [r.p, r.sesion, r.grupo, DEV[r.dev] || r.dev, flagsText(r, keys), SEXO[r.sexo] || ""];
+// el color sigue a la entidad, no al orden: Jabra y mujer siempre azul; Zoom H2essential y hombre siempre naranja
+const FIJO = { "Jabra": "--s1", "Zoom H2essential": "--s2", "otro": "--s3", "mujer": "--s1", "hombre": "--s2", "sin dato": "--s3" };
+const SIMB = { "Jabra": "circle", "Zoom H2essential": "diamond", "mujer": "circle", "hombre": "diamond" };
+const colorG = (g, gi) => css(FIJO[g] || "--s" + (gi + 1));
+// el color y el símbolo siguen a la entidad, no a su posición: una sesión conserva los suyos aunque
+// el filtro deje de mostrar las demás (micrófono y sexo ya los tienen fijos en FIJO y SIMB)
+const SES_ORDEN = uniq(ALL.map(r => r.sesion)).sort(nat);
+const ranura = (g, gi) => { const i = SES_ORDEN.indexOf(g); return i >= 0 ? i : gi; };
+const median = a => { const s = [...a].sort((x, y) => x - y), n = s.length; return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : null; };
+
+// barras horizontales desde cero (cantidades)
+function barChart(parent, spec, recs, cvar, micro) {
+  const d = card(parent, spec, cvar), f = spec.f || (v => v), dec = spec.d ?? 1;
+  const rs = order(recs, spec.k).filter(r => val(r, spec.k) != null).reverse();
+  missNote(d, recs.filter(r => val(r, spec.k) == null), [spec.k]);
+  if (!rs.length) return empty(d);
+  const unicoMic = micro ? micCabecera(d, rs) : false;
+  const xs = rs.map(r => f(val(r, spec.k)));
+  draw(d.querySelector(".plot"), [{
+    type: "bar", orientation: "h", y: rs.map(r => micro && !unicoMic ? `${r.label} · ${DEV[r.dev] || r.dev}` : r.label), x: xs,
+    text: xs.map(v => fmt(v, dec)), textposition: xs.map(v => v < 0 ? "inside" : "outside"), insidetextanchor: "start", cliponaxis: false,
+    textfont: { color: css("--ink-2"), size: FS_VAL }, insidetextfont: { color: "#ffffff", size: FS_VAL },
+    marker: { color: rs.map(r => r.insuf ? css("--neu") : css(cvar)), line: { color: css("--surface"), width: 1 } },
+    customdata: rs.map(r => cd(r, [spec.k])),
+    hovertemplate: `${hoverHead}<br>%{x:,.${dec}f} ${spec.u}<br>Micrófono: %{customdata[3]}<br>%{customdata[4]}<extra></extra>`,
+  }], baseLayout(Math.max(150, rs.length * 28 + 50), spec.max ? { xaxis: ax({ range: [0, spec.max * 1.08] }) } : {}));
+  return d;
+}
+
+// gráfico de puntos (Cleveland): proporciones y tasas; opcionalmente separado por micrófono o por sexo
+function dotChart(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar), dec = spec.d ?? 1;
+  let rs = order(recs, spec.k).filter(r => val(r, spec.k) != null);
+  missNote(d, recs.filter(r => val(r, spec.k) == null), [spec.k]);
+  if (!rs.length) return empty(d);
+  const unicoMic = spec.porDev ? micCabecera(d, rs) : false;
+  const grpOf = spec.porDev ? r => DEV[r.dev] || r.dev : spec.porSexo ? r => SEXO[r.sexo] || "sin dato" : null;
+  if (grpOf) rs = [...rs].sort((a, b) => nat(grpOf(a), grpOf(b)));
+  rs = rs.reverse();
+  // el grupo ---micrófono o sexo--- ya lo dicen la leyenda, el color y el símbolo, así que no se
+  // repite en el eje; solo se añade si dos filas compartirían nombre y el eje las fundiría en una
+  const repes = new Set(rs.map(r => r.label).filter((v, i, a) => a.indexOf(v) !== i));
+  const yOf = r => grpOf && repes.has(r.label) ? `${r.label} · ${grpOf(r)}` : r.label;
+  const grupos = grpOf ? uniq(rs.map(grpOf)) : [null];
+  const traces = [], shapes = [];
+  rs.forEach(r => shapes.push({ type: "line", xref: "paper", yref: "y", x0: 0, x1: 1, y0: yOf(r), y1: yOf(r), line: { color: css("--grid"), width: 1 }, layer: "below" }));
+  grupos.forEach((g, gi) => {
+    const sub = rs.filter(r => !grpOf || grpOf(r) === g), color = grpOf ? colorG(g, gi) : css(cvar), xs = sub.map(r => val(r, spec.k));
+    traces.push({ type: "scatter", mode: "markers+text", name: g || "", y: sub.map(yOf), x: xs,
+      text: xs.map(v => fmt(v, dec)), textposition: "middle right", textfont: { color: css("--ink-2"), size: FS_VAL }, cliponaxis: false,
+      marker: { size: 12, color, symbol: SIMB[g] || "circle", line: { color: css("--surface"), width: 2 } },
+      customdata: sub.map(r => cd(r, [spec.k])),
+      hovertemplate: `${hoverHead}<br>%{x:,.${dec}f} ${spec.u}<br>Micrófono: %{customdata[3]}<br>%{customdata[4]}<extra></extra>` });
+    const m = median(xs);
+    if ((spec.med || grpOf) && m != null && xs.length > 1)
+      shapes.push({ type: "line", xref: "x", yref: "paper", x0: m, x1: m, y0: 0, y1: 1, line: { color: grpOf ? color : css("--muted"), width: 1.5, dash: "dot" } });
+  });
+  const xs = rs.map(r => val(r, spec.k)), lo = Math.min(...xs), hi = Math.max(...xs), pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.05 || 1;
+  draw(d.querySelector(".plot"), traces, baseLayout(Math.max(160, rs.length * 28 + 70), { shapes, showlegend: !!grpOf && !unicoMic, margin: { l: 120, r: 60, t: grpOf && !unicoMic ? 30 : 8, b: 40 },
+    xaxis: ax({ range: [lo - pad, hi + pad * 1.6] }) }));
+  if (spec.med || grpOf) note(d, `Línea punteada: mediana${grpOf ? " de cada " + (spec.porDev ? "micrófono" : "sexo") : " de la selección"}.`);
+  return d;
+}
+
+// barras divergentes (mariposa): una medida a cada lado del cero
+function butterfly(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar), dec = spec.d ?? 1, L = spec.izq, R = spec.der;
+  const rs = order(recs, R.k).filter(r => val(r, L.k) != null || val(r, R.k) != null).reverse();
+  missNote(d, recs.filter(r => val(r, L.k) == null && val(r, R.k) == null), [L.k, R.k]);
+  if (!rs.length) return empty(d);
+  const mx = Math.max(...rs.map(r => Math.max(val(r, L.k) || 0, val(r, R.k) || 0))) * 1.3 || 1;
+  const tr = (s, sign) => ({ type: "bar", orientation: "h", name: s.n, y: rs.map(r => r.label), x: rs.map(r => sign * (val(r, s.k) || 0)),
+    text: rs.map(r => fmt(val(r, s.k), dec)), textposition: "outside", cliponaxis: false, textfont: { color: css("--ink-2"), size: FS_VAL },
+    marker: { color: css(s.c), line: { color: css("--surface"), width: 1 } }, customdata: rs.map(r => [...cd(r, [s.k]), fmt(val(r, s.k), dec)]),
+    hovertemplate: `${hoverHead}<br>${s.n}: %{customdata[6]} ${spec.u}<br>%{customdata[4]}<extra></extra>` });
+  const raw = mx / 2, p10 = 10 ** Math.floor(Math.log10(raw)), st = [1, 2, 2.5, 5, 10].map(f => f * p10).find(v => v >= raw / 1.5) || raw;
+  const ticks = []; for (let v = -Math.floor(mx / st) * st; v <= mx + 1e-9; v += st) ticks.push(+v.toFixed(6));
+  draw(d.querySelector(".plot"), [tr(L, -1), tr(R, 1)], baseLayout(Math.max(170, rs.length * 28 + 80), {
+    barmode: "relative", showlegend: true, margin: { l: 120, r: 46, t: 30, b: 40 },
+    xaxis: ax({ range: [-mx, mx], tickvals: ticks, ticktext: ticks.map(v => fmt(Math.abs(v), st < 1 ? 1 : 0)), zerolinecolor: css("--ink-2"), zerolinewidth: 1.5 }) }));
+  return d;
+}
+
+// barras apiladas (componentes de un total)
+function stacked(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar), dec = spec.d ?? 1;
+  const rs = order(recs, spec.series[0][0]).filter(r => spec.series.some(([k]) => val(r, k) != null)).reverse();
+  missNote(d, recs.filter(r => !spec.series.some(([k]) => val(r, k) != null)), spec.series.map(s => s[0]));
+  if (!rs.length) return empty(d);
+  draw(d.querySelector(".plot"), spec.series.map(([k, n, c]) => ({ type: "bar", orientation: "h", name: n, y: rs.map(r => r.label), x: rs.map(r => val(r, k)),
+    marker: { color: css(c), line: { color: css("--surface"), width: 1.5 } }, customdata: rs.map(r => cd(r, [k])),
+    hovertemplate: `${hoverHead}<br>${n}: %{x:,.${dec}f} ${spec.u}<extra></extra>` })),
+    baseLayout(Math.max(170, rs.length * (spec.agrupada ? 18 * spec.series.length : 28) + 80), { barmode: spec.agrupada ? "group" : "stack", bargroupgap: 0.12, showlegend: true, margin: { l: 120, r: 30, t: 30, b: 40 } }));
+  return d;
+}
+
+// sentimiento: barras apiladas divergentes (negativo | neutro centrado | positivo)
+function sentiment(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar), k = s => "AFF_SENTIMENT.pct_" + s;
+  const rs = order(recs, k("pos")).filter(r => val(r, k("pos")) != null).reverse();
+  missNote(d, recs.filter(r => val(r, k("pos")) == null), [k("pos")]);
+  if (!rs.length) return empty(d);
+  const y = rs.map(r => r.label), neg = rs.map(r => val(r, k("neg")) || 0), neu = rs.map(r => val(r, k("neu")) || 0), pos = rs.map(r => val(r, k("pos")) || 0);
+  const mk = (name, x, base, c) => ({ type: "bar", orientation: "h", name, y, x, base, marker: { color: css(c), line: { color: css("--surface"), width: 1.5 } },
+    customdata: rs.map((r, i) => [...cd(r, ["AFF_SENTIMENT.pct_pos"]), fmt(x[i], 0)]), hovertemplate: `${hoverHead}<br>${name}: %{customdata[6]} %<extra></extra>` });
+  const traces = [mk("negativo", neg, neg.map((v, i) => -v - neu[i] / 2), "--neg"), mk("neutro", neu, neu.map(v => -v / 2), "--neu"), mk("positivo", pos, neu.map(v => v / 2), "--pos")];
+  const mx = Math.max(...rs.map((r, i) => Math.max(neg[i] + neu[i] / 2, pos[i] + neu[i] / 2))) * 1.08;
+  const ticks = [-100, -75, -50, -25, 0, 25, 50, 75, 100].filter(v => Math.abs(v) <= mx + 1);
+  draw(d.querySelector(".plot"), traces, baseLayout(Math.max(170, rs.length * 28 + 80), { barmode: "overlay", bargap: 0.35, showlegend: true,
+    margin: { l: 120, r: 30, t: 30, b: 40 }, xaxis: ax({ range: [-mx, mx], tickvals: ticks, ticktext: ticks.map(v => Math.abs(v) + " %"), zerolinecolor: css("--ink-2"), zerolinewidth: 1.5 }) }));
+  return d;
+}
+
+// mapa de calor participante × componente: rampa secuencial de un solo tono, o (zcol) color = z de cada columna con el valor escrito
+function heat(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar), dec = spec.d ?? 1;
+  let rs = recs.filter(r => spec.series.some(([k]) => val(r, k) != null));
+  missNote(d, recs.filter(r => !spec.series.some(([k]) => val(r, k) != null)), spec.series.map(s => s[0]));
+  if (!rs.length) return empty(d);
+  if (spec.micro) rs = [...rs].sort((a, b) => nat(DEV[a.dev] || a.dev, DEV[b.dev] || b.dev));
+  rs = rs.reverse();
+  const unicoMic = spec.micro ? micCabecera(d, rs) : false;
+  const lab = r => spec.micro && !unicoMic ? `${r.label} · ${DEV[r.dev] || r.dev}` : r.label;
+  const raw = rs.map(r => spec.series.map(([k]) => val(r, k)));
+  let z = raw, colorscale, zr;
+  if (spec.zcol) {                 // z por columna, dentro del mismo micrófono si la medida depende de él
+    const Z = spec.series.map(([k]) => zscores(rs, k, spec.micro));
+    z = rs.map(r => Z.map(m => m.get(r.key)));
+    colorscale = [[0, css("--s1")], [0.5, css("--neu")], [1, css("--neg")]]; zr = { zmid: 0, zmin: -2.5, zmax: 2.5 };
+  } else {
+    const flat = raw.flat().filter(v => v != null);
+    colorscale = ["--q1", "--q2", "--q3", "--q4", "--q5", "--q6", "--q7"].map((c, i, a) => [i / (a.length - 1), css(c)]);
+    zr = { zmin: Math.min(...flat), zmax: Math.max(...flat) };
+  }
+  const dark = getComputedStyle(document.documentElement).colorScheme === "dark", ann = [];
+  rs.forEach((r, i) => spec.series.forEach((_, j) => { const v = raw[i][j]; if (v == null) return;
+    const t = spec.zcol ? Math.abs(z[i][j] ?? 0) / 2.5 : zr.zmax > zr.zmin ? (v - zr.zmin) / (zr.zmax - zr.zmin) : 0;
+    const claro = spec.zcol ? t < 0.5 : dark ? t > 0.6 : t < 0.45;
+    ann.push({ x: j, y: i, text: fmt(v, dec), showarrow: false, font: { size: FS_VAL, color: spec.zcol ? (claro ? css("--ink") : "#ffffff") : claro ? "#0b0b0b" : "#ffffff" } }); }));
+  draw(d.querySelector(".plot"), [{ type: "heatmap", z, x: spec.series.map((_, j) => j), y: rs.map((_, i) => i), colorscale, ...zr, xgap: 2, ygap: 2, hoverongaps: false,
+    customdata: rs.map((r, i) => spec.series.map(([, n], j) => [r.p, r.sesion, r.grupo, n, raw[i][j] == null ? "sin valor" : fmt(raw[i][j], dec), DEV[r.dev] || r.dev])),
+    hovertemplate: `<b>%{customdata[0]}</b> · %{customdata[1]} · %{customdata[2]}<br>%{customdata[3]}: %{customdata[4]}` + (spec.zcol ? "<br>z = %{z:.2f}" : "") +
+      (spec.micro ? "<br>Micrófono: %{customdata[5]}" : "") + "<extra></extra>",
+    colorbar: { title: spec.zcol ? { text: "z", font: { color: css("--ink-2") } } : undefined, thickness: 10, outlinewidth: 0, tickfont: { color: css("--muted") } } }],
+    baseLayout(Math.max(180, rs.length * 30 + 80), { annotations: ann, margin: { l: spec.micro && !unicoMic ? 170 : 120, r: 20, t: 40, b: 10 },
+      xaxis: { side: "top", automargin: true, tickangle: 0, tickvals: spec.series.map((_, j) => j), ticktext: spec.series.map(([, n]) => n), tickfont: { color: css("--ink-2") }, gridcolor: "rgba(0,0,0,0)", zeroline: false },
+      yaxis: { automargin: true, tickvals: rs.map((_, i) => i), ticktext: rs.map(lab), tickfont: { color: css("--ink-2") }, gridcolor: "rgba(0,0,0,0)", zeroline: false } }));
+  return d;
+}
+
+// dispersión de dos medidas, con etiquetas; opcional: cuadrantes (plano emocional) o medianas por micrófono
+function scatter(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar);
+  const rs = recs.filter(r => val(r, spec.x) != null && val(r, spec.y) != null);
+  missNote(d, recs.filter(r => val(r, spec.x) == null || val(r, spec.y) == null), [spec.x, spec.y]);
+  if (!rs.length) return empty(d);
+  if (spec.micro) micCabecera(d, rs);
+  const grpOf = spec.micro ? r => DEV[r.dev] || r.dev : r => r.sesion;
+  const grupos = uniq(rs.map(grpOf)).sort(nat).slice(0, 3);
+  const traces = grupos.map((g, gi) => {
+    const sub = rs.filter(r => grpOf(r) === g);
+    return { type: "scatter", mode: "markers+text", name: g, x: sub.map(r => val(r, spec.x)), y: sub.map(r => val(r, spec.y)),
+      text: sub.map(r => r.p), textposition: "top center", textfont: { color: css("--ink-2"), size: FS_VAL }, cliponaxis: false,
+      marker: { size: 12, color: grupos.length > 1 ? colorG(g, ranura(g, gi)) : css(cvar), symbol: SIMB[g] || ["circle", "diamond", "square"][ranura(g, gi) % 3], line: { color: css("--surface"), width: 2 } },
+      customdata: sub.map(r => [...cd(r, [spec.x, spec.y]), fmt(val(r, "PRO_EMO_PROSODY.dominance_media"), 2)]),
+      hovertemplate: `${hoverHead}<br>${spec.xl}: %{x:,.2f}<br>${spec.yl}: %{y:,.2f}` + (spec.x.startsWith("PRO_EMO") ? "<br>dominancia: %{customdata[6]}" : "") + "<br>Micrófono: %{customdata[3]}<br>%{customdata[4]}<extra></extra>" };
+  });
+  const shapes = [], ann = [];
+  if (spec.refx != null) {
+    shapes.push({ type: "line", xref: "x", yref: "paper", x0: spec.refx, x1: spec.refx, y0: 0, y1: 1, line: { color: css("--axis"), width: 1.5 } });
+    shapes.push({ type: "line", xref: "paper", yref: "y", x0: 0, x1: 1, y0: spec.refy, y1: spec.refy, line: { color: css("--axis"), width: 1.5 } });
+    if (spec.cuad) [[0.01, 0.99, "left", "top"], [0.99, 0.99, "right", "top"], [0.01, 0.01, "left", "bottom"], [0.99, 0.01, "right", "bottom"]].forEach(([x, y, xa, ya], i) =>
+      ann.push({ xref: "paper", yref: "paper", x, y, xanchor: xa, yanchor: ya, text: spec.cuad[i], showarrow: false, font: { size: FS_VAL, color: css("--muted") } }));
+  }
+  if (spec.medref) grupos.forEach((g, gi) => {
+    const sub = rs.filter(r => grpOf(r) === g), c = grupos.length > 1 ? colorG(g, ranura(g, gi)) : css("--muted");
+    if (sub.length < 2) return;
+    const mx = median(sub.map(r => val(r, spec.x))), my = median(sub.map(r => val(r, spec.y)));
+    shapes.push({ type: "line", xref: "x", yref: "paper", x0: mx, x1: mx, y0: 0, y1: 1, line: { color: c, width: 1, dash: "dot" } });
+    shapes.push({ type: "line", xref: "paper", yref: "y", x0: 0, x1: 1, y0: my, y1: my, line: { color: c, width: 1, dash: "dot" } });
+  });
+  const pad = (k, ref) => { const vs = rs.map(r => val(r, k)).concat(ref != null ? [ref] : []); const lo = Math.min(...vs), hi = Math.max(...vs), m = (hi - lo) * 0.18 || Math.abs(hi) * 0.1 || 1; return [lo - m, hi + m]; };
+  draw(d.querySelector(".plot"), traces, baseLayout(380, { shapes, annotations: ann, showlegend: grupos.length > 1, margin: { l: 64, r: 20, t: 30, b: 52 },
+    xaxis: ax({ title: { text: spec.xl, font: { color: css("--ink-2"), size: FS } }, range: pad(spec.x, spec.refx), zeroline: false }),
+    yaxis: ax({ title: { text: spec.yl, font: { color: css("--ink-2"), size: FS } }, range: pad(spec.y, spec.refy), zeroline: false }) }));
+  return d;
+}
+
+// rango tonal: barra flotante p20–p80 con la mediana
+function pitchRange(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar), K = c => "PRO_F0." + c;
+  let rs = order(recs, K("rango_st")).filter(r => val(r, K("p20_st")) != null && val(r, K("p80_st")) != null);
+  missNote(d, recs.filter(r => val(r, K("p20_st")) == null), [K("p20_st")]);
+  if (!rs.length) return empty(d);
+  rs = [...rs].sort((a, b) => nat(SEXO[a.sexo] || "z", SEXO[b.sexo] || "z")).reverse();
+  const unicoMic = micCabecera(d, rs);
+  const sexos = uniq(rs.map(r => SEXO[r.sexo] || "sin dato")), lab = r => unicoMic ? r.label : `${r.label} · ${DEV[r.dev] || r.dev}`, traces = [];
+  sexos.forEach((sx, i) => {
+    const sub = rs.filter(r => (SEXO[r.sexo] || "sin dato") === sx), c = colorG(sx, i);
+    traces.push({ type: "bar", orientation: "h", name: `${sx}: del p20 al p80`, y: sub.map(lab), base: sub.map(r => val(r, K("p20_st"))),
+      x: sub.map(r => val(r, K("p80_st")) - val(r, K("p20_st"))), marker: { color: c, opacity: 0.6, line: { color: css("--surface"), width: 1 } },
+      customdata: sub.map(r => [...cd(r, [K("rango_st")]), fmt(val(r, K("p20_st")), 1), fmt(val(r, K("p80_st")), 1), fmt(val(r, K("rango_st")), 1), fmt(val(r, "PRO_F0_MEAN.hz"), 0)]),
+      hovertemplate: `${hoverHead}<br>p20 – p80: %{customdata[6]} – %{customdata[7]} st<br>rango: %{customdata[8]} st<br>tono medio: %{customdata[9]} Hz<br>Micrófono: %{customdata[3]}<extra></extra>` });
+  });
+  traces.push({ type: "scatter", mode: "markers", name: "mediana", y: rs.map(lab), x: rs.map(r => val(r, K("mediana_st"))),
+    marker: { symbol: "line-ns", size: 18, color: css("--ink"), line: { width: 3, color: css("--ink") } }, hoverinfo: "skip" });
+  draw(d.querySelector(".plot"), traces, baseLayout(Math.max(180, rs.length * 28 + 90), { barmode: "overlay", showlegend: true, margin: { l: unicoMic ? 120 : 150, r: 30, t: 30, b: 52 },
+    xaxis: ax({ title: { text: "tono en semitonos (+12 = una octava más aguda)", font: { color: css("--ink-2"), size: FS } } }) }));
+  return d;
+}
+
+// reparto del habla por grupo: una dona por grupo
+function donuts(parent, spec, recs, cvar) {
+  const d = card(parent, spec, cvar), box = d.querySelector(".plot"); box.className = "plot donuts";
+  const sids = uniq(recs.map(r => r.sid)).sort(nat);
+  if (!sids.length) return empty(d);
+  for (const sid of sids) {
+    const enGrupo = ALL.filter(r => r.sid === sid), parts = enGrupo.filter(r => val(r, spec.k) != null);
+    const resto = Math.max(0, 100 - parts.reduce((a, r) => a + val(r, spec.k), 0));
+    const el = document.createElement("div"); box.appendChild(el);
+    draw(el, [{ type: "pie", hole: 0.58, labels: parts.map(r => r.p).concat(["equipo<br>y otros"]), values: parts.map(r => val(r, spec.k)).concat([resto]),
+      sort: false, direction: "clockwise", marker: { colors: parts.map((r, i) => css("--s" + (i % 8 + 1))).concat([css("--neu")]), line: { color: css("--surface"), width: 2 } },
+      texttemplate: "%{label}<br>%{percent:.0%}", textposition: "outside", textfont: { color: css("--ink-2"), size: FS_VAL },
+      hovertemplate: "<b>%{label}</b><br>%{value:,.1f} % del habla del grupo<extra></extra>" }],
+      baseLayout(280, { margin: { l: 62, r: 62, t: 30, b: 24 }, showlegend: false,
+        annotations: [{ text: `<b>${enGrupo[0].corto}</b><br>${DEV[enGrupo[0].dev] || ""}`, showarrow: false, font: { size: FS, color: css("--ink") } }] }));
+  }
+  return d;
+}
+
+const PINTA = { bar: barChart, dot: dotChart, mariposa: butterfly, apilada: stacked, sentimiento: sentiment, heat, scatter, rango: pitchRange, donas: donuts };
+// las participaciones con datos insuficientes no se grafican salvo en los conteos; las variables no disponibles muestran su motivo
+function pintar(g, sp, recs, cvar, micro) {
+  if ((sp.v || []).length && sp.v.every(i => D.catalogo[i]?.estado === "no_disponible")) {
+    const d = card(g, sp, cvar); d.classList.add("na-card");
+    d.querySelector(".plot").innerHTML = `<div class="empty"><b>No disponible.</b> ${D.catalogo[sp.v[0]].motivo || ""}</div>`;
+    return d;
+  }
+  const ok = sp.todos ? recs : recs.filter(r => !r.insuf), fuera = recs.filter(r => r.insuf && !sp.todos);
+  const d = PINTA[sp.t](g, sp, ok, cvar, micro);
+  if (fuera.length) note(d, `<span class="warn-i">⚠</span> No se grafica por datos insuficientes (menos de 50 palabras): ${lista(fuera)}`);
+  else if (sp.todos && recs.some(r => r.insuf)) note(d, `<span class="warn-i">⚠</span> En gris: datos insuficientes (menos de 50 palabras).`);
+  return d;
+}
+
+// ---------- tabla completa de un subproceso o familia ----------
+function familyTable(parent, ids, recs, que = "esta categoría") {
+  const keys = uniq(recs.flatMap(r => Object.keys(r.vals))).filter(k => ids.includes(k.split(".")[0]))
+    .sort((a, b) => ids.indexOf(a.split(".")[0]) - ids.indexOf(b.split(".")[0]) || nat(a, b));
+  const det = document.createElement("details"); det.className = "famtbl";
+  det.innerHTML = `<summary>Todos los valores de ${que} (${ids.length} variables, ${keys.length} componentes)</summary>`;
+  det.addEventListener("toggle", () => {             // la tabla se arma al abrirla
+    if (!det.open || det.querySelector(".tbl")) return;
+    const rows = keys.map(k => {
+      const [m, c] = k.split("."), u = recs.map(r => r.vals[k]?.u).find(Boolean) || "";
+      return `<tr><td class="l" title="${esc(cap(D.explicacion[m]?.que || ""))}">${D.catalogo[m]?.nombre || m}</td><td class="l">${c} <span style="color:var(--muted)">${u}</span></td>` +
+        recs.map(r => { const v = val(r, k);
+          return v == null ? `<td class="na" title="${invalida(r, k) ? "no válida en el Jabra" : ""}">—</td>` : `<td title="${esc(flagsText(r, [k]))}">${fmt(v, Math.abs(v) < 10 ? 3 : 1)}</td>`; }).join("") + "</tr>";
+    }).join("");
+    det.insertAdjacentHTML("beforeend", `<div class="tbl"><table><thead><tr><th class="l">Variable</th><th class="l">Componente</th>${recs.map(r => `<th>${r.insuf ? "⚠ " : ""}${esc(r.p)}<br><span style="font-weight:400">${r.corto}</span></th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`);
+  });
+  parent.appendChild(det);
+}
+
+// ---------- síntesis descriptiva (redactada con IA; complemento del tablero, fuera del flujo de NAIRA) ----------
+const conCodigos = t => String(t ?? "").replace(/\{(P\d+)\}/g, "$1");   // las síntesis vienen con {P1}: se muestra el código
+const DIMS_TXT = [["conducta_social", "Conducta social", "CS"], ["teoria_mente", "Teoría de la mente", "ToM"], ["empatia", "Empatía", "EMP"], ["percepcion_social", "Percepción social", "PS"]];
+function sintesis(main) {
+  const P = D.prescripciones;
+  if (!P) return;
+  const gids = Object.keys(P.grupos || {}).filter(sid => pasaFiltro(sid) && (!S.part.size || D.presentes.some(([x, p]) => x === sid && S.part.has(p)))).sort(nat);
+  const filas = D.presentes.filter(([sid, p]) => pasaFiltro(sid, p)).sort((a, b) => nat(a[0], b[0]) || porCodigo(a[1], b[1]));
+  if (!gids.length && !filas.length) return;
+  if (S.sint === "grupos" && !gids.length) S.sint = "part";
+  const sec = document.createElement("section"); sec.className = "panel"; sec.setAttribute("aria-label", "Síntesis descriptiva");
+  sec.innerHTML = `<div class="panel-h"><h2>Síntesis descriptiva</h2>
+      <div class="seg small" role="radiogroup" aria-label="Ver síntesis por"><label><input type="radio" name="sint" value="grupos">Por grupo · ${gids.length}</label><label><input type="radio" name="sint" value="part">Por participante · ${filas.length}</label></div>
+      <span class="spacer"></span><button class="link" type="button" data-a="about">Cómo se elaboró</button></div>
+    <div class="about" hidden>Redactada con inteligencia artificial (${P.modelo}, ${P.generado}) a partir de los indicadores del habla de cada sesión, fragmentos de la transcripción y la documentación del proyecto. Describe lo observado en la sesión; no es una recomendación clínica. ${P.aviso} Los participantes se identifican solo por su código de enrolamiento.</div>
+    <div class="slist"></div>`;
+  sec.querySelectorAll('input[name="sint"]').forEach(i => { i.checked = i.value === S.sint; i.onchange = () => { S.sint = i.value; guardar("sint", S.sint); pintaLista(); }; });
+  sec.querySelector('[data-a="about"]').onclick = () => { const a = sec.querySelector(".about"); a.hidden = !a.hidden; };
+  const box = sec.querySelector(".slist");
+  const campo = (n, t) => t ? `<p class="sdim"><b>${n}</b>${conCodigos(t)}</p>` : "";
+  const sug = (t, xs) => xs?.length ? `<div class="ssug"><b>${t}</b><ul>${xs.map(x => `<li>${conCodigos(x)}</li>`).join("")}</ul></div>` : "";
+  function pintaLista() {
+    if (S.sint === "grupos") box.innerHTML = gids.map(sid => {
+      const g = P.grupos[sid], [ses, gru] = SG(sid), rec = ALL.find(r => r.sid === sid);
+      return `<details class="srow" name="sint-g"><summary><span class="who">${gru}</span><span class="where">${ses}${rec ? " · " + (DEV[rec.dev] || rec.dev) : ""}</span><span class="perf">${conCodigos(g.perfil)}</span></summary>
+        <div class="sbody"><p>${conCodigos(g.sintesis)}</p><div class="sgrid">${campo("Dinámica", g.dinamica)}${campo("Participación", g.participacion)}${campo("Clima", g.clima)}${campo("Logro", g.logro)}</div>
+        ${sug("Orientaciones para el equipo", g.sugerencias)}</div></details>`; }).join("") || `<div class="empty">Sin síntesis de grupo para esta selección.</div>`;
+    else box.innerHTML = filas.map(([sid, p]) => {
+      const x = P.prescripciones[`${sid}|${p}`], [, , corto] = SG(sid), rec = REC.get(sid + "|" + p), mic = rec ? (DEV[rec.dev] || rec.dev) : "";
+      if (!x) return `<details class="srow nodata"><summary><span class="who">${p}</span><span class="where">${corto}${mic ? " · " + mic : ""}</span><span class="perf">${
+        rec ? "Síntesis pendiente de redactar para esta sesión." : "No se obtuvieron datos: estuvo en el grupo, pero no se captó su voz."}</span></summary></details>`;
+      return `<details class="srow" name="sint-p"><summary><span class="who">${p}</span><span class="where">${corto}${mic ? " · " + mic : ""}</span><span class="perf">${x.perfil}</span></summary>
+        <div class="sbody"><p>${x.sintesis}</p><div class="sgrid">${DIMS_TXT.map(([k, n, dd]) => `<p class="sdim" style="--c:var(${DIMC[dd]})"><b>${n}</b>${x[k]}</p>`).join("")}
+        <p class="sdim"><b>Cómo se integran en su conducta social</b>${x.integracion}</p></div>
+        ${sug("Orientaciones para el equipo clínico", x.sugerencias)}${x.calidad ? `<p class="scal">${x.calidad}</p>` : ""}</div></details>`; }).join("");
+    box.scrollTop = 0;
+  }
+  pintaLista();
+  main.appendChild(sec);
+}
+
+// ---------- resumen ----------
+function zscores(recs, k, porMicro) {
+  const devBound = porMicro ?? /^(ACU_|PRO_)/.test(k), out = new Map();
+  for (const g of devBound ? uniq(recs.map(r => r.dev)) : [null]) {
+    const rs = recs.filter(r => g == null || r.dev === g), vs = rs.map(r => val(r, k)).filter(v => v != null);
+    if (vs.length < 2) { rs.forEach(r => out.set(r.key, null)); continue; }
+    const mu = vs.reduce((a, b) => a + b) / vs.length, sd = Math.sqrt(vs.reduce((a, b) => a + (b - mu) ** 2, 0) / vs.length);
+    rs.forEach(r => { const v = val(r, k); out.set(r.key, v == null || !sd ? null : (v - mu) / sd); });
+  }
+  return out;
+}
+// observación de calidad de la síntesis que no repite lo que la tabla ya marca (micrófono, perfil provisional, datos escasos)
+function obsCalidad(sid, p) {
+  const c = D.prescripciones?.prescripciones?.[`${sid}|${p}`]?.calidad || "";
+  const t = c.replace(/^Micrófono (Jabra|Zoom H2(?:n|essential))[.:]?\s*/, "").trim();
+  return !t || /^(Perfil de voz provisional|Datos escasos)/.test(t) ? "" : cap(t);
+}
+// ---------- reparto del habla en el Resumen: cuánto habló cada quien (dona) y cómo se repartió en la sesión (línea de tiempo) ----------
+function repartoHabla(main, recs) {
+  const SEG = D.segmentos || {};
+  const sids = uniq(recs.map(r => r.sid)).filter(sid => SEG[sid]).sort(nat);
+  const g = document.createElement("div"); g.className = "grid"; main.appendChild(g);
+  pintar(g, CH.donas, recs, "--cat-temporal");        // cuánto habló cada quien, en % del habla del grupo
+  for (const sid of sids) {
+    const [ses, gru] = SG(sid), dur = SEG[sid].dur, tr = SEG[sid].tramos;
+    const d = card(g, { titulo: `Segmentos identificados · ${ses} · ${gru}`, wide: true,
+      u: "cada barra es un tramo de voz atribuido a esa persona, situado en el minuto de la grabación en que ocurre",
+      intro: "los tramos de voz que la separación automática de voces y la identificación por perfil atribuyeron a cada participante, a lo largo de toda la grabación. Deja ver cuándo interviene cada persona, si lo hace de forma repartida o concentrada, y en qué tramos permanece en silencio.",
+      nota: "Solo participantes: el habla del moderador, de la técnica, de los acompañantes y la que no pudo atribuirse a nadie no se grafica, como en el resto del tablero.",
+      why: "una fila por participante; cada barra ocupa el intervalo del tramo. Los tramos más breves se dibujan con un ancho mínimo para que sigan siendo visibles, así que su grosor no es proporcional a su duración." }, "--cat-temporal");
+    const ps = uniq(recs.filter(r => r.sid === sid).map(r => r.p)).filter(p => tr[p]?.length).sort(porCodigo);
+    if (!ps.length) { empty(d, "Sin tramos atribuidos para la selección actual."); continue; }
+    const minimo = dur / 60 / 400;                       // ancho mínimo visible, en minutos
+    const traces = ps.map((p, i) => ({
+      type: "bar", orientation: "h", name: p,
+      y: tr[p].map(() => p),
+      base: tr[p].map(s => s[0] / 60),
+      x: tr[p].map(s => Math.max((s[1] - s[0]) / 60, minimo)),
+      customdata: tr[p].map(s => [s[0], s[1], s[1] - s[0]]),
+      marker: { color: css("--s" + (i % 8 + 1)) },
+      hovertemplate: `<b>${p}</b><br>de %{customdata[0]:,.1f} s a %{customdata[1]:,.1f} s · dura %{customdata[2]:,.1f} s<extra></extra>`,
+    }));
+    const lay = baseLayout(Math.max(150, 56 + ps.length * 34), {
+      barmode: "overlay", bargap: 0.3, barcornerradius: 0, showlegend: false, margin: { l: 120, r: 46, t: 8, b: 46 },
+      xaxis: ax({ range: [0, dur / 60], title: { text: "minuto de la grabación", font: { color: css("--muted"), size: FS_VAL } } }),
+      yaxis: { automargin: true, gridcolor: "rgba(0,0,0,0)", linecolor: css("--axis"), tickfont: { color: css("--ink-2") },
+               type: "category", categoryorder: "array", categoryarray: [...ps].reverse() },
+    });
+    draw(d.querySelector(".plot"), traces, lay);
+    note(d, `${ps.reduce((a, p) => a + tr[p].length, 0).toLocaleString("es-CL")} tramos de voz de participantes en ${fmt(dur / 60, 1)} minutos de grabación.`);
+    note(d, "La posición de cada barra es exacta; su grosor no, porque los tramos breves se ensanchan para poder verse. La duración real está en el tooltip.");
+  }
+}
+
+function resumen(main, recs) {
+  const tot = (k, f = v => v) => recs.reduce((a, r) => a + (val(r, k) != null ? f(val(r, k)) : 0), 0);
+  const sv = sinVoz();
+  const k = document.createElement("div"); k.className = "kpis";
+  const kp = [[uniq(recs.map(r => r.p)).length, "participantes con voz captada"], [recs.length, "participaciones analizadas (participante × grupo)"],
+    [uniq(recs.map(r => r.sesion)).length, "sesiones"], [uniq(recs.map(r => r.sid)).length, "grupos"],
+    [fmt(tot("TMP_SPEECH_DUR.segundos", v => v / 60), 1), "minutos de habla de participantes"], [Math.round(tot("LEX_WORD_COUNT.n")).toLocaleString("es-CL"), "palabras reconocidas"]];
+  k.innerHTML = kp.map(([v, l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+  main.appendChild(k);
+  const st = document.createElement("div"); st.className = "status";
+  const ni = recs.filter(r => r.insuf).length, np = recs.filter(r => r.prov).length;
+  st.innerHTML = [ni && `<span class="chip" title="Menos de 50 palabras reconocidas: aparece en los conteos, no en los demás gráficos."><span class="warn-i">⚠</span><b>${ni}</b> con datos insuficientes</span>`,
+    sv.length && `<span class="chip" title="Estuvieron en el grupo, pero no se captó su voz: ${esc(sv.map(([s, p]) => `${p} (${SG(s)[2]})`).join(", "))}"><b>${sv.length}</b> presentes sin voz captada</span>`,
+    np && `<span class="chip" title="La identificación de su voz usa un perfil armado en las propias sesiones: la atribución de su habla es menos segura."><b>${np}</b> con perfil de voz provisional</span>`].filter(Boolean).join("");
+  if (st.innerHTML) main.appendChild(st);
+
+  sintesis(main);
+
+  repartoHabla(main, recs);
+
+  const g = document.createElement("div"); g.className = "grid"; main.appendChild(g);
+  const multi = uniq(recs.map(r => r.p)).filter(p => uniq(recs.filter(r => r.p === p).map(r => r.sesion)).length > 1).sort(porCodigo);
+  const ev = card(g, { titulo: "Evolución entre sesiones", u: "participantes con más de una sesión procesada (hasta 8; filtra para ver otras)", wide: true,
+    why: "líneas: una por participante, con cuatro indicadores básicos de participación y vocabulario." }, "--cat-prosodica");
+  if (!multi.length) empty(ev, "Aparecerá cuando una participante tenga más de una sesión procesada en la selección.");
+  else {
+    const ps = multi.slice(0, 8), metr = [["LEX_WORD_COUNT.n", "palabras"], ["LEX_TTR.mattr_50", "riqueza léxica (MATTR)"], ["CNV_TURNS.por_10min", "turnos/10 min"], ["TMP_SPEECH_DUR.pct_sesion", "% del habla del grupo"]];
+    const sym = ["circle", "square", "diamond", "triangle-up", "x", "star", "cross", "triangle-down"], traces = [];
+    metr.forEach(([key, lab], mi) => ps.forEach((p, i) => {
+      const rr = recs.filter(r => r.p === p && !(r.insuf && key !== "LEX_WORD_COUNT.n")).sort((a, b) => nat(a.sesion, b.sesion));
+      traces.push({ type: "scatter", mode: "lines+markers", name: p, legendgroup: p, showlegend: mi === 0, xaxis: "x" + (mi + 1), yaxis: "y" + (mi + 1),
+        x: rr.map(r => r.sesion), y: rr.map(r => val(r, key)), line: { color: css("--s" + (i + 1)), width: 2 }, marker: { size: 8, symbol: sym[i], line: { color: css("--surface"), width: 2 } },
+        hovertemplate: `<b>${p}</b> · %{x}<br>${lab}: %{y:,.2f}<extra></extra>` });
+    }));
+    const lay = baseLayout(330, { showlegend: true, grid: { rows: 1, columns: 4, pattern: "independent" }, margin: { l: 40, r: 10, t: 40, b: 40 },
+      legend: { orientation: "h", y: 1.14, x: 0 }, annotations: metr.map(([, lab], i) => ({ text: lab, xref: `x${i + 1} domain`, yref: `y${i + 1} domain`, x: 0, y: 1.02, showarrow: false, xanchor: "left", font: { color: css("--ink"), size: FS } })) });
+    metr.forEach((_, i) => { lay[i ? "xaxis" + (i + 1) : "xaxis"] = ax({ type: "category", categoryorder: "array", categoryarray: uniq(ALL.map(r => r.sesion)).sort(nat) }); lay[i ? "yaxis" + (i + 1) : "yaxis"] = ax(); });
+    draw(ev.querySelector(".plot"), traces, lay);
+    if (multi.length > 8) note(ev, `Se muestran 8 de ${multi.length}; filtra por participante para ver las demás.`);
+  }
+
+  // tabla de participaciones: las analizadas y las presentes sin voz captada, con las mismas reglas de filtro
+  const filas = [...recs.map(r => ({ sid: r.sid, p: r.p, r })), ...sv.map(([sid, p]) => ({ sid, p, r: null }))].sort((a, b) => nat(a.sid, b.sid) || porCodigo(a.p, b.p));
+  const tb = document.createElement("section"); tb.className = "panel";
+  tb.innerHTML = `<div class="panel-h"><h2>Participaciones y calidad de los datos</h2><span class="sub2">${filas.length} registro${filas.length === 1 ? "" : "s"} en la selección</span></div>
+    <div class="tbl"><table><thead><tr><th class="l">Participante</th><th class="l">Sesión</th><th class="l">Grupo</th><th class="l">Micrófono</th><th class="l">Sexo</th><th>Min. de habla</th><th>Palabras</th><th>Variables con valor</th><th class="l">Observaciones</th></tr></thead><tbody>${
+    filas.map(({ sid, p, r }) => {
+      const [ses, gru] = SG(sid), sexo = SEXO[D.sexo[sid + "|" + p]] || "—";
+      if (!r) return `<tr class="sinvoz"><td class="l">${esc(p)}</td><td class="l">${ses}</td><td class="l">${gru}</td><td class="l">—</td><td class="l">${sexo}</td><td>—</td><td>—</td><td>0 / 48</td><td class="l wr">Presente sin voz captada: no se obtuvieron datos.</td></tr>`;
+      const conv = uniq(Object.keys(r.vals).filter(k => val(r, k) != null).map(k => k.split(".")[0])).length;
+      const obs = [r.insuf ? "<span class='warn'>datos insuficientes</span>" : "", r.prov ? "perfil de voz provisional" : "", obsCalidad(sid, p)].filter(Boolean).join(" · ");
+      return `<tr><td class="l">${r.insuf ? "⚠ " : ""}${esc(p)}</td><td class="l">${ses}</td><td class="l">${gru}</td><td class="l">${DEV[r.dev] || r.dev}</td><td class="l">${sexo}</td><td>${fmt((val(r, "TMP_SPEECH_DUR.segundos") || 0) / 60, 1)}</td><td>${fmt(val(r, "LEX_WORD_COUNT.n"), 0)}</td><td>${conv} / 48</td><td class="l wr">${obs}</td></tr>`;
+    }).join("")}</tbody></table></div>`;
+  main.appendChild(tb);
+}
+
+// ---------- vista GQM: cada pregunta como recorrido ----------
+function vistaGQM(main, dim, recs) {
+  const head = document.createElement("div"); head.className = "dimhead"; head.style.setProperty("--c", `var(${dim.c})`);
+  head.innerHTML = `<div class="kick">Subproceso de la cognición social · ${dim.n_metricas} métricas</div><h2>${dim.nombre}</h2><p class="def">${dim.definicion}</p>
+    <details><summary>Objetivo GQM</summary><p>${dim.objetivo}</p></details>
+    <nav class="qnav" aria-label="Preguntas">${dim.preguntas.map(q => `<a href="#q-${dim.id}-${q.id}"><b>${q.id}</b> ${q.titulo}</a>`).join("")}</nav>`;
+  main.appendChild(head);
+  const np = uniq(recs.map(r => r.p)).length, ni = recs.filter(r => r.insuf).length;
+  for (const q of dim.preguntas) {
+    const sec = document.createElement("section"); sec.className = "q"; sec.id = `q-${dim.id}-${q.id}`; sec.style.setProperty("--c", `var(${dim.c})`);
+    const hd = `<div class="qh"><span class="qid">${q.id}</span><h3>${q.titulo}</h3></div><p class="qt"><span class="lbl">Variable investigada</span>${q.texto}</p>`;
+    const ms = q.metricas.map(i => [i, D.catalogo[i]]).filter(([, c]) => c);
+    const ins = uniq(ms.flatMap(([, c]) => c.insumos)).map(i => INSUMO[i] || i);
+    const noImpl = ms.filter(([, c]) => c.estado !== "implementada");
+    const micro = ms.some(([, c]) => c.micro);
+    sec.innerHTML = hd + `<ol class="flow">
+        <li><details class="step"><summary><span class="n">1</span><h4>Procedimiento de análisis</h4></summary><p>${q.procedimiento || ""}</p></details></li>
+        <li><details class="step"><summary><span class="n">2</span><h4>Datos utilizados</h4></summary><ul>${ins.map(t => `<li>${t}</li>`).join("")}</ul></details></li>
+        <li><details class="step"><summary><span class="n">3</span><h4>Indicadores computacionales <span class="cnt">${ms.length}</span></h4></summary>
+          <ul class="mlist">${ms.map(([i, c]) => `<li><span title="${esc(i)}">${cap(c.nombre)}</span>${badge(c.estado)}</li>`).join("")}</ul></details></li>
+      </ol>
+      <details class="tech"><summary>Cálculo de cada indicador (definición, unidad y estado)</summary><div class="tbl"><table><thead><tr><th class="l">Indicador</th><th class="l">Cálculo</th><th class="l">Unidad</th><th class="l">Estado</th></tr></thead><tbody>${
+        ms.map(([i, c]) => `<tr><td class="l">${cap(c.nombre)}<br><code>${i}</code></td><td class="l wr">${esc(c.definicion)}</td><td class="l">${esc(c.unidad)}</td><td class="l wr">${ESTADO[c.estado]?.[0] || c.estado}${c.motivo ? `<br><span class="muted">${esc(c.motivo)}</span>` : ""}</td></tr>`).join("")}</tbody></table></div></details>
+      <div class="step result"><span class="n">4</span><div class="grow"><h4>Resultado</h4>
+        <p class="hint muted">${recs.length} participaciones de ${np} participantes en la selección${ni ? `; ${ni} con datos insuficientes no se grafican salvo en los conteos` : ""}${micro ? ". Las medidas de voz se comparan solo dentro del mismo micrófono" : ""}.</p><div class="grid"></div></div></div>
+      <div class="step interp"><span class="n">5</span><div><h4>Interpretación y limitaciones</h4><p>${q.interpretacion || ""}</p>
+        <p><b>Limitaciones.</b> ${q.limites || ""}${noImpl.length ? ` Indicadores no plenamente implementados: ${noImpl.map(([, c]) => `${c.nombre} (${ESTADO[c.estado]?.[0] || c.estado})`).join(", ")}.` : ""}</p></div></div>`;
+    main.appendChild(sec);
+    const g = sec.querySelector(".result .grid");
+    for (const sp of (GQM_CH[`${dim.id} ${q.id}`] || []).map(n => CH[n])) pintar(g, sp, recs, dim.c, sp.micro);
+  }
+  familyTable(main, dim.metricas, recs, "este subproceso");
+}
+
+// ---------- vista ----------
+function renderView(conservar = true) {
+  const main = $("#vista"), y = scrollY;
+  if (conservar) main.style.minHeight = main.offsetHeight + "px";      // mientras se ajustan filtros, la página no se encoge
+  main.innerHTML = ""; QUEUE.length = 0;
+  const recs = filtered();
+  if (!recs.length) {
+    main.innerHTML = `<div class="panel empty">Ningún participante coincide con los filtros. <button class="link" type="button" id="limpiar2">Limpiar filtros</button></div>`;
+    $("#limpiar2").onclick = limpiar;
+  } else if (S.tab === "resumen") resumen(main, recs);
+  else if (S.vista === "gqm") vistaGQM(main, DIMS.find(d => d.id === S.tab), recs);
+  else {
+    const cat = FAM[S.tab];
+    const intro = document.createElement("div"); intro.className = "intro"; intro.style.setProperty("--c", `var(${cat.c})`); intro.innerHTML = cat.intro;
+    main.appendChild(intro);
+    const g = document.createElement("div"); g.className = "grid"; main.appendChild(g);
+    for (const sp of cat.charts.map(n => CH[n])) pintar(g, sp, recs, cat.c, cat.micro || sp.micro);
+    familyTable(main, Object.entries(D.catalogo).filter(([, v]) => v.familia === cat.id).map(([k]) => k), recs);
+  }
+  flush();
+  if (conservar) { scrollTo({ top: y, behavior: "instant" }); if (!S.open) main.style.minHeight = ""; }
+}
+function actualizar() { guardarFiltros(); syncFilters(); renderView(true); }
+function limpiar() { S.sesion.clear(); S.grupo.clear(); S.part.clear(); actualizar(); }
+
+// ---------- arranque ----------
+{
+  const info = Object.fromEntries(uniq(ALL.map(r => r.p)).map(p => [p, uniq(ALL.filter(r => r.p === p).map(r => r.corto)).join(", ")]));
+  buildDropdown("dd-part", "Participante", uniq(ALL.map(r => r.p)).sort(porCodigo), S.part, info);
+  buildDropdown("dd-sesion", "Sesión", uniq(ALL.map(r => r.sesion)).sort(nat), S.sesion);
+  buildDropdown("dd-grupo", "Grupo", uniq(ALL.map(r => r.grupo)).sort(nat), S.grupo);
+}
+$("#meta").innerHTML = `Actualizado: ${D.generado}<br>${ALL.length} participaciones · ${uniq(ALL.map(r => r.sid)).length} grupos`;
+$("#limpiar").onclick = limpiar;
+{
+  const op = $("#opciones");
+  op.querySelector(".dd-btn").onclick = e => { e.stopPropagation(); abrir(S.open === "opciones" ? null : "opciones"); };
+  op.querySelector(".dd-panel").onclick = e => e.stopPropagation();
+  op.querySelectorAll('input[name="vista"]').forEach(i => i.onchange = () => {
+    S.vista = i.value; guardar("vista", S.vista); if (!tabOk(S.tab)) S.tab = "resumen";
+    history.replaceState(null, "", "#" + S.tab); guardar("tab", S.tab); renderTabs(); renderView(false); });
+  op.querySelectorAll('input[name="orden"]').forEach(i => i.onchange = () => { S.orden = i.value; renderView(true); });
+  op.querySelectorAll('input[name="tema"]').forEach(i => i.onchange = () => { S.tema = i.value; guardar("tema", S.tema); aplicarTema(); renderView(true); });
+  op.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { SALIDA[b.dataset.f](); abrir(null); });
+}
+let _rz, _w = innerWidth;
+addEventListener("resize", () => { clearTimeout(_rz); _rz = setTimeout(() => { if (innerWidth !== _w) { _w = innerWidth; renderView(true); } }, 250); });
+new ResizeObserver(() => document.documentElement.style.setProperty("--barh", getComputedStyle($("#bar")).position === "sticky" ? $("#bar").offsetHeight + "px" : "0px")).observe($("#bar"));
+
+// ---------- exportar lo filtrado ----------
+function bajar(nombre, texto, tipo) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([texto], { type: tipo })); a.download = nombre; a.click();
+}
+const SALIDA = {
+  csv() {
+    const recs = new Set(filtered().map(r => r.key));
+    const lines = [["sesion", "grupo", "participante", "microfono", "variable", "nombre", "categoria", "componente", "valor", "unidad", "marcas"].join(",")];
+    for (const r of D.filas) if (recs.has(r[C.sid] + "|" + r[C.p])) {
+      const cat = D.catalogo[r[C.m]] || {};
+      lines.push([r[C.sesion], r[C.grupo], r[C.p], DEV[r[C.dev]] || r[C.dev], r[C.m], `"${cat.nombre || ""}"`, cat.familia || "", r[C.c], r[C.v] ?? "", r[C.u], `"${r[C.f] || ""}"`].join(","));
+    }
+    bajar("naira_participantes.csv", "﻿" + lines.join("\n"), "text/csv");
+  },
+  json() {
+    const P = D.prescripciones || {}, recs = filtered(), sids = uniq(recs.map(r => r.sid)).sort(nat);
+    const out = {
+      proyecto: "NAIRA: métricas computacionales del habla para la cognición social de adultos mayores (sesiones grupales)",
+      generado: D.generado, aviso: P.aviso || "Indicadores exploratorios del habla; no constituyen diagnóstico.",
+      filtros: { sesion: [...S.sesion], grupo: [...S.grupo], participante: [...S.part] },
+      metodologia_gqm: D.gqm.subprocesos.map(d => ({ subproceso: d.nombre, definicion: d.definicion, objetivo: d.objetivo,
+        preguntas: d.preguntas.map(q => ({ id: q.id, titulo: q.titulo, pregunta: q.texto, metricas: q.metricas, procedimiento: q.procedimiento || null, limitaciones: q.limites || null })) })),
+      variables: Object.fromEntries(Object.entries(D.catalogo).map(([k, v]) => [k, { nombre: v.nombre, familia: v.familia, estado: v.estado, preguntas_gqm: v.preguntas, definicion: v.definicion }])),
+      grupos: sids.map(sid => ({ sesion: SG(sid)[0], grupo: SG(sid)[1], sintesis_descriptiva: P.grupos?.[sid] ? JSON.parse(conCodigos(JSON.stringify(P.grupos[sid]))) : null,
+        sin_voz_captada: D.presentes.filter(([x, p]) => x === sid && !REC.has(sid + "|" + p)).map(([, p]) => p) })),
+      participantes: recs.map(r => ({ codigo: r.p, sesion: r.sesion, grupo: r.grupo, microfono: DEV[r.dev] || r.dev, sexo: SEXO[r.sexo] || null,
+        datos_insuficientes: r.insuf, perfil_voz_provisional: r.prov, sintesis_descriptiva: P.prescripciones?.[`${r.sid}|${r.p}`] || null,
+        variables: Object.entries(r.vals).reduce((o, [k, x]) => { const [m, c] = k.split("."); (o[m] ||= {})[c] = x.v; return o; }, {}) })),
+    };
+    bajar("naira_resumen.json", JSON.stringify(out), "application/json");
+  },
+  md() {
+    const P = D.prescripciones || {}, recs = filtered(), sids = uniq(recs.map(r => r.sid)).sort(nat), L = [];
+    const v = (r, k, d = 0) => fmt(val(r, k), d);
+    L.push("# NAIRA · resumen de sesiones", "", `Generado: ${D.generado}. ${P.aviso || "Indicadores exploratorios del habla; no constituyen diagnóstico."}`, "",
+      "Subprocesos evaluados (metodología GQM): " + D.gqm.subprocesos.map(d => `**${d.nombre}**: ${d.definicion}`).join(" "), "");
+    for (const ses of uniq(sids.map(sid => SG(sid)[0]))) {
+      L.push(`## ${ses}`, "");
+      for (const sid of sids.filter(s => SG(s)[0] === ses)) {
+        const g = P.grupos?.[sid], rs = recs.filter(r => r.sid === sid);
+        L.push(`### ${SG(sid)[1]} (${DEV[rs[0]?.dev] || ""})`, "");
+        if (g) L.push("Síntesis descriptiva del grupo:", "", `**${g.perfil}** ${conCodigos(g.sintesis)}`, "", ...["dinamica:Dinámica", "participacion:Participación", "clima:Clima", "logro:Logro"].map(c => { const [k, n] = c.split(":"); return `- ${n}: ${conCodigos(g[k] || "")}`; }),
+          `- Orientaciones para el equipo: ${g.sugerencias.map(conCodigos).join(" ")}`, "");
+        L.push("| Participante | Sexo | Min. de habla | % del habla del grupo | Palabras | Turnos/10 min | Riqueza léxica (MATTR) |", "|---|---|---|---|---|---|---|",
+          ...rs.map(r => `| ${r.p}${r.insuf ? " ⚠" : ""} | ${SEXO[r.sexo] || "—"} | ${fmt((val(r, "TMP_SPEECH_DUR.segundos") || 0) / 60, 1)} | ${v(r, "TMP_SPEECH_DUR.pct_sesion", 1)} | ${v(r, "LEX_WORD_COUNT.n")} | ${v(r, "CNV_TURNS.por_10min", 1)} | ${v(r, "LEX_TTR.mattr_50", 3)} |`), "");
+        const sv = D.presentes.filter(([x2, p]) => x2 === sid && !REC.has(sid + "|" + p) && (!S.part.size || S.part.has(p))).map(([, p]) => p);
+        if (sv.length) L.push(`Sin voz captada (no se obtuvieron datos): ${sv.join(", ")}.`, "");
+        for (const r of rs) {
+          const x2 = P.prescripciones?.[`${sid}|${r.p}`];
+          if (!x2) continue;
+          L.push(`#### ${r.p} · síntesis descriptiva`, "", `**${x2.perfil}** ${x2.sintesis}`, "", `- Conducta social: ${x2.conducta_social}`, `- Teoría de la mente: ${x2.teoria_mente}`,
+            `- Empatía: ${x2.empatia}`, `- Percepción social: ${x2.percepcion_social}`, `- Integración: ${x2.integracion}`, `- Orientaciones: ${x2.sugerencias.join(" ")}`, ...(x2.calidad ? [`- Calidad de los datos: ${x2.calidad}`] : []), "");
+        }
+      }
+    }
+    bajar("naira_resumen.md", L.join("\n"), "text/markdown");
+  },
+};
+syncFilters(); renderTabs(); renderView(false);
+if (location.hash.startsWith("#q-")) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+</script>
+</body>
+</html>

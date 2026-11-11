@@ -1,0 +1,583 @@
+{
+ "modelo": "Claude Opus 5.5 (claude-opus-5-5), en sesión de Claude Code",
+ "generado": "02-11-2026",
+ "base": "Indicadores de las 48 variables de NAIRA de cada participante en esa sesión (nivel respecto del conjunto de participantes de NAIRA; voz y prosodia respecto de su mismo micrófono; tono respecto de su mismo sexo), fragmentos de su transcripción y la documentación del proyecto (subprocesos y metodología GQM).",
+ "aviso": "Se basa en indicadores exploratorios del habla de una sesión grupal: no constituye diagnóstico; orienta y complementa la evaluación del profesional.",
+ "prescripciones": {
+  "sesion1_grupo1|P02": {
+   "perfil": "Participante femenina con participación verbal mínima en esta sesión.",
+   "sintesis": "Se registró una sola intervención breve, de contenido poco claro. La información es insuficiente para describir su funcionamiento social en esta sesión.",
+   "conducta_social": "Prácticamente no tomó la palabra; su presencia fue silenciosa.",
+   "teoria_mente": "Sin información suficiente.",
+   "empatia": "Sin información suficiente; su única intervención tuvo un tono afectivo positivo.",
+   "percepcion_social": "Sin información suficiente.",
+   "integracion": "La baja participación impide observar cómo se articulan sus capacidades en la interacción.",
+   "sugerencias": [
+    "Facilitar su participación con preguntas directas y abiertas, dándole tiempo para responder.",
+    "Indagar si el silencio responde a timidez, dificultad auditiva, poca familiaridad con el grupo o desconexión con la tarea."
+   ],
+   "calidad": "Datos escasos (micrófono Jabra)."
+  },
+  "sesion1_grupo1|P05": {
+   "perfil": "Participante femenina, narradora, con discurso autobiográfico extenso y carga emocional negativa.",
+   "sintesis": "Mantiene la palabra con relatos largos sobre su familia, sus mascotas y episodios dolorosos, entre ellos el fallecimiento de una hija. Su discurso se sostiene en su propia historia más que en lo que aportan las demás, y predomina un tono emocional negativo.",
+   "conducta_social": "Participa con soltura y en extensión, pero con poca conexión temática con lo que acaban de decir otras personas; tiende a interrumpir para continuar su relato. Habla poco en términos de grupo («nosotros»).",
+   "teoria_mente": "Describe con detalle a terceras personas y sus acciones, y usa con frecuencia términos de pensamiento y sentimiento: puede representar estados mentales propios y ajenos dentro de su narración.",
+   "empatia": "Expresa abundante afecto, principalmente negativo (pérdida, maltrato, enfermedad), con escasas expresiones positivas. La resonancia emocional parece dirigida a su propia vivencia más que a la de sus compañeras.",
+   "percepcion_social": "Voz clara y con variaciones marcadas de energía, de volumen bajo y entonación poco amplia; habla con ritmo ágil.",
+   "integracion": "Sus recursos de mentalización y su expresividad emocional están volcados en la narración de su experiencia; esto le da presencia en el grupo, pero limita el intercambio recíproco y la escucha de las demás.",
+   "sugerencias": [
+    "Explorar en entrevista individual el estado de ánimo y el proceso de duelo, dado el contenido de pérdida que trae espontáneamente.",
+    "En las dinámicas, favorecer turnos estructurados y preguntas que la inviten a comentar lo que dijo otra participante."
+   ],
+   "calidad": "Micrófono Jabra."
+  },
+  "sesion1_grupo1|P08": {
+   "perfil": "Participante femenina con participación activa, fragmentada y con frecuencia superpuesta a la de otras personas.",
+   "sintesis": "Interviene a menudo, con frases cortas sobre su familia, nietos y labores de cuidado. El tono es afectivamente positivo y expresivo, aunque sus intervenciones se ven a menudo interrumpidas o se solapan con otras.",
+   "conducta_social": "Ocupa una parte importante de la conversación con turnos breves; habla mucho en simultáneo con otras personas y es interrumpida con frecuencia. Su aporte se aleja de los contenidos centrales de la actividad.",
+   "teoria_mente": "Su discurso alterna entre ella misma y terceras personas (familia), con abundantes referencias a sentimientos; se refiere poco al grupo como conjunto.",
+   "empatia": "Transmite calidez y afecto positivo, con una entonación animada; menciona tareas de cuidado hacia otra persona.",
+   "percepcion_social": "Voz de volumen muy bajo y menos clara, con entonación variada y expresiva y alta activación emocional.",
+   "integracion": "Muestra disposición afectiva y deseo de participar, pero el bajo volumen de voz y el habla superpuesta dificultan que sus aportes se integren en la conversación del grupo.",
+   "sugerencias": [
+    "Revisar si hay dificultades auditivas o de proyección de la voz que expliquen el solapamiento y las interrupciones.",
+    "Ubicarla en un lugar donde pueda ser escuchada y darle turnos explícitos."
+   ],
+   "calidad": "Micrófono Jabra."
+  },
+  "sesion1_grupo1|P11": {
+   "perfil": "Participante femenina muy participativa, expansiva y emocionalmente expresiva.",
+   "sintesis": "Habla mucho y con vocabulario amplio, centrada en su vida cotidiana: sus mascotas rescatadas, que vive como familia, su situación familiar y su salud. Muestra señales de escucha activa, pero tiende a tomar la palabra e introducir sus propios temas.",
+   "conducta_social": "Toma muchos turnos, interrumpe con frecuencia y habla a la vez que otras personas; al mismo tiempo da señales de escucha y pide aclaraciones. Sus intervenciones se conectan poco con lo inmediatamente dicho, aunque aborda los contenidos de la actividad.",
+   "teoria_mente": "Discurso centrado en sí misma, con referencias frecuentes a sentimientos; habla poco en nombre del grupo.",
+   "empatia": "Alta expresividad emocional, positiva y negativa a la vez; muestra un vínculo afectivo intenso con sus animales.",
+   "percepcion_social": "Voz estable, con tono más agudo que el habitual de su sexo y una entonación muy activada; ritmo de articulación pausado.",
+   "integracion": "Su motivación social y su expresividad la hacen protagonista del grupo; la regulación de turnos y la conexión con los temas de otras personas son los aspectos menos logrados.",
+   "sugerencias": [
+    "Canalizar su participación asignándole roles que incluyan escuchar y resumir lo dicho por otras participantes.",
+    "Indagar los episodios de malestar físico que refiere (bajas de azúcar o de presión)."
+   ],
+   "calidad": "Micrófono Jabra. Perfil de voz provisional: la atribución de su habla es menos segura."
+  },
+  "sesion1_grupo2|P07": {
+   "perfil": "Participante femenina con discurso rico y elaborado, protagonista de la conversación.",
+   "sintesis": "Es la voz más presente de su grupo. Relata con vocabulario variado sus intereses (viajes en barco, el piano) y expresa posturas morales, por ejemplo frente al maltrato animal. El tono general es positivo.",
+   "conducta_social": "Toma muchos turnos con enunciados largos e interrumpe con cierta frecuencia; también es interrumpida a menudo. Aborda los contenidos de la actividad, aunque su aporte se conecta poco con lo que acaba de decir otra persona.",
+   "teoria_mente": "Discurso elaborado y diverso, centrado en su propia experiencia y en terceras personas; se dirige poco de forma directa a sus interlocutores.",
+   "empatia": "Afecto positivo predominante; manifiesta preocupación por el sufrimiento animal, lo que sugiere sensibilidad hacia el padecimiento ajeno.",
+   "percepcion_social": "Voz de tono más grave que el habitual de su sexo y entonación poco variada, aunque con buena activación emocional; ritmo de articulación pausado.",
+   "integracion": "Tiene recursos lingüísticos y de juicio social sólidos que la llevan a liderar la conversación; el intercambio recíproco y el preguntar a las demás son menos frecuentes.",
+   "sugerencias": [
+    "Invitarla a formular preguntas a otras participantes para equilibrar su protagonismo.",
+    "Aprovechar su capacidad narrativa en tareas que requieran tomar la perspectiva de otra persona."
+   ],
+   "calidad": ""
+  },
+  "sesion1_grupo2|P10": {
+   "perfil": "Participante masculino con participación escasa, breve y principalmente reactiva.",
+   "sintesis": "Intervino poco y con frases cortas, sobre todo para referirse a sus nietos y responder al equipo. El tono es positivo, pero con baja energía en la voz y en el discurso.",
+   "conducta_social": "Pocos turnos y poca presencia en la conversación; no interrumpe ni compite por la palabra. Sus intervenciones se relacionan poco con los temas de la actividad.",
+   "teoria_mente": "Habla de sí mismo y de su familia, a veces en plural, y casi no se dirige a sus interlocutores; verbaliza pocos estados mentales.",
+   "empatia": "Vocabulario afectivo claramente positivo, sin expresiones negativas.",
+   "percepcion_social": "Voz con mayor inestabilidad y bajo volumen; entonación variada, pero con muy baja activación emocional.",
+   "integracion": "Muestra disposición afectiva positiva, pero su baja iniciativa y la poca energía vocal limitan su integración en la interacción.",
+   "sugerencias": [
+    "Explorar las causas de su baja participación (audición, fatiga, estado de ánimo o comodidad en el grupo).",
+    "Si la inestabilidad y el bajo volumen de la voz se mantienen, considerar una valoración de la voz."
+   ],
+   "calidad": ""
+  },
+  "sesion1_grupo2|P13": {
+   "perfil": "Participante femenina activa, verbalmente rica y emocionalmente intensa.",
+   "sintesis": "Participa mucho, con vocabulario diverso, y busca comprender la tarea pidiendo aclaraciones. Expresa abiertamente miedos propios (las alturas, el vacío) y preocupación por el maltrato a los animales; su tono oscila entre lo positivo y lo negativo.",
+   "conducta_social": "Toma turnos con mucha frecuencia y pide aclaraciones a menudo; es interrumpida con cierta frecuencia. Mantiene una conexión adecuada con lo que se conversa.",
+   "teoria_mente": "Discurso centrado en sí misma y en terceras personas; verbaliza pocos estados mentales de forma explícita, aunque reconoce a otras participantes («cualquiera es usted, cualquiera es ella…»).",
+   "empatia": "Alta expresividad emocional, con mucho vocabulario de emoción negativa; muestra compasión ante el sufrimiento animal.",
+   "percepcion_social": "Voz clara y potente, con entonación variada, pero con un tono emocional de valencia baja; articulación lenta.",
+   "integracion": "Su motivación por participar y entender, junto con una expresividad emocional intensa, la mantienen muy presente en el grupo; los contenidos de temor que trae merecen atención.",
+   "sugerencias": [
+    "Explorar la presencia de ansiedad o temores, dados los contenidos que expresa espontáneamente.",
+    "Observar si la articulación lenta se asocia a fatiga o se mantiene en otras tareas."
+   ],
+   "calidad": ""
+  },
+  "sesion1_grupo4|P03": {
+   "perfil": "Participante femenina de escucha activa, con intervenciones breves y vocabulario emocional abundante.",
+   "sintesis": "Acompaña la conversación con muchas señales de escucha y preguntas para entender la tarea. Usa abundante vocabulario emocional, aunque elabora poco y casi no verbaliza estados mentales.",
+   "conducta_social": "Participa de forma regular con enunciados cortos; da muchas señales de escucha, pide aclaraciones y casi no interrumpe. Respeta los turnos y sostiene la interacción desde un rol de apoyo.",
+   "teoria_mente": "Pronombres equilibrados entre ella, el grupo y otras personas; verbaliza muy pocos estados mentales y su discurso es poco elaborado.",
+   "empatia": "Mucho vocabulario emocional, positivo y negativo, con un balance afectivo que tiende a lo negativo; compara el cuidado de los animales con el de los hijos.",
+   "percepcion_social": "Voz con más inestabilidad en tono e intensidad, energía poco variada y una entonación muy amplia y melódica.",
+   "integracion": "Su conducta social se apoya en la escucha y la expresión emocional más que en la elaboración de ideas o en la inferencia de lo que piensan otros.",
+   "sugerencias": [
+    "Explorar la capacidad de inferir intenciones y creencias ajenas con una tarea específica de teoría de la mente.",
+    "Reconocer y aprovechar su rol de apoyo en el grupo."
+   ],
+   "calidad": "Micrófono Jabra."
+  },
+  "sesion1_grupo4|P04": {
+   "perfil": "Participante masculino narrativo, respetuoso de los turnos y con afecto contenido.",
+   "sintesis": "Relata extensamente experiencias de su vida laboral y de su localidad, con enunciados largos. Respeta los turnos, pero sus relatos se conectan poco con lo que plantean las demás personas. El tono afectivo es más bien sobrio.",
+   "conducta_social": "Participación amplia, sin interrumpir ni superponerse; se dirige con frecuencia a su interlocutor. Su discurso sigue su propio hilo narrativo.",
+   "teoria_mente": "Usa verbos de pensar y saber y se dirige al otro, lo que sugiere disposición a explicar; la elaboración léxica sostenida es limitada.",
+   "empatia": "Usa vocabulario emocional, pero con poca expresión positiva; afecto contenido.",
+   "percepcion_social": "Voz menos clara (más ronca), con inestabilidad marcada en la intensidad y entonación poco variada, de muy baja activación emocional.",
+   "integracion": "Se comporta de forma cortés y comunicativa, pero con una expresión afectiva y prosódica plana que puede hacer menos visible su resonancia emocional con el grupo.",
+   "sugerencias": [
+    "Observar el estado de ánimo, dada la prosodia poco variada y el afecto contenido.",
+    "Si la voz ronca es persistente, considerar una valoración de la voz."
+   ],
+   "calidad": "Micrófono Jabra."
+  },
+  "sesion1_grupo4|P14": {
+   "perfil": "Participante femenina de participación discreta, pertinente y con afecto poco expresado.",
+   "sintesis": "Interviene poco y de manera breve, pero conectada con lo que se conversa. Habla de su familia, de animales y de eventos locales. Su expresión emocional es escasa, tanto en las palabras como en la voz.",
+   "conducta_social": "Pocos turnos y baja presencia, con buena conexión temática con lo dicho por otros; no es interrumpida.",
+   "teoria_mente": "Se refiere a terceras personas y utiliza términos de estados mentales (pensar, querer) con relativa frecuencia; su vocabulario es variado pese a hablar poco.",
+   "empatia": "Muy poco vocabulario emocional; casi todos sus enunciados tienen un tono neutro.",
+   "percepcion_social": "Voz clara y fuerte, pero con entonación muy plana y de rango reducido, con baja activación emocional.",
+   "integracion": "Comprende la conversación y aporta de forma pertinente, pero su baja expresividad afectiva y su prosodia plana limitan su visibilidad social en el grupo.",
+   "sugerencias": [
+    "Observar el estado de ánimo y la expresividad afectiva en próximas sesiones.",
+    "Facilitar su participación con preguntas que la inviten a opinar o a contar experiencias."
+   ],
+   "calidad": "Micrófono Jabra. Perfil de voz provisional: la atribución de su habla es menos segura."
+  },
+  "sesion2_grupo1|P10": {
+   "perfil": "Participante masculino con participación equilibrada, respetuosa y de afecto contenido.",
+   "sintesis": "Participa en un nivel intermedio y respeta los turnos. Aporta su experiencia laboral y conocimientos prácticos a la tarea de construcción, con un tono mayormente neutro.",
+   "conducta_social": "Intervenciones regulares, sin superponerse a otros; sus aportes se conectan con lo conversado y con la actividad.",
+   "teoria_mente": "Habla de sí y de otras personas, pero casi no se dirige directamente a sus interlocutores ni habla en nombre del grupo.",
+   "empatia": "Vocabulario más positivo que negativo, pero casi no se refiere a sentimientos; predominan los enunciados neutros.",
+   "percepcion_social": "Voz de bajo volumen y menos clara, con entonación muy poco variada.",
+   "integracion": "Se integra a la tarea de manera adecuada y colaborativa, aunque con una expresión afectiva y vocal sobria y poco dirigida a los demás.",
+   "sugerencias": [
+    "Promover que se dirija a otras personas (preguntar, responder a alguien en particular).",
+    "Considerar el volumen de su voz en la disposición del grupo."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo1|P11": {
+   "perfil": "Participante femenina con rol de liderazgo, orientada al grupo y con alta producción verbal.",
+   "sintesis": "Conduce buena parte de la tarea colectiva hablando en nombre del grupo («vamos a pensar», «nuestro puente») y explicita el respeto por la opinión de otra participante. Aporta además conocimientos de historia local y de la ley, a veces alejándose del tema inmediato.",
+   "conducta_social": "Muy participativa, con muchos turnos y señales de escucha; interrumpe y es interrumpida con frecuencia. Aborda los contenidos de la actividad, aunque a menudo introduce temas propios.",
+   "teoria_mente": "Habla en términos de grupo mucho más que de sí misma y usa con frecuencia verbos de pensar y saber; muestra toma de perspectiva explícita al considerar lo que prefieren las demás.",
+   "empatia": "Vocabulario emocional frecuente, con presencia de contenidos negativos al tratar temas sociales.",
+   "percepcion_social": "Tono más agudo que el habitual de su sexo, con entonación poco variada pero activada.",
+   "integracion": "Su capacidad de mentalización y su orientación al grupo sostienen un rol de coordinación; la regulación de la extensión y de los turnos es el aspecto a cuidar.",
+   "sugerencias": [
+    "Valorar y aprovechar su rol de liderazgo, combinándolo con consignas que den espacio a las participantes más calladas.",
+    "Acompañar la autorregulación de la extensión de sus intervenciones."
+   ],
+   "calidad": "Perfil de voz provisional: la atribución de su habla es menos segura."
+  },
+  "sesion2_grupo1|P13": {
+   "perfil": "Participante femenina con narrativa autobiográfica, centrada en sí misma y de expresión emocional mixta.",
+   "sintesis": "Relata con orgullo su trayectoria como docente y el reconocimiento que recibe, y menciona su enfermedad y el momento en que comenzó a sentirse mayor. Participa con frecuencia e interrumpe a menudo.",
+   "conducta_social": "Muchos turnos y aportes conectados con la actividad, pero interrumpe con mucha frecuencia; habla poco en términos de grupo.",
+   "teoria_mente": "Discurso fuertemente autorreferencial; verbaliza pocos estados mentales de forma explícita.",
+   "empatia": "Vocabulario emocional abundante, positivo y negativo, ligado a su historia de vida, la salud y el envejecimiento.",
+   "percepcion_social": "Voz clara, con entonación muy variada, pero con baja activación y un tono emocional de valencia baja; articulación pausada.",
+   "integracion": "Su motivación por compartir su historia le da presencia en el grupo; el foco en sí misma y las interrupciones restan reciprocidad al intercambio.",
+   "sugerencias": [
+    "Explorar cómo vive el envejecimiento y su situación de salud, que surgen espontáneamente en su discurso.",
+    "Promover la escucha y la respuesta a lo que plantean las demás."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo2|P02": {
+   "perfil": "Participante femenina con rol coordinador, orientada a la tarea y al grupo.",
+   "sintesis": "Es la voz más presente de su grupo y organiza la construcción colectiva, proponiendo y confirmando decisiones («elegimos la casa comunitaria»). Escucha y sigue el hilo de lo que dicen otras; su lenguaje es práctico y poco emocional.",
+   "conducta_social": "Muchos turnos, muchas señales de escucha y buena conexión con lo que dicen otras personas; aborda plenamente los contenidos de la actividad. Es interrumpida con cierta frecuencia y pide aclaraciones.",
+   "teoria_mente": "Casi no habla de sí misma; se expresa en plural y en función de la tarea común. Su discurso es funcional y poco variado en vocabulario.",
+   "empatia": "Poca expresión emocional explícita; predominan los enunciados neutros.",
+   "percepcion_social": "Voz de buen volumen y tono grave para su sexo; articulación ágil.",
+   "integracion": "Su conducta social se basa en la coordinación y la atención a lo que hacen las demás, más que en la expresión afectiva; funciona como articuladora del grupo.",
+   "sugerencias": [
+    "Reconocer su rol de coordinación y aprovecharlo en dinámicas colaborativas.",
+    "En actividades de empatía, invitarla a expresar cómo se siente o cómo cree que se sienten otras personas."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo2|P05": {
+   "perfil": "Participante femenina de participación breve y práctica, centrada en la ejecución de la tarea.",
+   "sintesis": "Interviene poco y con frases muy cortas, generalmente indicaciones concretas sobre la construcción. Se conecta bien con lo inmediato de la conversación y se dirige directamente a sus compañeras, con un tono afectivo neutro.",
+   "conducta_social": "Pocos turnos, sin interrumpir; sus aportes responden a lo que se está haciendo. Pide aclaraciones con cierta frecuencia.",
+   "teoria_mente": "Se dirige con frecuencia a su interlocutora y habla en plural; verbaliza pocos estados mentales.",
+   "empatia": "Expresión afectiva escasa; casi todos sus enunciados son neutros.",
+   "percepcion_social": "Voz con inestabilidad marcada en intensidad y tono y menos clara, de buen volumen; articulación muy rápida.",
+   "integracion": "Colabora de manera concreta en la tarea, pero sin elaborar ideas ni compartir vivencias, lo que deja poco visible su dimensión afectiva.",
+   "sugerencias": [
+    "Usar preguntas abiertas que la inviten a explicar o a contar experiencias personales.",
+    "Observar la inestabilidad de la voz en próximas sesiones."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo2|P06": {
+   "perfil": "Participante femenina centrada en la ejecución, con frecuentes dudas y lenguaje simple.",
+   "sintesis": "Participa sobre todo durante la construcción, con frases cortas, repeticiones y preguntas sobre dónde ubicar las piezas. Pide aclaraciones con mucha frecuencia y su vocabulario es poco variado.",
+   "conducta_social": "Turnos breves, a menudo superpuestos con otras voces; sigue lo que se conversa y solicita aclaraciones con mucha frecuencia.",
+   "teoria_mente": "Casi no habla de sí misma ni verbaliza estados mentales; se dirige a su interlocutora sobre aspectos concretos de la tarea.",
+   "empatia": "Usa palabras con carga emocional, pero el tono global de sus enunciados es neutro.",
+   "percepcion_social": "Voz con inestabilidad en tono e intensidad y menos clara; articulación muy rápida.",
+   "integracion": "Se mantiene involucrada en la tarea, aunque la necesidad constante de confirmación y el lenguaje poco elaborado limitan su aporte a la interacción.",
+   "sugerencias": [
+    "Verificar la comprensión de las instrucciones y entregarlas de forma simple y por pasos.",
+    "Considerar una exploración de funciones cognitivas (comprensión, planificación) si las dudas frecuentes se mantienen en otras sesiones."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo2|P12": {
+   "perfil": "Participante femenina de participación escasa, pertinente y colaborativa.",
+   "sintesis": "Habla poco, pero sus aportes están muy conectados con lo que se conversa y orientados al trabajo en conjunto («entre todos tenemos que hacerlo»). Propone ideas de forma tentativa.",
+   "conducta_social": "Muy pocos turnos y baja presencia, sin interrumpir; cuando interviene, se ajusta al tema en curso.",
+   "teoria_mente": "Se expresa sobre todo en plural y usa verbos de sentir y de querer; casi no se dirige a una interlocutora en particular.",
+   "empatia": "Expresiones afectivas con predominio negativo y una voz de alta activación emocional.",
+   "percepcion_social": "Voz de volumen muy alto, menos clara y con inestabilidad, de entonación activada.",
+   "integracion": "Tiene una disposición claramente colaborativa y atenta al grupo, pero su baja iniciativa hace que su aporte sea poco visible.",
+   "sugerencias": [
+    "Darle espacio explícito e invitarla a desarrollar las ideas que propone.",
+    "Reforzar sus aportes colaborativos para favorecer una mayor participación."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo3|P01": {
+   "perfil": "Participante femenina de participación escasa, reflexiva y con baja energía expresiva.",
+   "sintesis": "Interviene poco, pero cuando lo hace explica razonamientos («¿sabe qué es lo que pasa?») y muestra preocupación por el aislamiento de niñas y niños. Habla con poco volumen y con una entonación restringida.",
+   "conducta_social": "Muy pocos turnos, a menudo superpuestos con otras voces; habla en plural y se dirige poco a una interlocutora en particular.",
+   "teoria_mente": "Verbaliza estados mentales con mucha frecuencia (pensar, saber, sentir, querer): muestra capacidad para razonar sobre lo que otros piensan o necesitan.",
+   "empatia": "Poco vocabulario emocional explícito, aunque el contenido de lo que dice refleja preocupación por el bienestar de otras personas.",
+   "percepcion_social": "Voz de volumen muy bajo y rango tonal reducido, con baja activación emocional, tanto en la voz como en el discurso.",
+   "integracion": "Tiene buena capacidad de mentalización y una sensibilidad hacia otras personas que se expresa poco en la interacción, en parte por su baja energía vocal y su escasa iniciativa.",
+   "sugerencias": [
+    "Ubicarla cerca de quien conduce y del micrófono, e invitarla a explicar sus ideas.",
+    "Observar el nivel de energía y el estado de ánimo, dada la baja activación en la voz y el discurso."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo3|P03": {
+   "perfil": "Participante femenina reflexiva, con discurso elaborado y marcada preocupación empática por otras personas.",
+   "sintesis": "Reflexiona sobre el valor de conocer a los vecinos para apoyarse en caso de enfermedad o soledad, y sobre las personas mayores que viven solas. Su discurso es rico y elaborado, con un ritmo pausado.",
+   "conducta_social": "Pocos turnos pero extensos; se dirige con frecuencia a su interlocutora y en ocasiones interrumpe. Mantiene conexión con el tema y con los contenidos de la actividad.",
+   "teoria_mente": "Verbaliza estados mentales con mucha frecuencia y adopta la perspectiva de otras personas (vecinos, adultos mayores solos), con un vocabulario muy variado.",
+   "empatia": "Expresa preocupación por el sufrimiento y la vulnerabilidad ajena; el tono de sus enunciados incluye contenidos negativos ligados a la enfermedad y el aislamiento.",
+   "percepcion_social": "Entonación con buen rango y valencia emocional baja en la voz; habla y articula de forma lenta.",
+   "integracion": "Su capacidad de toma de perspectiva y su empatía se traducen en una conducta social orientada al cuidado mutuo y al valor de compartir.",
+   "sugerencias": [
+    "Aprovechar su capacidad reflexiva en dinámicas de empatía y de toma de perspectiva.",
+    "Explorar si las preocupaciones sobre enfermedad y soledad que expresa forman parte de su propia vivencia."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo3|P04": {
+   "perfil": "Participante masculino orientado al consenso, deferente y de lenguaje repetitivo.",
+   "sintesis": "Insiste en que el grupo debe ponerse de acuerdo y delega la decisión en las demás («yo estoy a lo que decidan ustedes»). Se dirige directamente a sus compañeras, con un tono afectivo neutro a positivo.",
+   "conducta_social": "Participación intermedia, con muchas señales de escucha; habla a menudo en simultáneo con otros y es interrumpido con frecuencia. Sus intervenciones están conectadas con lo que se conversa.",
+   "teoria_mente": "Se dirige con mucha frecuencia a sus interlocutoras y se refiere a terceros; su vocabulario es poco variado y repetitivo.",
+   "empatia": "Poco vocabulario emocional; predominan los enunciados neutros, con un balance positivo.",
+   "percepcion_social": "Voz con energía variable y buen rango tonal.",
+   "integracion": "Prioriza la armonía y el acuerdo del grupo por sobre su propia opinión: es cooperativo, pero con poca afirmación personal.",
+   "sugerencias": [
+    "Estimular que exprese y fundamente su propia preferencia antes de sumarse a la del grupo.",
+    "Observar la variedad del vocabulario en tareas que requieran describir o explicar."
+   ],
+   "calidad": ""
+  },
+  "sesion2_grupo3|P11": {
+   "perfil": "Participante femenina participativa y organizadora, con discurso culto y orientado a lo cognitivo.",
+   "sintesis": "Coordina la construcción proponiendo cómo avanzar («tenemos que pensar…») y relata con detalle películas e historias de injusticia social. Se dirige a sus interlocutoras y muestra señales de escucha, con un tono positivo.",
+   "conducta_social": "Muchos enunciados y señales de escucha; casi no es interrumpida. Mantiene una conexión adecuada con la conversación.",
+   "teoria_mente": "Usa con frecuencia verbos de pensar y saber y se dirige a otras personas; habla poco de sí misma. Su vocabulario es muy amplio.",
+   "empatia": "Tono positivo, pero con pocas referencias a sentimientos propios; su sensibilidad se expresa a través de relatos sobre injusticias vividas por otras personas.",
+   "percepcion_social": "Voz clara y estable, de tono agudo para su sexo, con entonación poco variada.",
+   "integracion": "Sus recursos cognitivos y su orientación al interlocutor sostienen un rol organizador; la expresión de afectos propios es el aspecto menos presente.",
+   "sugerencias": [
+    "Aprovechar su rol organizador en tareas colaborativas.",
+    "En actividades de empatía, invitarla a hablar de cómo se siente ella frente a las situaciones que relata."
+   ],
+   "calidad": "Perfil de voz provisional: la atribución de su habla es menos segura."
+  },
+  "sesion2_grupo3|P16": {
+   "perfil": "Participante femenina activa en la tarea, con voz expresiva y distancia respecto de su entorno vecinal.",
+   "sintesis": "Participa en la construcción pensando en espacios para niñas y niños, y expresa que no comparte con sus vecinos y que en su entorno hay inseguridad. Su voz es expresiva y animada, aunque su discurso tiene poca carga emocional explícita.",
+   "conducta_social": "Participación intermedia, a menudo superpuesta con otras voces; se mantiene conectada con lo que se conversa.",
+   "teoria_mente": "Usa verbos de sentir y de querer; habla poco en términos de grupo o de terceros, y su vocabulario es poco variado.",
+   "empatia": "Poco vocabulario emocional, aunque sus propuestas muestran consideración por las necesidades de los niños.",
+   "percepcion_social": "Voz de tono muy agudo para su sexo, con entonación variada y alta activación emocional; articulación ágil.",
+   "integracion": "Se involucra con energía en la tarea, pero refiere distancia con su red vecinal, lo que puede indicar un apoyo social cotidiano limitado.",
+   "sugerencias": [
+    "Explorar su red de apoyo social y su percepción de seguridad en el barrio.",
+    "Favorecer vínculos dentro del grupo con tareas en parejas."
+   ],
+   "calidad": ""
+  },
+  "sesion3_grupo1|P13": {
+   "perfil": "Participante femenina muy activa en la tarea, de expresión positiva y con un fuerte sentido de lo colectivo.",
+   "sintesis": "Aporta ideas concretas a la escena de celebración que construye el grupo y comparte costumbres y cábalas de fin de año aprendidas en su familia. Interviene con frecuencia, a menudo sobre la palabra de otros, y con un tono afectivo predominantemente positivo.",
+   "conducta_social": "Participación intermedia en cantidad pero muy dinámica: superpone su habla e interrumpe con frecuencia, y pide aclaraciones a menudo, lo que muestra interés por seguir la conversación aunque reduce los espacios de los demás.",
+   "teoria_mente": "Habla en términos de grupo más que de sí misma, pero casi no verbaliza estados mentales propios ni ajenos; su discurso se centra en lo concreto de la tarea.",
+   "empatia": "Vocabulario emocional de predominio claramente positivo, con escasa expresión de emociones negativas; evoca con afecto recuerdos familiares.",
+   "percepcion_social": "Voz potente y de entonación muy variada, con valencia emocional positiva y articulación ágil; se observa cierta inestabilidad en el tono de la voz.",
+   "integracion": "Su orientación al grupo y su afecto positivo favorecen el clima de la actividad; la escasa verbalización de estados mentales y las interrupciones frecuentes limitan la reciprocidad y la toma de perspectiva en el intercambio.",
+   "sugerencias": [
+    "Invitarla a nombrar lo que sienten o piensan las personas de los recuerdos que comparte.",
+    "Acordar turnos de palabra para que su energía no desplace a participantes más reservados.",
+    "Valorar la inestabilidad del tono de voz si se repite en otras sesiones."
+   ],
+   "calidad": "Micrófono Zoom H2essential: la grabación se interrumpió hacia la mitad de la sesión, por lo que solo se analiza la primera parte."
+  },
+  "sesion3_grupo1|P17": {
+   "perfil": "Participante masculino de incorporación reciente, reservado, que se abre a través de recuerdos de infancia.",
+   "sintesis": "Interviene poco y casi siempre en respuesta a las preguntas del moderador. Relata su escolaridad en una escuela rural de dos salas y recuerdos familiares de Navidad y Año Nuevo, como el pan que hacía su madre, con un tono afectivo positivo.",
+   "conducta_social": "Baja participación y pocos turnos, aunque cuando habla elabora enunciados largos; sus aportes se conectan poco con lo que se venía conversando y casi no interrumpe ni es interrumpido.",
+   "teoria_mente": "Discurso autobiográfico, con referencias a sí mismo y también al grupo; verbaliza pocos estados mentales de forma explícita.",
+   "empatia": "Vocabulario emocional relativamente abundante y de tono marcadamente positivo, ligado a la familia y a la infancia.",
+   "percepcion_social": "Voz de rango tonal muy amplio y entonación variada, con volumen alto pero poca variación de energía; articulación pausada y baja activación emocional en el discurso.",
+   "integracion": "Su afecto positivo y la riqueza de sus recuerdos son un buen punto de partida para vincularse; su participación dependiente de las preguntas y la escasa conexión con lo que dicen los demás sugieren una integración aún inicial al grupo.",
+   "sugerencias": [
+    "Facilitar su integración como participante nuevo con preguntas abiertas sobre sus recuerdos y espacios de intercambio en parejas.",
+    "Animarlo a responder o comentar lo que relatan sus compañeros, no solo al moderador."
+   ],
+   "calidad": "Micrófono Zoom H2essential: la grabación se interrumpió hacia la mitad de la sesión, por lo que solo se analiza la primera parte."
+  },
+  "sesion3_grupo2|P01": {
+   "perfil": "Participante femenina con alta presencia en la conversación y expresión emocional abundante y positiva.",
+   "sintesis": "Es la voz de participante más presente del grupo: comenta la construcción de la escena, pregunta por los elementos que se van agregando y participa en el intercambio de recuerdos. Su discurso es breve y reiterativo, con abundante vocabulario afectivo de tono positivo.",
+   "conducta_social": "Participación alta, con intervenciones conectadas con lo que se viene conversando y frecuentes pedidos de aclaración; es interrumpida a menudo y casi no interrumpe a otros.",
+   "teoria_mente": "Verbaliza con frecuencia estados mentales, sobre todo de sentir y de querer, aunque con enunciados cortos y poco elaborados; habla poco desde sí misma.",
+   "empatia": "Vocabulario emocional muy abundante, predominantemente positivo, con algunas expresiones negativas; el tono general de sus intervenciones es cálido.",
+   "percepcion_social": "Entonación variada y de rango amplio, con poca variación de energía; su discurso tiene alta activación emocional, mientras que el sonido de su voz transmite una valencia más baja.",
+   "integracion": "Su disposición a preguntar y a expresar emociones sostiene su participación; la escasa elaboración de sus enunciados limita el desarrollo de perspectivas propias y ajenas.",
+   "sugerencias": [
+    "Invitarla a desarrollar sus aportes con preguntas abiertas («¿qué recuerdo le trae?», «¿cómo se sintió?»).",
+    "Contrastar esta descripción con la observación directa, dada la limitación de los datos de esta sesión."
+   ],
+   "calidad": "Micrófono Jabra. Su voz quedó mezclada con la de la encargada del grupo en la separación automática: parte del habla atribuida puede no ser suya."
+  },
+  "sesion3_grupo2|P07": {
+   "perfil": "Participante femenina de participación breve, centrada en la evocación de tradiciones.",
+   "sintesis": "Interviene poco, sobre todo en respuesta al moderador, con aportes concretos a la escena (platos, regalos) y el recuerdo de tradiciones de fiestas de antaño, como pintar las casas y estrenar ropa.",
+   "conducta_social": "Pocos turnos y enunciados breves, con vocabulario poco variado; habla a menudo superpuesta con otras voces y es interrumpida con frecuencia; sus aportes se conectan poco con el tema en curso.",
+   "teoria_mente": "Casi no se refiere a sí misma ni al grupo; verbaliza pocos estados mentales y su discurso se centra en hechos y objetos.",
+   "empatia": "Expresión emocional moderada y equilibrada, con predominio de enunciados neutros.",
+   "percepcion_social": "Voz de tono grave para su sexo, con poca variación de energía y articulación pausada; el sonido de su voz muestra alta activación, mientras que su discurso es de baja activación emocional.",
+   "integracion": "Participa desde lo concreto y la memoria de tradiciones compartidas; la brevedad de sus aportes y la frecuencia con que es interrumpida limitan su espacio en el grupo.",
+   "sugerencias": [
+    "Darle turnos protegidos para que desarrolle sus recuerdos sin superposiciones.",
+    "Explorar con preguntas qué significaban para ella esas tradiciones, para favorecer la expresión de estados internos."
+   ],
+   "calidad": "Micrófono Jabra."
+  },
+  "sesion3_grupo2|P08": {
+   "perfil": "Participante femenina de narrativa autobiográfica extensa y emotiva, con tono muy positivo.",
+   "sintesis": "Relata con detalle una celebración familiar con su hija, sus hermanos y cuñados, y expresa cómo se sintió («me sentí muy bonito, emocionante»). Sus intervenciones son largas y se centran en su propia historia.",
+   "conducta_social": "Pocos turnos, pero de enunciados largos; no se superpone ni interrumpe, y menciona los temas centrales de la actividad, aunque sus relatos se conectan poco con el turno anterior.",
+   "teoria_mente": "Discurso marcadamente autorreferencial, con abundantes verbos de sentir; nombra sus propios estados emocionales con claridad.",
+   "empatia": "Vocabulario emocional abundante y de tono muy positivo, ligado a la familia y al encuentro.",
+   "percepcion_social": "Voz clara y estable, de tono algo grave para su sexo, con poca variación melódica y baja activación en el sonido de la voz.",
+   "integracion": "Su capacidad para nombrar lo que siente enriquece el clima del grupo; el foco en la propia historia y la escasa conexión con lo que dicen los demás reducen la reciprocidad.",
+   "sugerencias": [
+    "Aprovechar su facilidad para nombrar emociones invitándola a preguntar a otros cómo vivieron esas fechas.",
+    "Promover que retome o comente los relatos de sus compañeros."
+   ],
+   "calidad": "Micrófono Jabra."
+  },
+  "sesion3_grupo2|P10": {
+   "perfil": "Participante masculino de enunciados elaborados, atento al interlocutor y con mirada nostálgica sobre su barrio.",
+   "sintesis": "Recuerda competencias y celebraciones de su barrio que hoy ya no se hacen, y matiza su opinión reconociendo que lo que a él le parece bonito puede no serlo para todos. Interviene con enunciados largos y hace preguntas a sus compañeros.",
+   "conducta_social": "Pocos turnos pero extensos, con vocabulario de variedad intermedia; interrumpe con cierta frecuencia y pide aclaraciones a menudo.",
+   "teoria_mente": "Se refiere con frecuencia al interlocutor y a terceros, y usa verbos de sentir y de querer; reconoce que otros pueden ver las cosas de otro modo.",
+   "empatia": "Vocabulario emocional de predominio positivo, con nostalgia por costumbres perdidas.",
+   "percepcion_social": "Voz con perturbación marcada y baja claridad armónica, de entonación poco variada y articulación ágil.",
+   "integracion": "Su atención al interlocutor y su capacidad de reconocer perspectivas distintas favorecen el intercambio; las interrupciones pueden restar espacio a los demás.",
+   "sugerencias": [
+    "Valorar las características de su voz (ronquera o fatiga vocal) si se mantienen en otras sesiones.",
+    "Aprovechar su interés por los demás para que formule preguntas a compañeros más reservados."
+   ],
+   "calidad": "Micrófono Jabra."
+  },
+  "sesion3_grupo4|P04": {
+   "perfil": "Participante masculino activo y coordinador, centrado en la construcción conjunta de la escena.",
+   "sintesis": "Participa de forma sostenida durante la construcción de la casa (muros, puerta, ventanas), orientando la tarea con indicaciones prácticas y comentarios sobre cómo ubicar las piezas.",
+   "conducta_social": "Toma turnos con frecuencia y acompaña mucho a los demás con señales breves de escucha; sus aportes se conectan muy bien con lo que se viene diciendo, aunque menciona poco los conceptos centrales de la actividad. Habla con rapidez, a menudo superpuesto con otras voces; casi no interrumpe, pero sí es interrumpido con frecuencia, y pide aclaraciones a menudo.",
+   "teoria_mente": "Habla sobre todo desde el «nosotros», ubicándose como parte del grupo; usa con frecuencia verbos de pensar y saber, lo que muestra que expresa lo que cree o evalúa sobre la tarea, aunque sus referencias a estados emocionales son escasas.",
+   "empatia": "Usa muy poco vocabulario emocional explícito; el contenido afectivo de sus enunciados es equilibrado, sin predominio de tono positivo ni negativo.",
+   "percepcion_social": "Voz con mucha variación de energía y amplio rango tonal, de articulación rápida; el sonido de su voz transmite un tono agradable y su discurso es de alta activación emocional, aunque la voz es poco clara en el registro.",
+   "integracion": "Se integra desde el hacer y la coordinación del trabajo común: sigue el hilo de la conversación, se piensa como parte del grupo y sostiene la tarea, con una expresión emocional verbal reducida.",
+   "sugerencias": [
+    "Invitarlo a poner en palabras lo que siente o recuerda ante la escena que construye, para complementar su aporte práctico.",
+    "Aprovechar su rol coordinador dándole tareas de organización, cuidando que no quede superpuesto con otras voces."
+   ],
+   "calidad": "Micrófono Jabra. Los grupos 4 y 5 se grabaron a la vez en la misma sala, por lo que se oyen voces del otro grupo de fondo; un tercio del habla de la sesión no se pudo atribuir a nadie."
+  },
+  "sesion3_grupo4|P16": {
+   "perfil": "Participante femenina descriptiva y de tono afectivo positivo, centrada en la escena navideña y en la familia.",
+   "sintesis": "Describe la escena con detalle (los niños que miran el árbol de Navidad por la ventana, el niño en silla de ruedas, los regalos) y en el cierre relata el sentido de la historia: la Navidad como momento para reunir a la familia y que los niños disfruten.",
+   "conducta_social": "Participación moderada, con enunciados de extensión media y vocabulario poco variado; sus aportes siguen el tema de la conversación. Habla con rapidez y a menudo superpuesta con otras voces, interrumpe poco y casi no pide aclaraciones.",
+   "teoria_mente": "Se refiere poco a sí misma y a sus interlocutores, y mucho a terceros: habla de lo que hacen y miran los personajes de la escena. Verbaliza pocos estados mentales propios.",
+   "empatia": "Discurso con predominio de emoción positiva, casi sin emoción negativa y con un vocabulario de tono muy agradable; expresa deseos de unión familiar y bienestar para los niños.",
+   "percepcion_social": "Voz clara, de volumen alto y tono agudo para su sexo, con articulación rápida y alta activación en el sonido de la voz; su rango tonal es acotado.",
+   "integracion": "Se integra aportando la dimensión narrativa y afectiva de la escena: pone la mirada en los personajes y en lo que viven, y transmite un clima cálido, aunque con poca referencia a su propia experiencia.",
+   "sugerencias": [
+    "Invitarla a conectar la escena con sus propios recuerdos de Navidad, para favorecer la referencia a sí misma y a sus estados internos.",
+    "Valorar su rol de narradora en los cierres grupales."
+   ],
+   "calidad": "Micrófono Jabra. Los grupos 4 y 5 se grabaron a la vez en la misma sala, por lo que se oyen voces del otro grupo de fondo; un tercio del habla de la sesión no se pudo atribuir a nadie."
+  },
+  "sesion3_grupo5|P11": {
+   "perfil": "Participante femenina muy participativa y narrativa, que lleva la conversación hacia su historia personal y familiar.",
+   "sintesis": "Contribuye a construir la escena (un cumpleaños de gemelos con torta, regalos, juegos y animales) y, sobre todo, comparte extensamente recuerdos y vivencias: su padre y su devoción religiosa, las tareas de las hermanas en casa, la crianza de su hijo, los roles de hombres y mujeres en su familia y el cuidado actual de una herida.",
+   "conducta_social": "Es la voz más presente del grupo, con muchos enunciados largos y vocabulario muy variado, y nombra con frecuencia los conceptos centrales de la actividad. Sus aportes se conectan poco con lo que se acaba de decir: tiende a abrir sus propios temas. Habla de forma pausada, casi sin superponerse con otras voces, aunque interrumpe a otros con cierta frecuencia.",
+   "teoria_mente": "Se ubica a menudo en el «nosotros» del grupo y verbaliza con frecuencia lo que siente; su relato da cuenta de las expectativas y modos de pensar de su familia y de cómo la marcaron.",
+   "empatia": "Discurso con mucho vocabulario emocional y alta activación afectiva, con una proporción alta de enunciados de tono negativo, coherente con los recuerdos difíciles y las preocupaciones que relata.",
+   "percepcion_social": "Voz clara, estable y de volumen alto, con tono algo agudo para su sexo, poca variación melódica y articulación lenta.",
+   "integracion": "Se integra desde la narración de su experiencia, que da profundidad emocional a la sesión; su protagonismo y su tendencia a abrir temas propios dejan menos espacio a los demás.",
+   "sugerencias": [
+    "Acoger sus relatos y ayudarla a vincularlos con lo que plantean los demás, por ejemplo preguntándole qué le parece la experiencia del compañero.",
+    "Equilibrar los turnos para que su protagonismo no limite la participación del resto.",
+    "Dar seguimiento a los contenidos de carga negativa que aparecen (preocupaciones de salud y familiares)."
+   ],
+   "calidad": "Micrófono Jabra. Los grupos 4 y 5 se grabaron a la vez en la misma sala, por lo que se oyen voces del otro grupo de fondo. Su perfil de voz es provisional."
+  },
+  "sesion3_grupo5|P18": {
+   "perfil": "Participante masculino de intervenciones breves, que participa sobre todo preguntando y acompañando a los demás.",
+   "sintesis": "Sus aportes son cortos: indicaciones durante la construcción y, en la conversación sobre recuerdos, preguntas a la compañera sobre lo que relata («¿Y por qué le quedó ese recuerdo?», «¿Eso fue porque se quemó?»).",
+   "conducta_social": "Habla poco y con enunciados muy breves, con pocos turnos; acompaña mucho con señales breves de escucha. Habla a menudo superpuesto con otras voces y es interrumpido con frecuencia.",
+   "teoria_mente": "Se dirige con frecuencia al interlocutor y usa verbos de pensar y saber; sus preguntas muestran interés por comprender la experiencia y las razones de la otra persona.",
+   "empatia": "Pese a hablar poco, usa una proporción alta de vocabulario emocional, con predominio claro de tono positivo y casi sin enunciados negativos.",
+   "percepcion_social": "Voz con amplio rango tonal y bastante variación melódica, tono algo agudo para su sexo y volumen bajo; la voz es poco clara en el registro.",
+   "integracion": "Se integra desde la escucha y la pregunta, sosteniendo el relato de los demás más que aportando el propio.",
+   "sugerencias": [
+    "Invitarlo a compartir su propia experiencia, ya que muestra disposición a interesarse por la de otros.",
+    "Protegerle el turno para que sus intervenciones no queden superpuestas o interrumpidas."
+   ],
+   "calidad": "Micrófono Jabra. Los grupos 4 y 5 se grabaron a la vez en la misma sala, por lo que se oyen voces del otro grupo de fondo. Participación breve; su voz se identificó al oído (no tenía perfil previo) y el tramo asignado incluye algo de la voz de un moderador."
+  }
+ },
+ "grupos": {
+  "sesion1_grupo1": {
+   "perfil": "Grupo conversador y cohesionado, con relatos personales extensos y abundante intercambio entre participantes.",
+   "sintesis": "Cada participante construyó algo que le gusta y luego lo compartió. La actividad derivó en una conversación espontánea sobre mascotas, nietos e historias familiares, en la que las participantes hablaron entre ellas mucho más que con el equipo.",
+   "dinamica": "Interacción horizontal y fluida: más de la mitad de los cambios de turno fueron de participante a participante, con poca necesidad de mediación del equipo. Hubo momentos de habla simultánea, propios de una conversación animada.",
+   "participacion": "Tres participantes sostuvieron la conversación de forma equilibrada ({P11}, {P08}, {P05}); {P02} prácticamente no intervino.",
+   "clima": "Clima cálido y de confianza, con relatos íntimos (pérdidas, enfermedad, vínculos con los animales) que el grupo acogió. Coexistieron humor y contenidos de tristeza.",
+   "logro": "Se cumplió el objetivo de compartir lo construido y el porqué; la conversación se expandió más allá de la consigna hacia la vida personal.",
+   "sugerencias": [
+    "Incluir activamente a quien no participa, con preguntas directas o un turno asignado.",
+    "Aprovechar la confianza del grupo para actividades de empatía, cuidando el espacio de quien trae temas de duelo."
+   ]
+  },
+  "sesion1_grupo2": {
+   "perfil": "Grupo conversador, con una voz dominante y participación desigual.",
+   "sintesis": "Las participantes construyeron de forma individual y comentaron sus piezas, sus dificultades con la tarea y luego sus intereses (viajes, familia, animales). La conversación fue fluida entre participantes, pero se concentró en dos de ellas.",
+   "dinamica": "Predominó el intercambio entre participantes, con baja mediación del equipo y poco solapamiento. Hubo momentos de dificultad con la tarea que se resolvieron en conjunto.",
+   "participacion": "{P07} concentró la mitad del habla de las participantes y {P13} buena parte del resto; {P10} participó muy poco y {P12} no se escuchó.",
+   "clima": "Clima distendido y positivo, con algunos contenidos de temor y de preocupación por el maltrato animal.",
+   "logro": "Se completaron las construcciones individuales y se compartieron experiencias personales, aunque no todas las voces tuvieron el mismo espacio.",
+   "sugerencias": [
+    "Equilibrar los turnos para dar espacio a quienes participan menos.",
+    "Hacer preguntas dirigidas a los participantes más callados al momento de explicar sus construcciones."
+   ]
+  },
+  "sesion1_grupo4": {
+   "perfil": "Grupo guiado por el equipo, con participación más reactiva que espontánea.",
+   "sintesis": "El equipo condujo buena parte de la sesión con preguntas sobre lo que cada persona construía (animales, juegos, la parcela). Las participantes respondieron y relataron experiencias, pero conversaron poco entre ellas.",
+   "dinamica": "Interacción radial, centrada en el equipo: la mayoría de los turnos fueron del equipo hacia una participante y de vuelta; el intercambio directo entre participantes fue bajo.",
+   "participacion": "{P04} y {P03} se repartieron la mayor parte del habla; {P14} participó en menor medida.",
+   "clima": "Clima amable y tranquilo, con anécdotas y algo de humor; la expresión emocional fue moderada.",
+   "logro": "Se cumplió la construcción y su explicación individual, con poca construcción de conversación grupal.",
+   "sugerencias": [
+    "Proponer consignas que obliguen a interactuar entre participantes (preguntarse, comentar la construcción de otra persona).",
+    "Reducir progresivamente la mediación del equipo para observar la iniciativa social espontánea."
+   ]
+  },
+  "sesion2_grupo1": {
+   "perfil": "Grupo colaborativo con un liderazgo claro, que llegó a acuerdos y construyó en conjunto.",
+   "sintesis": "El grupo debía elegir y construir una obra común: optó por un puente resistente a la lluvia y lo planificó en conjunto. Luego la conversación se abrió a la historia local, la educación y la experiencia de envejecer.",
+   "dinamica": "Combinó intercambio entre participantes y mediación del equipo en proporciones similares; el equipo tuvo una presencia importante en la segunda mitad. Hubo poco solapamiento: los turnos se respetaron.",
+   "participacion": "{P11} lideró la planificación y la conversación; {P13} y {P10} participaron de forma regular. {P15} estuvo presente, pero no se escuchó su voz.",
+   "clima": "Clima respetuoso y reflexivo, con espacios para compartir vivencias sobre la edad y el sentido de la familia.",
+   "logro": "Llegaron a un acuerdo explícito sobre qué construir, considerando la opinión de todas («respetamos que a ella no le haya gustado»), y terminaron la obra común.",
+   "sugerencias": [
+    "Distribuir roles en la planificación para que el liderazgo no recaiga en una sola persona.",
+    "Retomar los temas de envejecimiento que surgieron, en una actividad de empatía."
+   ]
+  },
+  "sesion2_grupo2": {
+   "perfil": "Grupo orientado a la tarea, que construyó en conjunto bajo la coordinación de una participante.",
+   "sintesis": "El grupo eligió construir una casa comunitaria y trabajó de forma práctica y sostenida en ella (patio, jardín, escaleras, flores). La conversación giró casi por completo en torno a la construcción.",
+   "dinamica": "Intercambio entre participantes con apoyo frecuente del equipo, que facilitó piezas e indicaciones. Poco solapamiento; muchas preguntas sobre dónde ubicar cada pieza.",
+   "participacion": "{P02} coordinó y concentró más de la mitad del habla de las participantes; {P05} y {P06} aportaron intervenciones breves y prácticas, y {P12} participó poco. {P09} estuvo presente con escasa expresión verbal.",
+   "clima": "Clima tranquilo y colaborativo, con poca expresión emocional explícita.",
+   "logro": "Acordaron qué construir y lo completaron en conjunto; la toma de decisiones se apoyó en la coordinadora.",
+   "sugerencias": [
+    "Incorporar momentos de conversación sobre el significado de lo construido, no solo sobre la ejecución.",
+    "Dar turnos explícitos a quienes participan menos para que propongan ideas."
+   ]
+  },
+  "sesion2_grupo3": {
+   "perfil": "Grupo sincronizado y participativo, que buscó el consenso y construyó con rapidez.",
+   "sintesis": "El grupo discutió entre varias opciones (casa, puente, refugio) hasta acordar una casa comunitaria y la construyó de forma coordinada, pensando en espacios para niñas y niños. Luego reflexionaron sobre la vida en comunidad, el apoyo entre vecinos y la soledad de las personas mayores.",
+   "dinamica": "Interacción horizontal: casi la mitad de los cambios de turno fueron entre participantes. Hubo bastante habla simultánea durante la construcción, propia del trabajo en equipo.",
+   "participacion": "Participación más repartida que en otros grupos: {P11} fue la voz más presente, seguida de {P03}, {P04}, {P16} y {P01}. {P14} estuvo presente, pero no se escuchó su voz.",
+   "clima": "Clima cooperativo y empático, con preocupación por el bienestar de otros y por la seguridad del entorno.",
+   "logro": "Llegaron a un acuerdo tras una negociación explícita («los cinco tenemos que estar de acuerdo») y completaron la obra con rapidez; el equipo destacó su sincronía.",
+   "sugerencias": [
+    "Aprovechar la buena cohesión para actividades más complejas de toma de perspectiva.",
+    "Invitar a quienes delegan las decisiones a expresar su preferencia antes de sumarse a la del grupo."
+   ]
+  },
+  "sesion3_grupo1": {
+   "perfil": "Grupo cálido y evocador, conducido principalmente por el equipo y con poco intercambio directo entre participantes.",
+   "sintesis": "El grupo representó una celebración familiar de fin de año, con detalles como la mesa servida y la familia que llega atrasada, mientras compartía tradiciones, cábalas y recuerdos de Navidad, Año Nuevo y cumpleaños. El cierre invitó a reflexionar sobre los sentimientos que despiertan estas fechas.",
+   "dinamica": "Interacción centrada en el equipo y en la acompañante, que llevaron gran parte de la conversación; los participantes respondieron sobre todo al equipo y casi no se dirigieron entre ellos.",
+   "participacion": "{P13} fue la voz más presente y activa en la tarea; {P17}, que se incorporaba al grupo, participó menos y principalmente con recuerdos de infancia. {P09} estuvo presente, pero no se escuchó su voz en la parte grabada.",
+   "clima": "Clima afectuoso y nostálgico, de tono positivo, con recuerdos familiares compartidos con gusto.",
+   "logro": "Completaron la representación de la celebración y la usaron como punto de partida para traer al presente recuerdos significativos de cada uno.",
+   "sugerencias": [
+    "Proponer consignas que obliguen a los participantes a dirigirse entre sí (comentar o preguntar sobre el recuerdo del otro).",
+    "Moderar la participación de la acompañante para dejar más espacio a los participantes.",
+    "Buscar formas de expresión no verbal o preguntas directas para incluir a {P09}."
+   ]
+  },
+  "sesion3_grupo2": {
+   "perfil": "Grupo participativo, con intercambio real entre participantes y evocación de tradiciones festivas.",
+   "sintesis": "El grupo armó una escena de celebración (un cumpleaños inclusivo con regalos y la llegada del Año Nuevo) y luego compartió recuerdos de fiestas de antes: desfiles, casas pintadas, ropa nueva y reuniones familiares. El cierre invitó a traer al presente los recuerdos significativos que despiertan estas fechas.",
+   "dinamica": "Los participantes ocuparon la mayor parte de la conversación y una parte relevante de los cambios de turno fue directamente entre ellos, además de las respuestas al equipo.",
+   "participacion": "{P01} fue la voz más presente, seguida de {P10}, {P08} y {P07}, con un reparto relativamente equilibrado entre los tres últimos.",
+   "clima": "Clima cálido y nostálgico, de tono positivo, con relatos familiares cargados de emoción.",
+   "logro": "Completaron la escena y la usaron para compartir recuerdos personales; aparecieron reflexiones sobre costumbres que se han perdido.",
+   "sugerencias": [
+    "Aprovechar el intercambio entre participantes con consignas que pidan comparar las tradiciones de cada uno.",
+    "Dar turnos protegidos a quienes son interrumpidos con frecuencia."
+   ]
+  },
+  "sesion3_grupo4": {
+   "perfil": "Grupo pequeño de trabajo colaborativo, con alta presencia del equipo y una escena navideña centrada en la familia.",
+   "sintesis": "El grupo construyó una casa navideña con niños, un árbol de Navidad, regalos y animales, e incluyó a un niño en silla de ruedas. En el cierre contaron la historia como una celebración para reunir a toda la familia y que los niños disfrutaran.",
+   "dinamica": "El equipo ocupó una parte importante de la conversación y la mayoría de los cambios de turno fueron entre el equipo y los participantes, aunque hubo también un intercambio directo entre ellos. Se habló a menudo con voces superpuestas.",
+   "participacion": "{P04} y {P16} se repartieron la participación de forma equilibrada: {P04} más en la construcción y coordinación de la tarea, {P16} más en la descripción y el relato de la escena. No se captó la voz de {P14}.",
+   "clima": "Clima colaborativo y cálido, de tono positivo, con foco en la familia y los niños.",
+   "logro": "Completaron la escena y la convirtieron en una historia compartida con un sentido familiar e inclusivo.",
+   "sugerencias": [
+    "Abrir espacios con menos intervención del equipo para que los participantes conversen más entre ellos.",
+    "Invitar de forma explícita a quien no tomó la palabra a aportar a la escena.",
+    "Si se repite la grabación simultánea de dos grupos, separarlos más en la sala."
+   ]
+  },
+  "sesion3_grupo5": {
+   "perfil": "Grupo con una participante muy protagonista, en el que la construcción de la escena dio paso a una conversación sobre recuerdos familiares.",
+   "sintesis": "El grupo armó un cumpleaños soñado para unos gemelos, con torta, regalos, juegos, animales y guardias que protegen a los niños. Luego la conversación se abrió a recuerdos de cumpleaños, de la familia de origen y de la crianza de los hijos.",
+   "dinamica": "Los participantes ocuparon la mitad del habla de la sesión; la mayoría de los cambios de turno fueron entre el equipo y los participantes, con algunos intercambios directos entre ellos.",
+   "participacion": "{P11} concentró la mayor parte de la participación; {P18} intervino de forma breve, sobre todo con preguntas. No se captó la voz de {P01}.",
+   "clima": "Clima de confianza en el que se compartieron recuerdos personales y emotivos, algunos de carga negativa.",
+   "logro": "Completaron la escena y la usaron como punto de partida para compartir experiencias de vida.",
+   "sugerencias": [
+    "Distribuir los turnos para que la participación no quede concentrada en una sola persona.",
+    "Retomar las preguntas de quien participa poco para convertirlas en intercambio entre participantes.",
+    "Invitar de forma explícita a quien no tomó la palabra."
+   ]
+  }
+ }
+}

@@ -1,0 +1,118 @@
+TABLERO NAIRA · métricas por participante
+=========================================
+
+Abrir:       doble clic en tablero.html, el único archivo que hay afuera (funciona sin internet).
+             Es un archivo autocontenido: se puede copiar o enviar solo, sin la carpeta generador.
+
+Actualizar:  cada vez que termines de procesar un grupo o una sesión en NAIRA, corre en la Terminal:
+
+    cd "~/Downloads/Maria/Tablero_NAIRA/proyecto/codigo"
+    conda run -n naira-audio python generar_tablero.py
+
+  y vuelve a abrir tablero.html. El tablero toma todo lo que haya en NAIRA/outputs/metrics_all.csv
+  (NAIRA la actualiza sola al final de cada corrida), así que las sesiones 2 y 3 aparecen sin cambiar nada.
+
+Contenido:   solo participantes (sin moderadores, técnica, acompañantes ni voces desconocidas).
+             Barra superior fija con las pestañas (Resumen y los cuatro subprocesos) y los filtros por sesión,
+             grupo y participante. Lo de uso menos frecuente está en el menú «Opciones» (ver abajo).
+
+Archivos:    tablero.html   lo único que queda a la vista: el tablero, listo para abrir
+             proyecto/      todo lo demás, ordenado por lo que es cada archivo:
+
+               proyecto/codigo/     los programas
+                 generar_tablero.py        lee NAIRA (sin modificarlo) y escribe ../../tablero.html
+                 expediente_grupos.py      prepara el material de cada grupo para redactar las síntesis
+                 expediente_prescripciones.py  lo mismo, por participante
+
+               proyecto/diseno/     cómo se ve el tablero
+                 plantilla.html            estructura, estilos y gráficos; el generador le inyecta los datos
+                 lib/                      Plotly 2.35.2, copia local que se incrusta en el tablero al generarlo
+
+               proyecto/datos/      el contenido que no viene de NAIRA
+                 gqm.yaml                  metodología GQM de la tesis: subproceso, objetivo y preguntas
+                 prescripciones.json       textos de las síntesis descriptivas (solo códigos)
+
+               proyecto/LEEME.txt   este archivo
+               proyecto/_restos_macos/   archivos ._* que dejó macOS; no sirven en Windows y se pueden borrar
+
+             Los datos de las métricas no están aquí: salen de NAIRA/outputs/metrics_all.csv cada vez
+             que se genera el tablero.
+
+Grupos grabados con los dos micrófonos: el tablero usa una sola fuente por grupo, el Zoom (zoom01) si existe; si no, el Jabra.
+Se cambia en proyecto/codigo/generar_tablero.py (FUENTE_PREFERIDA). La comparación entre micrófonos está aparte,
+en ../Comparativo_Microfonos.
+
+Barra superior y menú Opciones (01-11-2026)
+- La barra superior queda fija al desplazarse la página. Tiene las pestañas y los filtros: Sesión, Grupo, Participante
+  y «Limpiar filtros».
+- «Opciones» reúne lo de uso menos frecuente:
+    · organizar las pestañas por subproceso GQM (por defecto) o por familia de variables (temporales, conversacionales,
+      léxicas, semánticas, acústicas, prosódicas: las seis del catálogo de NAIRA);
+    · orden de las barras;
+    · tema: claro (por defecto) u oscuro;
+    · Exportar: Markdown, JSON o CSV (ver abajo).
+
+Solo códigos de enrolamiento (11-11-2026)
+- El tablero identifica a cada participante únicamente por su código de enrolamiento (P1, P2, …), en todas partes:
+  gráficos, ejes, tooltips, tablas, chips, el filtro «Participante», las síntesis descriptivas y las exportaciones.
+- Ya no se muestran nombres reales y se quitó el botón «P#», que antes alternaba entre nombres y códigos: sobra.
+- proyecto/codigo/generar_tablero.py dejó de leer NAIRA/data/roster_map.yaml, así que tablero.html no contiene ningún nombre y las
+  capturas para la tesis se pueden tomar directamente.
+- Aun así el tablero describe a personas identificables por su código, de modo que sigue siendo de uso interno del equipo.
+
+Reparto del habla en el Resumen (08-11-2026)
+- Después de la síntesis descriptiva, el Resumen responde dos preguntas distintas sobre el reparto del habla:
+    · «Reparto del habla en cada grupo» (dona): CUÁNTO habló cada quien, en % del habla del grupo. Es la misma gráfica
+      que ya estaba en la pestaña de variables temporales y en Conducta social Q3; aquí se repite para tenerla a mano.
+    · «Segmentos identificados» (línea de tiempo, una por grupo): CÓMO se repartió ese habla a lo largo de la sesión.
+- La línea de tiempo lleva una fila por participante y, en ella, los tramos de voz que se le atribuyeron a lo largo de la
+  grabación. Deja ver cuándo interviene cada persona, si lo hace de forma repartida o concentrada, y en qué tramos calla.
+- En la línea de tiempo van solo participantes, como en el resto del tablero: no se grafica el habla del moderador, de la
+  técnica, de los acompañantes ni la que no se pudo atribuir a nadie. (La dona sí los resume, en su porción gris.) La
+  línea de tiempo con todos los hablantes por separado está en el informe por ejecución de NAIRA, sección Enrolamiento.
+- Responde a los filtros de sesión, grupo y participante de la barra superior.
+- Los datos salen de NAIRA/outputs/<grupo>/<fuente>/02_enrollment/segments_identified.json y la duración de la grabación,
+  de 00_ingest/qc.json. Se leen al generar el tablero, sin modificar nada dentro de NAIRA.
+- La posición de cada barra es exacta; el grosor no, porque los tramos más breves se ensanchan para que se vean. La
+  duración real de cada tramo está en el tooltip.
+
+Organización GQM (01-11-2026)
+- Por defecto el tablero se organiza según la metodología GQM de la tesis: una pestaña por subproceso (Teoría de la mente,
+  Empatía, Percepción social, Conducta social) con su definición y su objetivo GQM.
+- Dentro de cada subproceso, cada pregunta (Q1, Q2…) se presenta como un recorrido de cinco pasos:
+    1 procedimiento de análisis
+    2 datos utilizados
+    3 indicadores computacionales (con sus definiciones técnicas en una tabla plegable)
+    4 resultado (gráficos)
+    5 interpretación y limitaciones
+- Los textos (definición, objetivo, preguntas, procedimiento, interpretación y limitaciones) están en gqm.yaml, copiados de
+  «Metodología GQM.pdf». Si cambia un método en NAIRA, actualizar en gqm.yaml los campos procedimiento, interpretacion
+  y limites. Qué métricas van en cada pregunta NO se escribe aquí: sale del catálogo de NAIRA (pregunta_gqm de cada variable).
+- La pregunta de asociación con el desempeño (Q5; Q4 en Empatía) muestra «Sin resultado todavía», porque aún no existen
+  los puntajes de desempeño de las actividades. El vector de métricas de cada participante va en una sección plegable.
+
+Síntesis descriptiva (01-11-2026)
+- En el Resumen hay una síntesis descriptiva por grupo y otra por participante y sesión. Un botón alterna entre ambas
+  vistas, y las filas se pliegan y despliegan.
+- Antes se llamaba «prescripción». El nombre cambió, pero el archivo sigue siendo prescripciones.json.
+- Las síntesis están redactadas con IA (Claude Opus 5.5, en una sesión de Claude Code, sin API) a partir de los
+  indicadores de las 48 variables, fragmentos de su transcripción y la documentación del proyecto. Es un complemento del
+  tablero: no forma parte del flujo de NAIRA ni de la tesis.
+- Los textos están en prescripciones.json (solo códigos) y se muestran tal cual: donde el texto trae {P1} aparece el
+  código P1. El tablero no incorpora nombres reales en ningún momento.
+- Al procesar un grupo nuevo, la síntesis de sus participantes aparece como «pendiente»: pedir a Claude
+  «actualiza las síntesis descriptivas» para redactarlas.
+
+Resumen (01-11-2026)
+- El Resumen muestra, en este orden: indicadores generales (KPIs); chips de estado (datos insuficientes, presentes sin
+  voz, perfil provisional); la síntesis descriptiva; la evolución entre sesiones; y la tabla «Participaciones y calidad
+  de los datos», que también lista a los participantes presentes cuya voz no se capturó. Todo responde a los filtros de arriba.
+- «Exportar» (menú Opciones) descarga lo filtrado, solo con códigos: Markdown (informe para leer o pegar en un chat de IA),
+  JSON (todo estructurado: 48 variables con definición y pregunta GQM, y síntesis descriptivas) o CSV (tabla larga para Excel).
+- Las síntesis de grupo se redactan con expediente_grupos.py; las de participante con expediente_prescripciones.py
+  (pedir a Claude «actualiza las síntesis descriptivas» tras procesar un grupo nuevo).
+
+Datos insuficientes (01-11-2026)
+- Las participaciones con menos de 50 palabras no se grafican, salvo en los gráficos de conteo, donde aparecen en gris.
+- No se grafican los valores que NAIRA marca como inválidos (por ejemplo, la intensidad del Jabra).
+- Las notas metodológicas están una sola vez, en «Notas metodológicas», al final de la página.

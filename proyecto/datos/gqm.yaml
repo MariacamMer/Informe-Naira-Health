@@ -1,0 +1,246 @@
+# Metodología GQM de la tesis (NAIRA/docs/00_bases/Metodología GQM.pdf): subproceso → objetivo → preguntas → métricas.
+# Las métricas de cada pregunta NO se escriben aquí: salen del catálogo (pregunta_gqm de cada variable en metrics_catalog.yaml).
+# asociacion: true = pregunta de asociación con el desempeño (usa todas las métricas del subproceso como vector).
+# procedimiento / interpretacion / limites: texto del tablero que describe el cálculo REAL de NAIRA (configs/metrics_catalog.yaml,
+# configs/default.yaml y src/naira/metrics/). Si cambia un método en NAIRA, actualizar aquí.
+subprocesos:
+  - id: ToM
+    nombre: Teoría de la mente
+    definicion: Inferencia y representación de creencias, intenciones, perspectivas y estados mentales propios y ajenos.
+    objetivo: >-
+      Caracterizar las propiedades lingüísticas, semánticas y acústicas del habla producida durante actividades orientadas a
+      teoría de la mente, y analizar su asociación con el desempeño de los participantes en tareas que requieren interpretar o
+      representar estados mentales, perspectivas e intenciones de otras personas.
+    preguntas:
+      - id: Q1
+        titulo: Elaboración y diversidad lingüística
+        texto: "¿Cómo se caracteriza la elaboración y diversidad lingüística del discurso producido durante las actividades de teoría de la mente?"
+        procedimiento: >-
+          Se toman las palabras transcritas de cada participante. La longitud media del enunciado divide sus palabras por sus
+          enunciados, sin contar los que son solo un asentimiento o una muletilla. Para la diversidad, spaCy (es_core_news_lg)
+          lleva cada palabra a su lema y se calcula MTLD: la longitud media de los tramos de texto en que la proporción de lemas
+          distintos se mantiene sobre 0,72, leyendo el discurso hacia adelante y hacia atrás.
+        interpretacion: >-
+          Describe cuán extensos y variados son los enunciados. Un discurso más elaborado ofrece más material para expresar
+          perspectivas y estados mentales, pero estos indicadores no miden por sí mismos esa capacidad.
+        limites: >-
+          Dependen de la transcripción automática. MTLD queda sin valor con menos de 100 palabras.
+      - id: Q2
+        titulo: Referencia y perspectiva
+        texto: "¿Cómo se utilizan las referencias a uno mismo, al interlocutor y a terceras personas durante situaciones que requieren representar diferentes perspectivas?"
+        procedimiento: >-
+          spaCy etiqueta la categoría gramatical y los rasgos de persona y número de cada palabra. Se cuentan los pronombres de
+          cada persona gramatical (yo, nosotros, tú/usted, él/ella, ellos/ellas), los impersonales y el total, y cada recuento se
+          expresa como porcentaje de las palabras del participante.
+        interpretacion: >-
+          Muestra hacia quién se orienta el discurso: a sí mismo, al grupo, al interlocutor o a terceros. Es un indicador
+          indirecto del uso de distintas perspectivas, no una medida de la capacidad de adoptarlas.
+        limites: >-
+          El español omite a menudo el sujeto («fui» en lugar de «yo fui»), por lo que los pronombres explícitos subestiman las
+          referencias a personas. Los impersonales usan una definición sustituta, pendiente de revisión.
+      - id: Q3
+        titulo: Representación semántica de estados mentales
+        texto: "¿Qué características semánticas relacionadas con la representación y elaboración de estados mentales aparecen en el discurso?"
+        procedimiento: >-
+          Los lemas del participante se buscan en un léxico de estados mentales redactado en el proyecto, dividido en cognición
+          (pensar, saber, creer), emoción (sentir) y volición (querer). Se informa cuántos aparecen por cada 100 palabras, en
+          total y por tipo. La competencia definicional compararía lo dicho con una definición de referencia mediante similitud
+          semántica, pero requiere una tarea de definición que las sesiones no incluyeron.
+        interpretacion: >-
+          Indica cuánto se verbalizan de forma explícita los estados mentales y de qué tipo. Verbalizarlos no equivale a
+          atribuirlos correctamente a otros.
+        limites: >-
+          El léxico es un sustituto propio, pendiente de validación por jueces. La competencia definicional no está disponible.
+      - id: Q4
+        titulo: Caracterización acústica
+        texto: "¿Qué características acústicas presenta el habla producida durante las actividades orientadas a teoría de la mente?"
+        procedimiento: >-
+          En los tramos donde habla solo el participante (sin voces superpuestas), librosa calcula los coeficientes cepstrales
+          MFCC 1–13 en tramas de 25 ms cada 10 ms, y cada coeficiente se resume con su media y su desviación estándar.
+        interpretacion: >-
+          Los MFCC describen el timbre y la articulación de la voz. Se usan como insumo de análisis multivariados; no tienen una
+          lectura psicológica directa.
+        limites: >-
+          Dependen del micrófono: solo se comparan participantes grabados con el mismo. En el Jabra, el procesamiento interno del
+          micrófono altera la señal.
+      - id: Q5
+        titulo: Asociación con desempeño
+        asociacion: true
+        texto: "¿Qué métricas individuales o combinaciones multivariadas presentan asociaciones con el desempeño observado en las actividades de teoría de la mente?"
+  - id: EMP
+    nombre: Empatía
+    definicion: Comprensión, resonancia y respuesta ante los estados emocionales y afectivos de otras personas.
+    objetivo: >-
+      Caracterizar los patrones léxicos, semánticos, acústicos y prosódicos del habla producida durante actividades orientadas a
+      la empatía, y analizar su asociación con el desempeño de los participantes en situaciones que requieren reconocer, expresar
+      o responder al estado afectivo de otras personas.
+    preguntas:
+      - id: Q1
+        titulo: Producción verbal y léxico emocional
+        texto: "¿Cómo se caracteriza la producción verbal y el uso explícito de vocabulario emocional durante las actividades de empatía?"
+        procedimiento: >-
+          Se cuentan las palabras transcritas del participante y cada una (por lema o por forma) se busca en el léxico NRC EmoLex
+          en español. Se informa el porcentaje de palabras asociadas a alguna de sus ocho emociones y, por separado, a polaridad
+          positiva o negativa.
+        interpretacion: >-
+          Describe cuánto habla el participante y cuánto vocabulario emocional explícito usa. No mide la resonancia ni la
+          respuesta emocional ante el otro.
+        limites: >-
+          El léxico es una traducción del inglés y cubre solo parte del vocabulario (los valores con cobertura baja quedan
+          marcados). No considera negaciones, ironía ni contexto.
+      - id: Q2
+        titulo: Contenido afectivo-semántico
+        texto: "¿Qué características afectivas y semánticas presenta el contenido del discurso?"
+        procedimiento: >-
+          Cada enunciado se clasifica con pysentimiento (modelo RoBERTuito) como positivo, neutro o negativo, y se informa el
+          porcentaje de enunciados de cada tipo. Además, se promedia la valencia normativa de las palabras (normas de
+          Stadthagen-González et al., 2017; escala 1 desagradable – 9 agradable) y se obtiene la proporción de palabras de cada
+          categoría emocional de NRC EmoLex.
+        interpretacion: >-
+          Caracteriza el tono afectivo de lo que se dice y qué emociones predominan en el vocabulario.
+        limites: >-
+          El clasificador de sentimiento se entrenó con textos escritos de redes sociales, no con habla conversacional de
+          personas mayores. El perfil Empath no existe en español y se sustituye por las categorías de NRC EmoLex.
+      - id: Q3
+        titulo: Expresión acústica y prosódica
+        texto: "¿Cómo se caracteriza la expresión acústica y prosódica durante las actividades orientadas a empatía?"
+        procedimiento: >-
+          En los tramos donde habla solo el participante se obtienen series de energía (RMS por trama, librosa), MFCC 1–12,
+          jitter, shimmer y logaritmo del tono (Praat mediante parselmouth). Cada serie se normaliza por hablante (puntuación z)
+          y se resume con siete estadísticos: máximo, mínimo, media, mediana, desviación estándar, asimetría y curtosis.
+        interpretacion: >-
+          Describe la forma de la distribución de la energía, el timbre y el tono de cada participante. Como la normalización es
+          por hablante, la media es siempre 0 y la desviación estándar 1: lo informativo son los extremos y la forma de la
+          distribución.
+        limites: >-
+          Dependen del micrófono y no tienen una lectura clínica directa.
+      - id: Q4
+        titulo: Asociación con desempeño
+        asociacion: true
+        texto: "¿Qué métricas léxicas, semánticas, acústicas o prosódicas, individualmente o en combinación, presentan asociaciones con el desempeño observado durante las actividades de empatía?"
+  - id: PS
+    nombre: Percepción social
+    definicion: Detección e interpretación de señales sociales, emocionales, vocales y contextuales presentes en la interacción.
+    objetivo: >-
+      Caracterizar las propiedades léxicas, temporales, acústicas, prosódicas y afectivas del habla producida durante actividades
+      orientadas a la percepción social, y analizar su asociación con el desempeño de los participantes en situaciones que
+      requieren interpretar información social disponible en la interacción.
+    preguntas:
+      - id: Q1
+        titulo: Cantidad y dinámica temporal
+        texto: "¿Cómo se caracteriza la cantidad y dinámica temporal de la producción verbal durante las actividades de percepción social?"
+        procedimiento: >-
+          Con las palabras alineadas en el tiempo se calculan tres medidas. El número de palabras. La tasa de habla: palabras por
+          minuto dentro de sus turnos, pausas internas incluidas. La tasa de articulación: sílabas por segundo de fonación,
+          descontadas las pausas internas de 0,25 s o más; las sílabas se cuentan con reglas ortográficas del español.
+        interpretacion: >-
+          Describe cuánto y a qué velocidad habla cada participante; la diferencia entre la tasa de habla y la de articulación
+          refleja cuánto pausa dentro de sus turnos.
+        limites: >-
+          Dependen de la segmentación automática y de la transcripción.
+      - id: Q2
+        titulo: Propiedades acústicas
+        texto: "¿Qué características acústicas presenta la señal de habla durante las actividades de percepción social?"
+        procedimiento: >-
+          En los tramos donde habla solo el participante, Praat (mediante parselmouth) mide en cada segmento de al menos 1 s el
+          jitter local y el shimmer local, y se toma la mediana por participante. También se obtienen la relación
+          armónicos-ruido (HNR) y la intensidad media sobre las tramas sonoras, y los MFCC 1–13 (librosa).
+        interpretacion: >-
+          Describe la estabilidad del tono y del volumen de la voz y su calidad (proporción de armónicos frente a ruido).
+        limites: >-
+          Se miden sobre habla conversacional y no sobre vocales sostenidas, por lo que no se comparan con valores clínicos de
+          referencia. Dependen del micrófono; la intensidad es relativa y en el Jabra no es válida por su control automático de
+          ganancia.
+      - id: Q3
+        titulo: Modulación prosódica
+        texto: "¿Cómo se caracteriza la modulación prosódica de las intervenciones?"
+        procedimiento: >-
+          Praat extrae el contorno de la frecuencia fundamental (F0) con límites de búsqueda según el sexo. Se informan el tono
+          medio (Hz), su variación (desviación estándar en semitonos) y el rango habitual (del percentil 20 al 80, en semitonos).
+          Además, el modelo de audEERING (wav2vec2 dimensional) estima la activación, la valencia y la dominancia de cada
+          enunciado de al menos 1 s.
+        interpretacion: >-
+          Describe cuánto varía la melodía de la voz y qué carga emocional transmite su sonido.
+        limites: >-
+          El tono medio solo se compara entre personas del mismo sexo. La prosodia emocional es exploratoria: el modelo no está
+          validado en español ni en voces de personas mayores.
+      - id: Q4
+        titulo: Características afectivas
+        texto: "¿Qué características afectivas se manifiestan en el habla durante las actividades de percepción social?"
+        procedimiento: >-
+          Desde el texto se calculan la valencia (probabilidad de positivo menos probabilidad de negativo de pysentimiento, de −1
+          a 1) y la activación normativa de las palabras (Stadthagen-González et al., 2017; escala 1–9). Desde la voz, la
+          valencia y la activación del modelo de audEERING.
+        interpretacion: >-
+          Ubica a cada participante en un plano de valencia y activación, por separado para lo que dice (texto) y para cómo
+          suena (voz).
+        limites: >-
+          Los componentes de voz son exploratorios. Texto y voz no se combinan en un índice único.
+      - id: Q5
+        titulo: Asociación con desempeño
+        asociacion: true
+        texto: "¿Qué métricas o combinaciones de métricas presentan asociaciones con el desempeño observado durante las actividades de percepción social?"
+  - id: CS
+    nombre: Conducta social
+    definicion: Expresión y regulación de comportamientos comunicativos que sostienen la coordinación y la participación social.
+    objetivo: >-
+      Caracterizar la participación verbal, organización semántica, dinámica temporal, modulación prosódica y coordinación
+      conversacional de los adultos mayores durante actividades orientadas a conducta social, y analizar la asociación entre
+      estos patrones y el desempeño observado en la interacción social.
+    preguntas:
+      - id: Q1
+        titulo: Producción y diversidad verbal
+        texto: "¿Cómo se caracteriza la cantidad, complejidad y diversidad de la producción verbal durante la interacción social?"
+        procedimiento: >-
+          Se cuentan las palabras transcritas y los lemas distintos (spaCy). La riqueza léxica (MATTR) es la proporción de lemas
+          distintos calculada en ventanas móviles de 50 palabras, lo que reduce el efecto de cuánto habla cada persona. La
+          longitud media del enunciado divide las palabras por los enunciados.
+        interpretacion: >-
+          Describe el volumen, la variedad del vocabulario y la extensión de lo que aporta cada participante a la conversación.
+        limites: >-
+          Dependen de la transcripción automática; las medidas léxicas quedan sin valor con menos de 50 palabras.
+      - id: Q2
+        titulo: Organización semántica
+        texto: "¿Cómo se caracteriza la organización y relación semántica de las intervenciones dentro de la conversación?"
+        procedimiento: >-
+          Cada turno se convierte en un vector semántico (sentence-transformers, modelo paraphrase-multilingual-MiniLM-L12-v2) y
+          se calcula su similitud coseno con el turno inmediatamente anterior de otra persona. Para los conceptos principales se
+          toman los 20 sustantivos más frecuentes del grupo y se informa qué porcentaje menciona cada participante.
+        interpretacion: >-
+          Indica cuánto se conectan temáticamente las intervenciones con lo que se venía conversando y cuánto toca cada
+          participante los temas centrales de la actividad.
+        limites: >-
+          Los conceptos principales son un sustituto: no hay una lista de referencia por actividad y se usan los sustantivos más
+          frecuentes del propio grupo.
+      - id: Q3
+        titulo: Participación temporal y prosódica
+        texto: "¿Cómo se caracteriza la participación temporal y prosódica de cada participante?"
+        procedimiento: >-
+          Se suman los segmentos de voz atribuidos a cada participante (minutos y porcentaje del habla total del grupo), se
+          calcula su tasa de habla y, con Praat, el tono medio y su variación.
+        interpretacion: >-
+          Describe cuánto espacio ocupa cada participante en la conversación y con qué ritmo y modulación interviene.
+        limites: >-
+          El porcentaje del habla depende de la duración y composición de cada grupo. El tono solo se compara dentro del mismo
+          sexo y del mismo micrófono.
+      - id: Q4
+        titulo: Coordinación conversacional
+        texto: "¿Cómo se organiza y regula la interacción conversacional entre los participantes?"
+        procedimiento: >-
+          El habla se divide en enunciados (una pausa de 0,3 s o más los separa) y en turnos (enunciados seguidos de la misma
+          persona con pausas menores de 1 s; un asentimiento no abre turno). Se cuentan turnos, enunciados y retrocanalizaciones
+          (asentimientos de hasta 1 s y 2 palabras dentro del turno de otro). El solape es el tiempo con dos o más voces activas.
+          Hay interrupción cuando alguien empieza a hablar en solape de al menos 0,5 s, la otra persona calla dentro de 1 s y
+          quien entró sigue hablando. Las iniciaciones de reparación se detectan por reglas con un inventario de formas.
+        interpretacion: >-
+          Describe cómo se reparten y encadenan las intervenciones: frecuencia de turnos, señales de escucha, superposición e
+          interrupciones hechas y recibidas.
+        limites: >-
+          La detección de reparaciones es exploratoria. La separación automática de voces puede no captar solapes muy breves.
+      - id: Q5
+        titulo: Asociación con desempeño
+        asociacion: true
+        texto: "¿Qué métricas o combinaciones de métricas presentan asociaciones con el desempeño observado durante las actividades de conducta social?"
+nota_asociacion: >-
+  La pregunta de asociación utiliza el conjunto completo de métricas de la dimensión como vector multivariado, sin asumir
+  causalidad ni capacidad diagnóstica.
