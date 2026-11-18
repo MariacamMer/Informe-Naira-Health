@@ -261,7 +261,7 @@ footer code { font-size: 12px; }
   <header class="top">
     <div>
       <h1>Tablero NAIRA</h1>
-      <p class="sub">Indicadores computacionales del habla de adultos mayores en sesiones grupales, organizados según la metodología GQM de la tesis.</p>
+      <p class="sub">Métricas computacionales del habla de adultos mayores en sesiones grupales, organizadas según la metodología GQM de la tesis.</p>
     </div>
     <div class="meta" id="meta"></div>
   </header>
@@ -299,12 +299,9 @@ footer code { font-size: 12px; }
     <details>
       <summary>Notas metodológicas</summary>
       <ul>
-        <li>Son indicadores exploratorios calculados automáticamente desde el audio de cada sesión grupal. No constituyen diagnóstico; orientan y complementan la evaluación profesional.</li>
+        <li>Son métricas exploratorias calculadas automáticamente desde el audio de cada sesión grupal. No constituyen diagnóstico; orientan y complementan la evaluación profesional.</li>
         <li>Solo se muestran participantes (adultos mayores). Moderadores, técnica y acompañantes no se evalúan.</li>
         <li><span class="warn-i">⚠</span> Datos insuficientes: menos de 50 palabras reconocidas. Esas participaciones aparecen en los conteos (minutos, palabras, turnos), pero no en los gráficos de proporciones, tasas o voz, porque sus valores no son interpretables.</li>
-        <li>Las variables acústicas y prosódicas dependen del micrófono (Jabra o Zoom H2essential): solo se comparan participantes grabados con el mismo. La intensidad del Jabra no es válida por su control automático de ganancia.</li>
-        <li>Si un grupo se grabó con los dos micrófonos, se usa una sola fuente (el Zoom H2essential si existe). La comparación entre micrófonos está aparte.</li>
-        <li>Las definiciones vienen del catálogo de NAIRA (<code>metrics_catalog.yaml</code>) y de <code>metricas_explicadas.md</code>. Para actualizar con sesiones nuevas: <code>conda run -n naira-audio python generar_tablero.py</code>.</li>
       </ul>
     </details>
   </footer>
@@ -354,107 +351,107 @@ const SG = sid => { const m = /sesion(\d+)_grupo(\d+)/.exec(sid); return m ? [`S
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const fmt = (v, d = 1) => v == null ? "—" : v.toLocaleString("es-CL", { maximumFractionDigits: d, minimumFractionDigits: d });
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
-const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 function flagsText(r, keys) {
   const fl = uniq(keys.flatMap(k => (r.vals[k]?.f || "").split(";").filter(Boolean)).map(f => FLAG[f] || f));
   return fl.length ? "Marcas: " + fl.join(", ") : "";
 }
 
 // ---------- biblioteca de gráficos: cada uno se define una vez y lo usan la vista GQM y la vista por familia ----------
-// v: variables cuya explicación se muestra · why: por qué se eligió esa forma · todos: conteo que se grafica aunque haya datos insuficientes
+// v: variables cuya explicación se muestra · leer: cómo se lee este gráfico en concreto · todos: conteo que se grafica aunque haya datos insuficientes
 const ESTAD = [["max", "máximo"], ["min", "mínimo"], ["mediana", "mediana"], ["asimetria", "asimetría"], ["curtosis", "curtosis"]];
 const NOTA_Z = "Los estadísticos están normalizados por hablante (z), así que la media siempre es 0 y la desviación estándar 1: por eso no se muestran.";
 const CH = {
   donas: { t: "donas", k: "TMP_SPEECH_DUR.pct_sesion", v: ["TMP_SPEECH_DUR"], titulo: "Reparto del habla en cada grupo", u: "% del habla del grupo", wide: true, todos: true,
-    why: "gráfico circular (dona), porque muestra partes de un todo: el 100 % del habla de cada grupo. El gris es el equipo (moderadores, técnica, acompañantes) y las voces no atribuidas." },
-  minutos: { t: "bar", k: "TMP_SPEECH_DUR.segundos", f: v => v / 60, v: ["TMP_SPEECH_DUR"], titulo: "Minutos de habla", u: "min", d: 1, todos: true, why: "barras desde cero, porque es una cantidad." },
+    leer: "Cada porción es el porcentaje del habla del grupo; el gris reúne al equipo (moderadores, técnica, acompañantes) y las voces que no se pudieron atribuir." },
+  minutos: { t: "bar", k: "TMP_SPEECH_DUR.segundos", f: v => v / 60, v: ["TMP_SPEECH_DUR"], titulo: "Minutos de habla", u: "min", d: 1, todos: true },
   ritmo: { t: "scatter", x: "TMP_ARTIC_RATE.silabas_s", y: "TMP_SPEECH_RATE.palabras_min", v: ["TMP_SPEECH_RATE", "TMP_ARTIC_RATE"],
     titulo: "Ritmo: articulación frente a tasa de habla", xl: "tasa de articulación (sílabas/s)", yl: "tasa de habla (palabras/min)", u: "",
-    why: "dispersión, para ver las dos medidas de ritmo a la vez: quien articula rápido pero tiene baja tasa de habla hace muchas pausas dentro de sus turnos." },
-  tasaHabla: { t: "dot", k: "TMP_SPEECH_RATE.palabras_min", v: ["TMP_SPEECH_RATE"], titulo: "Tasa de habla", u: "palabras/min", d: 0, med: true, why: "gráfico de puntos con la mediana como referencia." },
-  turnos: { t: "bar", k: "CNV_TURNS.n", v: ["CNV_TURNS"], titulo: "Número de turnos", u: "turnos", d: 0, todos: true, why: "barras desde cero, porque es un conteo." },
+    leer: "Quien articula rápido pero tiene una tasa de habla baja hace muchas pausas dentro de sus turnos." },
+  tasaHabla: { t: "dot", k: "TMP_SPEECH_RATE.palabras_min", v: ["TMP_SPEECH_RATE"], titulo: "Tasa de habla", u: "palabras/min", d: 0, med: true },
+  turnos: { t: "bar", k: "CNV_TURNS.n", v: ["CNV_TURNS"], titulo: "Número de turnos", u: "turnos", d: 0, todos: true },
   turnos10: { t: "dot", k: "CNV_TURNS.por_10min", v: ["CNV_TURNS"], titulo: "Turnos por 10 minutos", u: "turnos/10 min", d: 1, med: true,
-    why: "gráfico de puntos con la mediana como referencia; la tasa por 10 min permite comparar sesiones de distinta duración." },
-  enunciados: { t: "bar", k: "CNV_UTTERANCES.n", v: ["CNV_UTTERANCES"], titulo: "Número de enunciados", u: "enunciados", d: 0, todos: true, why: "barras desde cero, porque es un conteo." },
-  backch: { t: "dot", k: "CNV_BACKCHANNEL.por_10min", v: ["CNV_BACKCHANNEL"], titulo: "Retrocanalizaciones por 10 min", u: "por 10 min", d: 1, med: true, why: "gráfico de puntos con la mediana como referencia." },
-  solape: { t: "bar", k: "CNV_OVERLAP.pct_habla", v: ["CNV_OVERLAP"], titulo: "Habla en solape", u: "% de su habla", d: 1, why: "barras desde cero: es un porcentaje de su propio tiempo de habla." },
+    leer: "La tasa por 10 minutos permite comparar sesiones de distinta duración." },
+  enunciados: { t: "bar", k: "CNV_UTTERANCES.n", v: ["CNV_UTTERANCES"], titulo: "Número de enunciados", u: "enunciados", d: 0, todos: true },
+  backch: { t: "dot", k: "CNV_BACKCHANNEL.por_10min", v: ["CNV_BACKCHANNEL"], titulo: "Retrocanalizaciones por 10 min", u: "por 10 min", d: 1, med: true },
+  solape: { t: "bar", k: "CNV_OVERLAP.pct_habla", v: ["CNV_OVERLAP"], titulo: "Habla en solape", u: "% de su habla", d: 1, leer: "El porcentaje es sobre su propio tiempo de habla, no sobre el del grupo." },
   interrup: { t: "mariposa", izq: { k: "CNV_INTERRUPT.como_interrumpido_por_10min", n: "es interrumpida", c: "--s2" }, der: { k: "CNV_INTERRUPT.como_interruptor_por_10min", n: "interrumpe", c: "--s1" },
     v: ["CNV_INTERRUPT"], titulo: "Interrupciones: recibe ← → hace", u: "por 10 min", d: 1,
-    why: "mariposa (barras divergentes): a la izquierda las interrupciones que recibe y a la derecha las que hace, para ver el balance de cada participante." },
-  repar: { t: "bar", k: "CNV_REPAIR_INIT.por_10min", v: ["CNV_REPAIR_INIT"], titulo: "Iniciación de reparación por 10 min", u: "por 10 min", d: 1, tag: "exploratoria", why: "barras desde cero." },
-  palabras: { t: "bar", k: "LEX_WORD_COUNT.n", v: ["LEX_WORD_COUNT"], titulo: "Número de palabras", u: "palabras", d: 0, todos: true, why: "barras desde cero, porque es un conteo." },
-  tipos: { t: "bar", k: "LEX_TYPES.n", v: ["LEX_TYPES"], titulo: "Palabras distintas", u: "lemas", d: 0, why: "barras desde cero, porque es un conteo." },
+    leer: "A la izquierda, las interrupciones que recibe; a la derecha, las que hace. Comparar los dos lados muestra su balance." },
+  repar: { t: "bar", k: "CNV_REPAIR_INIT.por_10min", v: ["CNV_REPAIR_INIT"], titulo: "Iniciación de reparación por 10 min", u: "por 10 min", d: 1, tag: "exploratoria" },
+  palabras: { t: "bar", k: "LEX_WORD_COUNT.n", v: ["LEX_WORD_COUNT"], titulo: "Número de palabras", u: "palabras", d: 0, todos: true },
+  tipos: { t: "bar", k: "LEX_TYPES.n", v: ["LEX_TYPES"], titulo: "Palabras distintas", u: "lemas", d: 0 },
   mattr: { t: "dot", k: "LEX_TTR.mattr_50", v: ["LEX_TTR"], titulo: "Riqueza léxica (MATTR)", u: "0–1", d: 3, med: true,
-    why: "gráfico de puntos con eje ajustado: son proporciones muy cercanas entre sí y con barras desde cero las diferencias no se verían." },
-  mtld: { t: "dot", k: "LEX_MTLD.mtld", v: ["LEX_MTLD"], titulo: "Diversidad léxica (MTLD)", u: "palabras/factor", d: 1, med: true, why: "gráfico de puntos con la mediana como referencia." },
-  mlu: { t: "dot", k: "LEX_MLU.palabras_enunciado", v: ["LEX_MLU"], titulo: "Longitud media del enunciado", u: "palabras/enunciado", d: 1, med: true, why: "gráfico de puntos con la mediana como referencia." },
+    leer: "El eje no parte de cero: son proporciones muy cercanas entre sí y, si partiera de cero, las diferencias no se verían." },
+  mtld: { t: "dot", k: "LEX_MTLD.mtld", v: ["LEX_MTLD"], titulo: "Diversidad léxica (MTLD)", u: "palabras/factor", d: 1, med: true },
+  mlu: { t: "dot", k: "LEX_MLU.palabras_enunciado", v: ["LEX_MLU"], titulo: "Longitud media del enunciado", u: "palabras/enunciado", d: 1, med: true },
   pron: { t: "heat", series: [["LEX_PRON_1SG.pct", "yo"], ["LEX_PRON_1PL.pct", "nosotros"], ["LEX_PRON_2.pct", "tú/usted"], ["LEX_PRON_3SG.pct", "él/ella"],
                               ["LEX_PRON_3PL.pct", "ellos/ellas"], ["LEX_PRON_IMPERS.pct", "impersonal"], ["LEX_PRON_PERS.pct", "personales"], ["LEX_PRON_TOTAL.pct", "total"]],
     v: ["LEX_PRON_1SG", "LEX_PRON_1PL", "LEX_PRON_2", "LEX_PRON_3SG", "LEX_PRON_IMPERS"], soloLeer: true, titulo: "Pronombres por persona gramatical", u: "% de sus palabras", d: 1, wide: true,
     intro: "Los pronombres muestran a quién se refiere la persona cuando habla: a sí misma (yo), al grupo (nosotros), al interlocutor (tú/usted) o a terceros (él, ellos).",
-    why: "mapa de calor: cada fila es una participante y cada columna una persona gramatical; más oscuro = más uso." },
+    leer: "Cada fila es una participación y cada columna una persona gramatical: cuanto más oscura la celda, más uso." },
   emoPN: { t: "mariposa", izq: { k: "LEX_EMO_NEG_PCT.pct", n: "negativas", c: "--neg" }, der: { k: "LEX_EMO_POS_PCT.pct", n: "positivas", c: "--pos" },
     v: ["LEX_EMO_POS_PCT", "LEX_EMO_NEG_PCT"], intro: "Qué parte de sus palabras se asocia a emociones positivas (alegría, confianza…) o negativas (tristeza, miedo, rabia…), según el léxico NRC EmoLex en español.", titulo: "Palabras emocionales: negativas ← → positivas", u: "% de sus palabras", d: 1,
-    why: "barras divergentes: lo negativo a la izquierda y lo positivo a la derecha, como en las escalas de actitud." },
-  emoTot: { t: "bar", k: "LEX_EMO_WORDS.pct", v: ["LEX_EMO_WORDS"], titulo: "Palabras emocionales (total)", u: "% de sus palabras", d: 1, why: "barras desde cero." },
-  simil: { t: "dot", k: "SEM_SIMILARITY.media", v: ["SEM_SIMILARITY"], titulo: "Similitud con el turno anterior", u: "coseno", d: 3, med: true, why: "gráfico de puntos con eje ajustado y la mediana como referencia." },
+    leer: "Lo negativo queda a la izquierda del cero y lo positivo a la derecha." },
+  emoTot: { t: "bar", k: "LEX_EMO_WORDS.pct", v: ["LEX_EMO_WORDS"], titulo: "Palabras emocionales (total)", u: "% de sus palabras", d: 1 },
+  simil: { t: "dot", k: "SEM_SIMILARITY.media", v: ["SEM_SIMILARITY"], titulo: "Similitud con el turno anterior", u: "coseno", d: 3, med: true, leer: "El eje no parte de cero: los valores quedan muy cerca entre sí." },
   mental: { t: "apilada", agrupada: true, series: [["SEM_MENTAL_TERMS.cognicion", "cognición", "--s1"], ["SEM_MENTAL_TERMS.emocion", "emoción", "--s2"], ["SEM_MENTAL_TERMS.volicion", "volición", "--s3"]],
     v: ["SEM_MENTAL_TERMS"], titulo: "Términos de estados mentales por tipo", u: "por 100 palabras", d: 2, tag: "sustituto",
-    why: "barras agrupadas: una por tipo (pensar/saber, sentir, querer). No se apilan porque un mismo término puede pertenecer a más de un tipo mientras que la métrica lo cuenta una sola vez, de modo que los tres no suman el total." },
+    leer: "Hay una barra por tipo (pensar/saber, sentir, querer). Los tres no suman el total: un mismo término puede pertenecer a más de un tipo y la métrica lo cuenta una sola vez." },
   conceptos: { t: "bar", k: "SEM_MAIN_CONCEPTS.pct", v: ["SEM_MAIN_CONCEPTS"], titulo: "Conceptos principales de la actividad", u: "%", d: 0, tag: "sustituto", max: 100,
-    why: "barras de 0 a 100 %: muestra qué parte de los conceptos centrales de la tarea alcanzó a mencionar." },
+    leer: "La escala va de 0 a 100 %: qué parte de los conceptos centrales de la tarea alcanzó a mencionar." },
   empath: { t: "heat", series: ["joy:alegría", "trust:confianza", "anticipation:anticipación", "surprise:sorpresa", "sadness:tristeza", "fear:miedo", "anger:enojo", "disgust:asco"]
       .map(s => ["SEM_EMPATH." + s.split(":")[0], s.split(":")[1]]), v: ["SEM_EMPATH"], titulo: "Emociones en el contenido (categorías NRC)", u: "proporción de sus palabras", d: 3, wide: true, tag: "sustituto",
-    why: "mapa de calor: muestra qué emociones predominan en el vocabulario de cada participante (más oscuro = más presente)." },
-  defcomp: { t: "bar", k: "SEM_DEF_COMPETENCE.similitud_media", v: ["SEM_DEF_COMPETENCE"], titulo: "Competencia definicional", u: "0–1", d: 2, tag: "no disponible", why: "" },
+    leer: "Cuanto más oscura la celda, más presente está esa emoción en su vocabulario." },
+  defcomp: { t: "bar", k: "SEM_DEF_COMPETENCE.similitud_media", v: ["SEM_DEF_COMPETENCE"], titulo: "Competencia definicional", u: "0–1", d: 2, tag: "no disponible" },
   sentim: { t: "sentimiento", v: ["AFF_SENTIMENT"], titulo: "Sentimiento de los enunciados", u: "% de enunciados", d: 0, wide: true,
-    why: "barras apiladas divergentes (la forma recomendada para escalas negativo–neutro–positivo): lo negativo a la izquierda del cero, lo positivo a la derecha y lo neutro repartido en el centro." },
+    leer: "Lo negativo queda a la izquierda del cero, lo positivo a la derecha y lo neutro repartido en el centro." },
   lexVal: { t: "dot", k: "AFF_LEX_VALENCE.media", v: ["AFF_LEX_VALENCE"], titulo: "Valencia léxica", u: "1 desagradable – 9 agradable", d: 2, med: true,
-    why: "gráfico de puntos con eje ajustado y la mediana como referencia: los promedios de valencia quedan cerca entre sí." },
+    leer: "El eje no parte de cero: los promedios de valencia quedan muy cerca entre sí." },
   planoTexto: { t: "scatter", x: "AFF_LEX_VALENCE.media", y: "AFF_AROUSAL.texto", v: ["AFF_LEX_VALENCE", "AFF_AROUSAL"], titulo: "Plano emocional del texto (valencia × activación)",
     xl: "valencia léxica (1 desagradable – 9 agradable)", yl: "activación (1 calma – 9 intensa)", u: "", refx: 5, refy: 5,
     cuad: ["intensa y desagradable", "intensa y agradable", "calmada y desagradable", "calmada y agradable"],
-    why: "plano de valencia × activación; las líneas marcan el punto neutro (5)." },
+    leer: "Las líneas cruzadas marcan el punto neutro de las dos escalas (5)." },
   planoTextoPS: { t: "scatter", x: "AFF_VALENCE.texto", y: "AFF_AROUSAL.texto", v: ["AFF_VALENCE", "AFF_AROUSAL"], titulo: "Plano emocional del texto (valencia × activación)",
     xl: "valencia del texto (−1 negativa – 1 positiva)", yl: "activación del texto (1 calma – 9 intensa)", u: "", refx: 0, refy: 5,
     cuad: ["intensa, tono negativo", "intensa, tono positivo", "calmada, tono negativo", "calmada, tono positivo"],
-    why: "plano de valencia × activación; las líneas marcan el punto neutro de cada escala (0 en valencia, 5 en activación)." },
+    leer: "Las líneas cruzadas marcan el punto neutro de cada escala: 0 en valencia y 5 en activación." },
   planoVoz: { t: "scatter", x: "AFF_VALENCE.voz", y: "AFF_AROUSAL.voz", v: ["AFF_VALENCE", "AFF_AROUSAL"], titulo: "Plano emocional de la voz (valencia × activación)",
     xl: "valencia de la voz (0–1)", yl: "activación de la voz (0–1)", u: "", refx: 0.5, refy: 0.5, tag: "exploratoria", micro: true,
     cuad: ["intensa, tono negativo", "intensa, tono positivo", "calmada, tono negativo", "calmada, tono positivo"],
-    why: "el mismo plano, estimado desde el sonido de la voz; las líneas marcan el centro de la escala (0,5)." },
+    leer: "El mismo plano, pero estimado desde el sonido de la voz; las líneas marcan el centro de la escala (0,5)." },
   balanceTexto: { t: "bar", k: "AFF_VALENCE.texto", v: ["AFF_VALENCE"], titulo: "Balance emocional del texto", u: "−1 a 1", d: 2,
-    why: "barras desde el cero: hacia la derecha predomina lo positivo, hacia la izquierda lo negativo." },
+    leer: "Hacia la derecha del cero predomina lo positivo; hacia la izquierda, lo negativo." },
   jitShim: { t: "scatter", x: "ACU_JITTER.local_pct", y: "ACU_SHIMMER.local_pct", v: ["ACU_JITTER", "ACU_SHIMMER"], titulo: "Perturbación de la voz: jitter × shimmer",
     xl: "jitter (%)", yl: "shimmer (%)", u: "", micro: true, wide: true, medref: true,
-    why: "dispersión: jitter y shimmer se interpretan juntos como perturbación de la voz; arriba a la derecha = voz menos estable en tono y en volumen. Las líneas punteadas son las medianas de cada micrófono." },
+    leer: "Jitter y shimmer se interpretan juntos como perturbación de la voz: arriba a la derecha, voz menos estable en tono y en volumen. Las líneas punteadas son las medianas de cada micrófono." },
   hnr: { t: "dot", k: "ACU_HNR.db", v: ["ACU_HNR"], titulo: "Relación armónicos-ruido (HNR)", u: "dB", d: 1, porDev: true,
-    why: "gráfico de puntos separado por micrófono, porque los valores en dB solo se comparan dentro de la misma grabación." },
-  intens: { t: "dot", k: "ACU_INTENSITY_MEAN.db", v: ["ACU_INTENSITY_MEAN"], titulo: "Intensidad media", u: "dB (relativa)", d: 1, porDev: true, why: "gráfico de puntos separado por micrófono." },
+    leer: "Los valores en dB solo se comparan dentro de la misma grabación: por eso aparecen separados por micrófono." },
+  intens: { t: "dot", k: "ACU_INTENSITY_MEAN.db", v: ["ACU_INTENSITY_MEAN"], titulo: "Intensidad media", u: "dB (relativa)", d: 1, porDev: true },
   mfcc: { t: "heat", zcol: true, micro: true, wide: true, d: 1, series: Array.from({ length: 13 }, (_, i) => [`ACU_MFCC.mfcc${i + 1}_media`, `MFCC${i + 1}`]),
     v: ["ACU_MFCC"], titulo: "Coeficientes cepstrales (MFCC 1–13, media)", u: "valor en la celda; color = z por columna",
-    why: "mapa de calor divergente: cada columna es un coeficiente con su propia escala, así que el color compara a la participante con las demás en esa columna (rojo = sobre el promedio, azul = bajo), dentro del mismo micrófono. Las desviaciones estándar de cada coeficiente están en la tabla." },
+    leer: "La celda muestra el valor y el color lo compara con las demás participaciones del mismo micrófono, columna por columna: rojo, sobre el promedio; azul, bajo el promedio. Las desviaciones estándar de cada coeficiente están en la tabla." },
   energia: { t: "heat", zcol: true, micro: true, wide: true, d: 2, series: [["ACU_ENERGY_STATS.media_bruto", "media<br>(dBFS)"], ["ACU_ENERGY_STATS.de_bruto", "DE<br>(dB)"], ...ESTAD.map(([c, n]) => ["ACU_ENERGY_STATS." + c, n])],
     v: ["ACU_ENERGY_STATS"], titulo: "Energía: estadísticos descriptivos", u: "color = z por columna", nota: "Media y DE en dB sin normalizar; el resto normalizado por hablante (z), donde la media es 0 y la DE 1.",
-    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+    leer: "El color compara cada columna por separado, dentro del mismo micrófono: rojo, sobre el promedio; azul, bajo el promedio." },
   jitterStats: { t: "heat", zcol: true, micro: true, d: 2, series: ESTAD.map(([c, n]) => ["ACU_JITTER_STATS." + c, n]), v: ["ACU_JITTER_STATS"], titulo: "Jitter: estadísticos descriptivos", u: "z; color = z por columna", nota: NOTA_Z,
-    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+    leer: "El color compara cada columna por separado, dentro del mismo micrófono: rojo, sobre el promedio; azul, bajo el promedio." },
   shimmerStats: { t: "heat", zcol: true, micro: true, d: 2, series: ESTAD.map(([c, n]) => ["ACU_SHIMMER_STATS." + c, n]), v: ["ACU_SHIMMER_STATS"], titulo: "Shimmer: estadísticos descriptivos", u: "z; color = z por columna", nota: NOTA_Z,
-    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+    leer: "El color compara cada columna por separado, dentro del mismo micrófono: rojo, sobre el promedio; azul, bajo el promedio." },
   logf0Stats: { t: "heat", zcol: true, micro: true, d: 2, series: ESTAD.map(([c, n]) => ["PRO_LOGF0_STATS." + c, n]), v: ["PRO_LOGF0_STATS"], titulo: "Tono logarítmico: estadísticos descriptivos", u: "z; color = z por columna", nota: NOTA_Z,
-    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+    leer: "El color compara cada columna por separado, dentro del mismo micrófono: rojo, sobre el promedio; azul, bajo el promedio." },
   mfccStats: { t: "heat", zcol: true, micro: true, wide: true, d: 2, series: Array.from({ length: 12 }, (_, i) => [`ACU_MFCC_STATS.mfcc${i + 1}_asimetria`, `MFCC${i + 1}`]),
     v: ["ACU_MFCC_STATS"], titulo: "MFCC 1–12: asimetría de cada coeficiente", u: "z; color = z por columna", nota: NOTA_Z + " Aquí se muestra la asimetría; máximo, mínimo, mediana y curtosis de cada coeficiente están en la tabla.",
-    why: "mapa de calor divergente por columna, dentro del mismo micrófono." },
+    leer: "El color compara cada columna por separado, dentro del mismo micrófono: rojo, sobre el promedio; azul, bajo el promedio." },
   rangoF0: { t: "rango", v: ["PRO_F0"], titulo: "Rango habitual del tono", u: "semitonos", wide: true,
-    why: "barra flotante: va del percentil 20 al 80 del tono de cada participante, con la mediana marcada; una barra larga = voz más melódica." },
+    leer: "Cada barra va del percentil 20 al 80 del tono de esa persona, con la mediana marcada: una barra larga indica una voz más melódica." },
   f0media: { t: "dot", k: "PRO_F0_MEAN.hz", v: ["PRO_F0_MEAN"], titulo: "Tono medio (F0)", u: "Hz", d: 0, porSexo: true,
-    why: "gráfico de puntos separado por sexo, porque el tono medio solo se compara entre personas del mismo sexo." },
-  f0sd: { t: "dot", k: "PRO_F0_SD.st", v: ["PRO_F0_SD"], titulo: "Variación del tono", u: "semitonos", d: 2, med: true, why: "gráfico de puntos con la mediana como referencia." },
+    leer: "El tono medio solo se compara entre personas del mismo sexo: por eso aparecen separadas." },
+  f0sd: { t: "dot", k: "PRO_F0_SD.st", v: ["PRO_F0_SD"], titulo: "Variación del tono", u: "semitonos", d: 2, med: true },
   prosEmo: { t: "scatter", x: "PRO_EMO_PROSODY.valence_media", y: "PRO_EMO_PROSODY.arousal_media", v: ["PRO_EMO_PROSODY"], titulo: "Prosodia emocional (valencia × activación)",
     xl: "valencia (0–1)", yl: "activación (0–1)", u: "", refx: 0.5, refy: 0.5, tag: "exploratoria", micro: true,
     cuad: ["intensa, tono negativo", "intensa, tono positivo", "calmada, tono negativo", "calmada, tono positivo"],
-    why: "plano valencia × activación estimado desde la voz; la dominancia aparece al pasar el mouse." },
+    leer: "Plano estimado desde el sonido de la voz; las líneas marcan el centro de la escala (0,5) y la dominancia aparece al pasar el cursor." },
 };
 
 // ---------- vista por familia de variables ----------
@@ -622,13 +619,18 @@ function explicacion(spec) {
     return `<span class="dimtag" title="${esc(tip)}">${cap(D.catalogo[i].nombre)} · ${i}</span>`;
   }).join("");
   const q = spec.intro ? `<p><b>Qué muestra:</b> ${spec.intro}</p>` : spec.soloLeer ? "" : ques.map(x => `<p><b>Qué muestra:</b> ${x}</p>`).join("");
-  const l = leerl.map(x => `<p><b>Cómo leerlo:</b> ${x}</p>`).join("");
+  const ls = leerl.map(x => `<p><b>Cómo leerlo:</b> ${x}</p>`);
+  if (spec.leer) {   // lectura propia del gráfico: leyendas de color, ejes que no parten de cero, advertencias
+    if (ls.length === 1) ls[0] = ls[0].replace("</p>", ` ${spec.leer}</p>`);
+    else ls.push(`<p><b>Cómo leerlo:</b> ${spec.leer}</p>`);
+  }
+  const l = ls.join("");
   return `${q}${l}${dims ? `<div class="dims"><b>${usadas.length > 1 ? "Variables" : "Variable"}:</b>${dims}</div>` : ""}`;
 }
 function card(parent, spec, cvar) {
   const d = document.createElement("div");
   d.className = "card" + (spec.wide ? " wide" : ""); d.style.setProperty("--c", `var(${cvar})`);
-  const info = explicacion(spec) + (spec.nota ? `<p class="why">${spec.nota}</p>` : "") + (spec.why ? `<p class="why">Forma del gráfico: ${spec.why}</p>` : "");
+  const info = explicacion(spec) + (spec.nota ? `<p class="why">${spec.nota}</p>` : "");
   d.innerHTML = `<div class="card-h"><h3><span class="dot"></span>${spec.titulo}</h3>${spec.tag ? `<span class="tag">${spec.tag}</span>` : ""}${
       info ? `<button class="info-btn" type="button" aria-expanded="false" aria-label="Qué muestra y cómo leerlo" title="Qué muestra y cómo leerlo">i</button>` : ""}</div>
     ${spec.u ? `<div class="unit">${spec.u}</div>` : ""}<div class="card-info" hidden>${info}</div><div class="plot"></div><div class="notes"></div>`;
@@ -928,7 +930,7 @@ const PINTA = { bar: barChart, dot: dotChart, mariposa: butterfly, apilada: stac
 function pintar(g, sp, recs, cvar, micro) {
   if ((sp.v || []).length && sp.v.every(i => D.catalogo[i]?.estado === "no_disponible")) {
     const d = card(g, sp, cvar); d.classList.add("na-card");
-    d.querySelector(".plot").innerHTML = `<div class="empty"><b>No disponible.</b> ${D.catalogo[sp.v[0]].motivo || ""}</div>`;
+    d.querySelector(".plot").innerHTML = `<div class="empty"><b>No disponible.</b> ${esc(D.catalogo[sp.v[0]].motivo || "")}</div>`;
     return d;
   }
   const ok = sp.todos ? recs : recs.filter(r => !r.insuf), fuera = recs.filter(r => r.insuf && !sp.todos);
@@ -971,7 +973,7 @@ function sintesis(main) {
   sec.innerHTML = `<div class="panel-h"><h2>Síntesis descriptiva</h2>
       <div class="seg small" role="radiogroup" aria-label="Ver síntesis por"><label><input type="radio" name="sint" value="grupos">Por grupo · ${gids.length}</label><label><input type="radio" name="sint" value="part">Por participante · ${filas.length}</label></div>
       <span class="spacer"></span><button class="link" type="button" data-a="about">Cómo se elaboró</button></div>
-    <div class="about" hidden>Redactada con inteligencia artificial (${P.modelo}, ${P.generado}) a partir de los indicadores del habla de cada sesión, fragmentos de la transcripción y la documentación del proyecto. Describe lo observado en la sesión; no es una recomendación clínica. ${P.aviso} Los participantes se identifican solo por su código de enrolamiento.</div>
+    <div class="about" hidden>Redactada con inteligencia artificial (${P.modelo}, ${P.generado}) a partir de las métricas del habla de cada sesión, fragmentos de la transcripción y la documentación del proyecto. Describe lo observado en la sesión; no es una recomendación clínica. ${P.aviso} Los participantes se identifican solo por su código de enrolamiento.</div>
     <div class="slist"></div>`;
   sec.querySelectorAll('input[name="sint"]').forEach(i => { i.checked = i.value === S.sint; i.onchange = () => { S.sint = i.value; guardar("sint", S.sint); pintaLista(); }; });
   sec.querySelector('[data-a="about"]').onclick = () => { const a = sec.querySelector(".about"); a.hidden = !a.hidden; };
@@ -1026,8 +1028,7 @@ function repartoHabla(main, recs) {
     const d = card(g, { titulo: `Segmentos identificados · ${ses} · ${gru}`, wide: true,
       u: "cada barra es un tramo de voz atribuido a esa persona, situado en el minuto de la grabación en que ocurre",
       intro: "los tramos de voz que la separación automática de voces y la identificación por perfil atribuyeron a cada participante, a lo largo de toda la grabación. Deja ver cuándo interviene cada persona, si lo hace de forma repartida o concentrada, y en qué tramos permanece en silencio.",
-      nota: "Solo participantes: el habla del moderador, de la técnica, de los acompañantes y la que no pudo atribuirse a nadie no se grafica, como en el resto del tablero.",
-      why: "una fila por participante; cada barra ocupa el intervalo del tramo. Los tramos más breves se dibujan con un ancho mínimo para que sigan siendo visibles, así que su grosor no es proporcional a su duración." }, "--cat-temporal");
+      nota: "Solo participantes: el habla del moderador, de la técnica, de los acompañantes y la que no pudo atribuirse a nadie no se grafica, como en el resto del tablero." }, "--cat-temporal");
     const ps = uniq(recs.filter(r => r.sid === sid).map(r => r.p)).filter(p => tr[p]?.length).sort(porCodigo);
     if (!ps.length) { empty(d, "Sin tramos atribuidos para la selección actual."); continue; }
     const minimo = dur / 60 / 400;                       // ancho mínimo visible, en minutos
@@ -1074,8 +1075,7 @@ function resumen(main, recs) {
 
   const g = document.createElement("div"); g.className = "grid"; main.appendChild(g);
   const multi = uniq(recs.map(r => r.p)).filter(p => uniq(recs.filter(r => r.p === p).map(r => r.sesion)).length > 1).sort(porCodigo);
-  const ev = card(g, { titulo: "Evolución entre sesiones", u: "participantes con más de una sesión procesada (hasta 8; filtra para ver otras)", wide: true,
-    why: "líneas: una por participante, con cuatro indicadores básicos de participación y vocabulario." }, "--cat-prosodica");
+  const ev = card(g, { titulo: "Evolución entre sesiones", u: "participantes con más de una sesión procesada (hasta 8; filtra para ver otras)", wide: true }, "--cat-prosodica");
   if (!multi.length) empty(ev, "Aparecerá cuando una participante tenga más de una sesión procesada en la selección.");
   else {
     const ps = multi.slice(0, 8), metr = [["LEX_WORD_COUNT.n", "palabras"], ["LEX_TTR.mattr_50", "riqueza léxica (MATTR)"], ["CNV_TURNS.por_10min", "turnos/10 min"], ["TMP_SPEECH_DUR.pct_sesion", "% del habla del grupo"]];
@@ -1118,23 +1118,21 @@ function vistaGQM(main, dim, recs) {
   const np = uniq(recs.map(r => r.p)).length, ni = recs.filter(r => r.insuf).length;
   for (const q of dim.preguntas) {
     const sec = document.createElement("section"); sec.className = "q"; sec.id = `q-${dim.id}-${q.id}`; sec.style.setProperty("--c", `var(${dim.c})`);
-    const hd = `<div class="qh"><span class="qid">${q.id}</span><h3>${q.titulo}</h3></div><p class="qt"><span class="lbl">Variable investigada</span>${q.texto}</p>`;
+    const hd = `<div class="qh"><span class="qid">${q.id}</span><h3>${q.titulo}</h3></div><p class="qt"><span class="lbl">Pregunta GQM</span>${q.texto}</p>`;
     const ms = q.metricas.map(i => [i, D.catalogo[i]]).filter(([, c]) => c);
     const ins = uniq(ms.flatMap(([, c]) => c.insumos)).map(i => INSUMO[i] || i);
-    const noImpl = ms.filter(([, c]) => c.estado !== "implementada");
     const micro = ms.some(([, c]) => c.micro);
     sec.innerHTML = hd + `<ol class="flow">
         <li><details class="step"><summary><span class="n">1</span><h4>Procedimiento de análisis</h4></summary><p>${q.procedimiento || ""}</p></details></li>
         <li><details class="step"><summary><span class="n">2</span><h4>Datos utilizados</h4></summary><ul>${ins.map(t => `<li>${t}</li>`).join("")}</ul></details></li>
-        <li><details class="step"><summary><span class="n">3</span><h4>Indicadores computacionales <span class="cnt">${ms.length}</span></h4></summary>
+        <li><details class="step"><summary><span class="n">3</span><h4>Métricas computacionales <span class="cnt">${ms.length}</span></h4></summary>
           <ul class="mlist">${ms.map(([i, c]) => `<li><span title="${esc(i)}">${cap(c.nombre)}</span>${badge(c.estado)}</li>`).join("")}</ul></details></li>
       </ol>
-      <details class="tech"><summary>Cálculo de cada indicador (definición, unidad y estado)</summary><div class="tbl"><table><thead><tr><th class="l">Indicador</th><th class="l">Cálculo</th><th class="l">Unidad</th><th class="l">Estado</th></tr></thead><tbody>${
+      <details class="tech"><summary>Cálculo de cada métrica (definición, unidad y estado)</summary><div class="tbl"><table><thead><tr><th class="l">Métrica</th><th class="l">Cálculo</th><th class="l">Unidad</th><th class="l">Estado</th></tr></thead><tbody>${
         ms.map(([i, c]) => `<tr><td class="l">${cap(c.nombre)}<br><code>${i}</code></td><td class="l wr">${esc(c.definicion)}</td><td class="l">${esc(c.unidad)}</td><td class="l wr">${ESTADO[c.estado]?.[0] || c.estado}${c.motivo ? `<br><span class="muted">${esc(c.motivo)}</span>` : ""}</td></tr>`).join("")}</tbody></table></div></details>
       <div class="step result"><span class="n">4</span><div class="grow"><h4>Resultado</h4>
-        <p class="hint muted">${recs.length} participaciones de ${np} participantes en la selección${ni ? `; ${ni} con datos insuficientes no se grafican salvo en los conteos` : ""}${micro ? ". Las medidas de voz se comparan solo dentro del mismo micrófono" : ""}.</p><div class="grid"></div></div></div>
-      <div class="step interp"><span class="n">5</span><div><h4>Interpretación y limitaciones</h4><p>${q.interpretacion || ""}</p>
-        <p><b>Limitaciones.</b> ${q.limites || ""}${noImpl.length ? ` Indicadores no plenamente implementados: ${noImpl.map(([, c]) => `${c.nombre} (${ESTADO[c.estado]?.[0] || c.estado})`).join(", ")}.` : ""}</p></div></div>`;
+        <p class="hint muted">${recs.length} participaciones de ${np} participantes en la selección${ni ? `; ${ni} con datos insuficientes no se ${ni === 1 ? "grafica" : "grafican"} salvo en los conteos` : ""}${micro ? ". Las medidas de voz se comparan solo dentro del mismo micrófono" : ""}.</p><div class="grid"></div></div></div>
+      <div class="step interp"><span class="n">5</span><div><h4>Interpretación</h4><p>${q.interpretacion || ""}</p></div></div>`;
     main.appendChild(sec);
     const g = sec.querySelector(".result .grid");
     for (const sp of (GQM_CH[`${dim.id} ${q.id}`] || []).map(n => CH[n])) pintar(g, sp, recs, dim.c, sp.micro);
@@ -1198,19 +1196,25 @@ function bajar(nombre, texto, tipo) {
 }
 const SALIDA = {
   csv() {
+    // separador «;» y coma decimal: así Excel en español lo abre en columnas sin importarlo a mano.
+    // Para leerlo con pandas: pd.read_csv("naira_participantes.csv", sep=";", decimal=",")
     const recs = new Set(filtered().map(r => r.key));
-    const lines = [["sesion", "grupo", "participante", "microfono", "variable", "nombre", "categoria", "componente", "valor", "unidad", "marcas"].join(",")];
+    const q = v => { const s = String(v ?? ""); return /["\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+    const num = v => { if (v == null || v === "") return ""; let s = String(v);
+      if (/e/i.test(s)) s = Number(v).toFixed(12).replace(/0+$/, "").replace(/\.$/, "");
+      return s.replace(".", ","); };
+    const lines = [["sesion", "grupo", "participante", "microfono", "variable", "nombre", "categoria", "componente", "valor", "unidad", "marcas"].join(";")];
     for (const r of D.filas) if (recs.has(r[C.sid] + "|" + r[C.p])) {
       const cat = D.catalogo[r[C.m]] || {};
-      lines.push([r[C.sesion], r[C.grupo], r[C.p], DEV[r[C.dev]] || r[C.dev], r[C.m], `"${cat.nombre || ""}"`, cat.familia || "", r[C.c], r[C.v] ?? "", r[C.u], `"${r[C.f] || ""}"`].join(","));
+      lines.push([r[C.sesion], r[C.grupo], r[C.p], DEV[r[C.dev]] || r[C.dev], r[C.m], cat.nombre || "", cat.familia || "", r[C.c], num(r[C.v]), r[C.u], r[C.f] || ""].map(q).join(";"));
     }
-    bajar("naira_participantes.csv", "﻿" + lines.join("\n"), "text/csv");
+    bajar("naira_participantes.csv", "﻿" + lines.join("\r\n"), "text/csv;charset=utf-8");
   },
   json() {
     const P = D.prescripciones || {}, recs = filtered(), sids = uniq(recs.map(r => r.sid)).sort(nat);
     const out = {
       proyecto: "NAIRA: métricas computacionales del habla para la cognición social de adultos mayores (sesiones grupales)",
-      generado: D.generado, aviso: P.aviso || "Indicadores exploratorios del habla; no constituyen diagnóstico.",
+      generado: D.generado, aviso: P.aviso || "Métricas exploratorias del habla; no constituyen diagnóstico.",
       filtros: { sesion: [...S.sesion], grupo: [...S.grupo], participante: [...S.part] },
       metodologia_gqm: D.gqm.subprocesos.map(d => ({ subproceso: d.nombre, definicion: d.definicion, objetivo: d.objetivo,
         preguntas: d.preguntas.map(q => ({ id: q.id, titulo: q.titulo, pregunta: q.texto, metricas: q.metricas, procedimiento: q.procedimiento || null, limitaciones: q.limites || null })) })),
@@ -1226,7 +1230,7 @@ const SALIDA = {
   md() {
     const P = D.prescripciones || {}, recs = filtered(), sids = uniq(recs.map(r => r.sid)).sort(nat), L = [];
     const v = (r, k, d = 0) => fmt(val(r, k), d);
-    L.push("# NAIRA · resumen de sesiones", "", `Generado: ${D.generado}. ${P.aviso || "Indicadores exploratorios del habla; no constituyen diagnóstico."}`, "",
+    L.push("# NAIRA · resumen de sesiones", "", `Generado: ${D.generado}. ${P.aviso || "Métricas exploratorias del habla; no constituyen diagnóstico."}`, "",
       "Subprocesos evaluados (metodología GQM): " + D.gqm.subprocesos.map(d => `**${d.nombre}**: ${d.definicion}`).join(" "), "");
     for (const ses of uniq(sids.map(sid => SG(sid)[0]))) {
       L.push(`## ${ses}`, "");

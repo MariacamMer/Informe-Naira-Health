@@ -1,4 +1,4 @@
-"""Genera tablero.html con las métricas de los PARTICIPANTES de todas las sesiones procesadas en NAIRA.
+"""Genera index.html con las métricas de los PARTICIPANTES de todas las sesiones procesadas en NAIRA.
 
 Los participantes se identifican solo por su código de enrolamiento (P1, P2, …): el tablero no incluye nombres reales.
 
@@ -14,7 +14,7 @@ Lee (sin modificar nada dentro de NAIRA):
 
 Uso, después de procesar una sesión o grupo nuevo, desde esta carpeta (proyecto/codigo):
     conda run -n naira-audio python generar_tablero.py
-Escribe ../../tablero.html, el único archivo que queda a la vista. Se abre con doble clic y lleva Plotly
+Escribe ../../index.html, el único archivo que queda a la vista (se llama index.html para que GitHub Pages lo abra al entrar al repositorio). Se abre con doble clic y lleva Plotly
 incrustado, así que es un único archivo y funciona aunque se copie a otro computador.
 """
 
@@ -29,7 +29,7 @@ from pathlib import Path
 import yaml
 
 # La carpeta está ordenada por lo que es cada archivo: codigo/ (estos .py), diseno/ (la plantilla
-# y Plotly) y datos/ (la metodología GQM y los textos de las síntesis). Afuera solo queda tablero.html.
+# y Plotly) y datos/ (la metodología GQM y los textos de las síntesis). Afuera solo queda index.html.
 CODIGO = Path(__file__).resolve().parent                 # Tablero_NAIRA - publico/proyecto/codigo
 PROYECTO = CODIGO.parent
 PUBLICO = PROYECTO.parent                                # ahí queda el tablero, solo
@@ -42,7 +42,7 @@ PLANTILLA = PROYECTO / "diseno" / "plantilla.html"
 PLOTLY = PROYECTO / "diseno" / "lib" / "plotly-2.35.2.min.js"   # se incrusta en el tablero: un solo archivo
 GQM = PROYECTO / "datos" / "gqm.yaml"
 PRESCRIPCIONES = PROYECTO / "datos" / "prescripciones.json"     # síntesis redactadas con IA (Claude); solo códigos
-SALIDA = PUBLICO / "tablero.html"
+SALIDA = PUBLICO / "index.html"             # index.html: GitHub Pages lo sirve al abrir el repositorio
 # Si un grupo se grabó con los dos micrófonos, el tablero usa UNA sola fuente: la primera de esta lista que tenga resultados.
 # (La comparación entre micrófonos está aparte, en ../../../Comparativo_Microfonos.)
 FUENTE_PREFERIDA = ["zoom01", "jabra01"]
@@ -56,6 +56,29 @@ def sesion_grupo(session_id: str) -> tuple[str, str]:
 def limpiar(t: str) -> str:
     t = re.sub(r"\*\*(.+?)\*\*", r"\1", t)
     t = re.sub(r"`([^`]+)`", r"\1", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+# metricas_explicadas.md mezcla dos públicos: lo que el usuario final necesita para leer un gráfico y las
+# salvedades de quien calcula la métrica. El tablero es para el usuario final, así que estas últimas se
+# quitan de «qué significa» y «cómo leerla»: no le sirve saber que Whisper omite palabras cortas ni cómo
+# se llama internamente una marca de calidad. Lo que sí importa sigue estando donde corresponde: el estado
+# de cada métrica (exploratoria, sustituto) se ve como etiqueta en su tarjeta; las salvedades de método,
+# en «Interpretación y limitaciones» de cada pregunta GQM y en las notas metodológicas del pie.
+NOTAS_TECNICAS = [
+    (r"\s*Ojo:[^.]*\.", ""),                                           # «Ojo: Whisper a veces omite…»
+    (r"\s*(?:Exploratoria|Sustituto|Provisional|Experimental):[^.]*\.", ""),   # ya está como etiqueta
+    (r"\s*Si la cobertura es baja[^.]*\.",                             # la cautela sí importa; el código de la marca, no
+     " Si el léxico cubre pocas de sus palabras, el valor se apoya en una base pequeña y conviene leerlo con cautela."),
+    (r"\s*Lleva su cobertura\.", ""),
+    (r" ?\(marca [a-z_]+(?:,[^)]*)?\)", ""),                           # «(marca no_valida_por_dsp)»
+]
+
+
+def sin_notas_tecnicas(t: str) -> str:
+    """Quita de un texto las notas dirigidas a quien desarrolla el tablero, no a quien lo lee."""
+    for patron, reemplazo in NOTAS_TECNICAS:
+        t = re.sub(patron, reemplazo, t, flags=re.IGNORECASE)
     return re.sub(r"\s+", " ", t).strip()
 
 
@@ -188,6 +211,13 @@ def main() -> None:
     exp = explicaciones()
     for k, v in catalogo.items():                    # respaldo: la definición del catálogo
         exp.setdefault(k, {"que": v["definicion"], "leer": "", "tesis": []})
+    notas_quitadas = 0                               # se informa abajo: si NAIRA cambia la redacción, el patrón
+    for v in exp.values():                           # deja de coincidir y el aviso volvería a salir sin avisar
+        for campo in ("que", "leer"):
+            limpio = sin_notas_tecnicas(v[campo])
+            if limpio != v[campo]:
+                notas_quitadas += 1
+                v[campo] = limpio
     datos = {"generado": datetime.now().strftime("%d-%m-%Y %H:%M"), "catalogo": catalogo, "explicacion": exp, "sexo": sexos(), "gqm": gqm,
              "prescripciones": json.loads(PRESCRIPCIONES.read_text(encoding="utf-8")) if PRESCRIPCIONES.exists() else None,
              "presentes": presentes(), "segmentos": segmentos(elegida),
@@ -200,7 +230,7 @@ def main() -> None:
     personas = {(x[0], x[3]) for x in filas}
     print("fuente por grupo: " + ", ".join(f"{k}={v}" for k, v in sorted(elegida.items())))
     print(f"tablero: {SALIDA}  ({SALIDA.stat().st_size / 1e6:.1f} MB, un solo archivo)\n{len(personas)} participante-sesión, {len({x[0] for x in filas})} grupos, {len(filas)} valores, "
-          f"{sum(1 for k in catalogo if exp[k]['que'])}/48 variables con explicación\n"
+          f"{sum(1 for k in catalogo if exp[k]['que'])}/48 variables con explicación, {notas_quitadas} notas técnicas ocultas al usuario final\n"
           "GQM: " + ", ".join(f'{d["id"]} {d["n_metricas"]} métricas' for d in gqm["subprocesos"]))
 
 

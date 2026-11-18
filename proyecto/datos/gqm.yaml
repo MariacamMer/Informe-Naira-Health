@@ -1,8 +1,9 @@
 # Metodología GQM de la tesis (NAIRA/docs/00_bases/Metodología GQM.pdf): subproceso → objetivo → preguntas → métricas.
 # Las métricas de cada pregunta NO se escriben aquí: salen del catálogo (pregunta_gqm de cada variable en metrics_catalog.yaml).
 # asociacion: true = pregunta de asociación con el desempeño (usa todas las métricas del subproceso como vector).
-# procedimiento / interpretacion / limites: texto del tablero que describe el cálculo REAL de NAIRA (configs/metrics_catalog.yaml,
+# procedimiento / interpretacion / limites: texto que describe el cálculo REAL de NAIRA (configs/metrics_catalog.yaml,
 # configs/default.yaml y src/naira/metrics/). Si cambia un método en NAIRA, actualizar aquí.
+# limites ya no se muestra en el tablero; sigue saliendo en la exportación JSON.
 subprocesos:
   - id: ToM
     nombre: Teoría de la mente
@@ -22,7 +23,7 @@ subprocesos:
           distintos se mantiene sobre 0,72, leyendo el discurso hacia adelante y hacia atrás.
         interpretacion: >-
           Describe cuán extensos y variados son los enunciados. Un discurso más elaborado ofrece más material para expresar
-          perspectivas y estados mentales, pero estos indicadores no miden por sí mismos esa capacidad.
+          perspectivas y estados mentales, pero estas métricas no miden por sí mismas esa capacidad.
         limites: >-
           Dependen de la transcripción automática. MTLD queda sin valor con menos de 100 palabras.
       - id: Q2
@@ -33,8 +34,8 @@ subprocesos:
           cada persona gramatical (yo, nosotros, tú/usted, él/ella, ellos/ellas), los impersonales y el total, y cada recuento se
           expresa como porcentaje de las palabras del participante.
         interpretacion: >-
-          Muestra hacia quién se orienta el discurso: a sí mismo, al grupo, al interlocutor o a terceros. Es un indicador
-          indirecto del uso de distintas perspectivas, no una medida de la capacidad de adoptarlas.
+          Muestra hacia quién se orienta el discurso: a sí mismo, al grupo, al interlocutor o a terceros. Es una métrica
+          indirecta del uso de distintas perspectivas, no una medida de la capacidad de adoptarlas.
         limites: >-
           El español omite a menudo el sujeto («fui» en lugar de «yo fui»), por lo que los pronombres explícitos subestiman las
           referencias a personas. Los impersonales usan una definición sustituta, pendiente de revisión.

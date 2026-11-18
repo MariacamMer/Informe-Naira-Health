@@ -1,7 +1,7 @@
 TABLERO NAIRA · métricas por participante
 =========================================
 
-Abrir:       doble clic en tablero.html, el único archivo que hay afuera (funciona sin internet).
+Abrir:       doble clic en index.html, el único archivo que hay afuera (funciona sin internet).
              Es un archivo autocontenido: se puede copiar o enviar solo, sin la carpeta generador.
 
 Actualizar:  cada vez que termines de procesar un grupo o una sesión en NAIRA, corre en la Terminal:
@@ -9,18 +9,18 @@ Actualizar:  cada vez que termines de procesar un grupo o una sesión en NAIRA, 
     cd "~/Downloads/Maria/Tablero_NAIRA/proyecto/codigo"
     conda run -n naira-audio python generar_tablero.py
 
-  y vuelve a abrir tablero.html. El tablero toma todo lo que haya en NAIRA/outputs/metrics_all.csv
+  y vuelve a abrir index.html. El tablero toma todo lo que haya en NAIRA/outputs/metrics_all.csv
   (NAIRA la actualiza sola al final de cada corrida), así que las sesiones 2 y 3 aparecen sin cambiar nada.
 
 Contenido:   solo participantes (sin moderadores, técnica, acompañantes ni voces desconocidas).
              Barra superior fija con las pestañas (Resumen y los cuatro subprocesos) y los filtros por sesión,
              grupo y participante. Lo de uso menos frecuente está en el menú «Opciones» (ver abajo).
 
-Archivos:    tablero.html   lo único que queda a la vista: el tablero, listo para abrir
+Archivos:    index.html     lo único que queda a la vista: el tablero, listo para abrir
              proyecto/      todo lo demás, ordenado por lo que es cada archivo:
 
                proyecto/codigo/     los programas
-                 generar_tablero.py        lee NAIRA (sin modificarlo) y escribe ../../tablero.html
+                 generar_tablero.py        lee NAIRA (sin modificarlo) y escribe ../../index.html
                  expediente_grupos.py      prepara el material de cada grupo para redactar las síntesis
                  expediente_prescripciones.py  lo mismo, por participante
 
@@ -33,7 +33,6 @@ Archivos:    tablero.html   lo único que queda a la vista: el tablero, listo pa
                  prescripciones.json       textos de las síntesis descriptivas (solo códigos)
 
                proyecto/LEEME.txt   este archivo
-               proyecto/_restos_macos/   archivos ._* que dejó macOS; no sirven en Windows y se pueden borrar
 
              Los datos de las métricas no están aquí: salen de NAIRA/outputs/metrics_all.csv cada vez
              que se genera el tablero.
@@ -56,7 +55,7 @@ Solo códigos de enrolamiento (11-11-2026)
 - El tablero identifica a cada participante únicamente por su código de enrolamiento (P1, P2, …), en todas partes:
   gráficos, ejes, tooltips, tablas, chips, el filtro «Participante», las síntesis descriptivas y las exportaciones.
 - Ya no se muestran nombres reales y se quitó el botón «P#», que antes alternaba entre nombres y códigos: sobra.
-- proyecto/codigo/generar_tablero.py dejó de leer NAIRA/data/roster_map.yaml, así que tablero.html no contiene ningún nombre y las
+- proyecto/codigo/generar_tablero.py dejó de leer NAIRA/data/roster_map.yaml, así que index.html no contiene ningún nombre y las
   capturas para la tesis se pueden tomar directamente.
 - Aun así el tablero describe a personas identificables por su código, de modo que sigue siendo de uso interno del equipo.
 
@@ -82,12 +81,14 @@ Organización GQM (01-11-2026)
 - Dentro de cada subproceso, cada pregunta (Q1, Q2…) se presenta como un recorrido de cinco pasos:
     1 procedimiento de análisis
     2 datos utilizados
-    3 indicadores computacionales (con sus definiciones técnicas en una tabla plegable)
+    3 métricas computacionales (con sus definiciones técnicas en una tabla plegable)
     4 resultado (gráficos)
-    5 interpretación y limitaciones
-- Los textos (definición, objetivo, preguntas, procedimiento, interpretación y limitaciones) están en gqm.yaml, copiados de
+    5 interpretación
+- Los textos (definición, objetivo, preguntas, procedimiento e interpretación) están en gqm.yaml, copiados de
   «Metodología GQM.pdf». Si cambia un método en NAIRA, actualizar en gqm.yaml los campos procedimiento, interpretacion
   y limites. Qué métricas van en cada pregunta NO se escribe aquí: sale del catálogo de NAIRA (pregunta_gqm de cada variable).
+- El campo limites ya no se muestra en el tablero (18-11-2026): el paso 5 dejó solo la interpretación. Se conserva en
+  gqm.yaml porque la exportación JSON lo sigue incluyendo, para análisis y para pegar en un chat de IA.
 - La pregunta de asociación con el desempeño (Q5; Q4 en Empatía) muestra «Sin resultado todavía», porque aún no existen
   los puntajes de desempeño de las actividades. El vector de métricas de cada participante va en una sección plegable.
 
@@ -96,7 +97,7 @@ Síntesis descriptiva (01-11-2026)
   vistas, y las filas se pliegan y despliegan.
 - Antes se llamaba «prescripción». El nombre cambió, pero el archivo sigue siendo prescripciones.json.
 - Las síntesis están redactadas con IA (Claude Opus 5.5, en una sesión de Claude Code, sin API) a partir de los
-  indicadores de las 48 variables, fragmentos de su transcripción y la documentación del proyecto. Es un complemento del
+  métricas de las 48 variables, fragmentos de su transcripción y la documentación del proyecto. Es un complemento del
   tablero: no forma parte del flujo de NAIRA ni de la tesis.
 - Los textos están en prescripciones.json (solo códigos) y se muestran tal cual: donde el texto trae {P1} aparece el
   código P1. El tablero no incorpora nombres reales en ningún momento.
@@ -104,7 +105,7 @@ Síntesis descriptiva (01-11-2026)
   «actualiza las síntesis descriptivas» para redactarlas.
 
 Resumen (01-11-2026)
-- El Resumen muestra, en este orden: indicadores generales (KPIs); chips de estado (datos insuficientes, presentes sin
+- El Resumen muestra, en este orden: cifras generales (KPIs); chips de estado (datos insuficientes, presentes sin
   voz, perfil provisional); la síntesis descriptiva; la evolución entre sesiones; y la tabla «Participaciones y calidad
   de los datos», que también lista a los participantes presentes cuya voz no se capturó. Todo responde a los filtros de arriba.
 - «Exportar» (menú Opciones) descarga lo filtrado, solo con códigos: Markdown (informe para leer o pegar en un chat de IA),
@@ -116,3 +117,16 @@ Datos insuficientes (01-11-2026)
 - Las participaciones con menos de 50 palabras no se grafican, salvo en los gráficos de conteo, donde aparecen en gris.
 - No se grafican los valores que NAIRA marca como inválidos (por ejemplo, la intensidad del Jabra).
 - Las notas metodológicas están una sola vez, en «Notas metodológicas», al final de la página.
+
+Publicación en GitHub Pages (17-11-2026)
+- El tablero se llama index.html (antes tablero.html) porque GitHub Pages sirve ese nombre al entrar al repositorio:
+  así la dirección abre el tablero y no el listado de archivos ni el código.
+- Para activarlo, una sola vez: en GitHub, Settings > Pages > Source: «Deploy from a branch», rama main, carpeta / (root).
+  La dirección queda en https://mariacammer.github.io/Informe-Naira-Health/
+- Sigue siendo un único archivo autocontenido: se abre igual con doble clic, sin internet, y se puede enviar solo.
+- .nojekyll (archivo vacío en la raíz) evita que GitHub procese la página antes de publicarla.
+- .gitignore deja fuera del repositorio los restos de macOS (._*), __pycache__ y los expedientes .md que se generan
+  para redactar las síntesis.
+- Aviso: publicar en GitHub Pages deja el tablero accesible a cualquiera que tenga la dirección. El tablero no lleva
+  nombres reales, pero describe a personas identificables por su código de enrolamiento. Si no debe ser público,
+  usar un repositorio privado con Pages restringido o compartir el archivo directamente.

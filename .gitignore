@@ -1,0 +1,18 @@
+# restos de macOS (archivos AppleDouble y metadatos del Finder)
+._*
+.DS_Store
+.Spotlight-V100
+.Trashes
+
+# restos de Windows
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# salidas locales de los expedientes para redactar las síntesis
+proyecto/codigo/*.md

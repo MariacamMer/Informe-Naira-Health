@@ -1,9 +1,10 @@
 """Expediente por participante-sesión para redactar prescripciones: niveles cualitativos (percentil interno) + fragmentos."""
 import csv, json, sys, collections, bisect, yaml
 from pathlib import Path
-N = Path('/Users/victor/Downloads/Maria/NAIRA'); O = N / 'outputs'
+N = Path(__file__).resolve().parents[3] / 'NAIRA'   # codigo -> proyecto -> Tablero_NAIRA - publico -> carpeta que contiene NAIRA
+O = N / 'outputs'
 PREF = ["zoom01", "jabra01"]
-rows = [r for r in csv.DictReader(open(O / 'metrics_all.csv')) if r['role'] == 'participante' and r['session_id'].startswith('sesion')]
+rows = [r for r in csv.DictReader(open(O / 'metrics_all.csv', encoding='utf-8')) if r['role'] == 'participante' and r['session_id'].startswith('sesion')]
 src = collections.defaultdict(set)
 for r in rows: src[r['session_id']].add(r['source_id'])
 eleg = {s: min(v, key=lambda x: PREF.index(x) if x in PREF else 9) for s, v in src.items()}
@@ -30,7 +31,7 @@ POR_MIC = ("ACU_", "PRO_", "AFF_AROUSAL.voz", "AFF_VALENCE.voz")
 sexo = {}
 roster = collections.defaultdict(set)
 for p in (N / 'sessions').glob('sesion*.yaml'):
-    t = p.read_text()
+    t = p.read_text(encoding='utf-8')
     if 'DESCARTADO' in t[:400]: continue
     s = yaml.safe_load(t)
     for r in s.get('roster', []):
@@ -53,8 +54,8 @@ def nivel(k, key):
     return "muy bajo" if p < .1 else "bajo" if p < .3 else "medio" if p <= .7 else "alto" if p <= .9 else "muy alto"
 def turnos(sid, src, p, maxn=14, maxw=45):
     d = O / sid / src
-    T = json.load(open(d / '05_units/turns.json'))['turns']
-    W = json.load(open(d / '04_alignment/words.json'))['words']
+    T = json.load(open(d / '05_units/turns.json', encoding='utf-8'))['turns']
+    W = json.load(open(d / '04_alignment/words.json', encoding='utf-8'))['words']
     ws = sorted((w['start'], w.get('speaker_id'), w.get('word') or w.get('text') or '') for w in W)
     ini = [w[0] for w in ws]
     out = []

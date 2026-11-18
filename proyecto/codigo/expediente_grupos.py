@@ -9,7 +9,8 @@ import bisect, collections, csv, json, sys
 from pathlib import Path
 import yaml
 
-N = Path(__file__).resolve().parents[3] / "NAIRA"   # codigo -> proyecto -> Tablero_NAIRA - publico -> Videos; O = N / "outputs"
+N = Path(__file__).resolve().parents[3] / "NAIRA"   # codigo -> proyecto -> Tablero_NAIRA - publico -> carpeta que contiene NAIRA
+O = N / "outputs"
 PREF = ["zoom01", "jabra01"]
 rol = lambda s: "P" if s.startswith("P") else "equipo" if s[:1] in "MTA" else "?"
 res = []
@@ -22,12 +23,12 @@ for ses in sorted((N / "sessions").glob("sesion*.yaml")):
     if not src:
         continue
     d = O / sid / src
-    T = json.load(open(d / "05_units/turns.json"))["turns"]
+    T = json.load(open(d / "05_units/turns.json", encoding="utf-8"))["turns"]
     W = sorted((w["start"], w.get("speaker_id") or "DESCONOCIDO", (w.get("word") or w.get("text") or "").strip())
-               for w in json.load(open(d / "04_alignment/words.json"))["words"])
+               for w in json.load(open(d / "04_alignment/words.json", encoding="utf-8"))["words"])
     ini = [w[0] for w in W]
-    segs = json.load(open(d / "02_enrollment/segments_identified.json"))["segments"]
-    dur = json.load(open(d / "00_ingest/qc.json"))["duration_s"]
+    segs = json.load(open(d / "02_enrollment/segments_identified.json", encoding="utf-8"))["segments"]
+    dur = json.load(open(d / "00_ingest/qc.json", encoding="utf-8"))["duration_s"]
     habla = collections.Counter()
     for g in segs:
         habla[g.get("speaker_id") or "DESCONOCIDO"] += g["end"] - g["start"]
@@ -40,7 +41,7 @@ for ses in sorted((N / "sessions").glob("sesion*.yaml")):
         if a != b:
             trans[f"{rol(a)}→{rol(b)}"] += 1
     ntr = sum(trans.values()) or 1
-    ov = sum(float(r["value"]) for r in csv.DictReader(open(d / "07_metrics/metrics_long.csv"))
+    ov = sum(float(r["value"]) for r in csv.DictReader(open(d / "07_metrics/metrics_long.csv", encoding="utf-8"))
              if r["speaker_id"] == "SESION" and r["metric_id"] == "CNV_OVERLAP" and r["component"] == "segundos")
     presentes = [r["speaker_id"] for r in s["roster"] if r["role"] == "participante"]
     lin = [f"### {sid} · micrófono {src} · {dur/60:.0f} min",

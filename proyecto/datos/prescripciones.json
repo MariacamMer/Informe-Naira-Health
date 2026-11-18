@@ -1,8 +1,8 @@
 {
  "modelo": "Claude Opus 5.5 (claude-opus-5-5), en sesión de Claude Code",
  "generado": "02-11-2026",
- "base": "Indicadores de las 48 variables de NAIRA de cada participante en esa sesión (nivel respecto del conjunto de participantes de NAIRA; voz y prosodia respecto de su mismo micrófono; tono respecto de su mismo sexo), fragmentos de su transcripción y la documentación del proyecto (subprocesos y metodología GQM).",
- "aviso": "Se basa en indicadores exploratorios del habla de una sesión grupal: no constituye diagnóstico; orienta y complementa la evaluación del profesional.",
+ "base": "Métricas de las 48 variables de NAIRA de cada participante en esa sesión (nivel respecto del conjunto de participantes de NAIRA; voz y prosodia respecto de su mismo micrófono; tono respecto de su mismo sexo), fragmentos de su transcripción y la documentación del proyecto (subprocesos y metodología GQM).",
+ "aviso": "Se basa en métricas exploratorias del habla de una sesión grupal: no constituye diagnóstico; orienta y complementa la evaluación del profesional.",
  "prescripciones": {
   "sesion1_grupo1|P02": {
    "perfil": "Participante femenina con participación verbal mínima en esta sesión.",
