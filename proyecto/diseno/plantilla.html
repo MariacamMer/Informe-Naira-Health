@@ -1068,6 +1068,17 @@ function resumen(main, recs) {
     np && `<span class="chip" title="La identificación de su voz usa un perfil armado en las propias sesiones: la atribución de su habla es menos segura."><b>${np}</b> con perfil de voz provisional</span>`].filter(Boolean).join("");
   if (st.innerHTML) main.appendChild(st);
 
+  // por qué estas cifras no son las de la tesis: allá cada toma es una ejecución; aquí, una por grupo
+  const af = D.ambas_fuentes;
+  if (af && af.grupos_dos_tomas) {
+    const nota = document.createElement("p"); nota.className = "muted"; nota.style.margin = "-6px 0 16px";
+    nota.innerHTML = `${af.grupos_dos_tomas} actividades se grabaron a la vez con los dos dispositivos. El tablero muestra una sola toma de cada una `
+      + `—la de la grabadora Zoom cuando está disponible— para no contar dos veces la misma conversación, de modo que estas cifras son menores que `
+      + `las de la tesis de investigación, que trata cada toma como una ejecución distinta: ${af.pares} pares de participante y ejecución, `
+      + `de ${af.personas} personas en ${af.combinaciones} combinaciones de persona y grupo. Una participación atribuida solo en la toma que aquí no se usa no aparece en el resumen.`;
+    main.appendChild(nota);
+  }
+
   sintesis(main);
 
   repartoHabla(main, recs);

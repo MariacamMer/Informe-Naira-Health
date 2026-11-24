@@ -207,6 +207,12 @@ def main() -> None:
         fuentes.setdefault(r["session_id"], set()).add(r["source_id"])
     rango = lambda s: FUENTE_PREFERIDA.index(s) if s in FUENTE_PREFERIDA else len(FUENTE_PREFERIDA)
     elegida = {sid: min(srcs, key=lambda s: (rango(s), s)) for sid, srcs in fuentes.items()}
+    # Recuentos sobre las DOS tomas, que son los que informa la tesis de investigación: el tablero los
+    # muestra junto a los suyos para que la diferencia quede explicada y no parezca un descuadre.
+    ambas = {"grupos_dos_tomas": sum(1 for srcs in fuentes.values() if len(srcs) > 1),
+             "pares": len({(r["session_id"], r["source_id"], r["speaker_id"]) for r in todas}),
+             "personas": len({r["speaker_id"] for r in todas}),
+             "combinaciones": len({(r["session_id"], r["speaker_id"]) for r in todas})}
     filas = []
     for r in todas:
         if r["source_id"] != elegida[r["session_id"]]:
@@ -227,7 +233,7 @@ def main() -> None:
                 v[campo] = limpio
     datos = {"generado": datetime.now().strftime("%d-%m-%Y %H:%M"), "catalogo": catalogo, "explicacion": exp, "sexo": sexos(), "gqm": gqm,
              "prescripciones": json.loads(PRESCRIPCIONES.read_text(encoding="utf-8")) if PRESCRIPCIONES.exists() else None,
-             "presentes": presentes(), "segmentos": segmentos(elegida),
+             "presentes": presentes(), "segmentos": segmentos(elegida), "ambas_fuentes": ambas,
              "columnas": ["sid", "sesion", "grupo", "p", "dev", "m", "c", "v", "u", "f"], "filas": filas}
     html = PLANTILLA.read_text(encoding="utf-8").replace("/*__DATOS__*/null", json.dumps(datos, ensure_ascii=False))
     etiqueta = '<script src="lib/plotly-2.35.2.min.js"></script>'
