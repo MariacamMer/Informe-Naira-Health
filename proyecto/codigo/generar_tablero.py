@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -33,7 +34,10 @@ import yaml
 CODIGO = Path(__file__).resolve().parent                 # Tablero_NAIRA - publico/proyecto/codigo
 PROYECTO = CODIGO.parent
 PUBLICO = PROYECTO.parent                                # ahí queda el tablero, solo
-NAIRA = PUBLICO.parent / "NAIRA"
+# NAIRA vive fuera de este repositorio. Por omisión se busca como carpeta hermana; si está en otro
+# sitio (por ejemplo cuando este repositorio se clona en otra ruta), se indica con la variable de
+# entorno NAIRA_DIR: NAIRA_DIR="C:/ruta/a/NAIRA" python generar_tablero.py
+NAIRA = Path(os.environ.get("NAIRA_DIR") or (PUBLICO.parent / "NAIRA")).expanduser()
 CSV = NAIRA / "outputs" / "metrics_all.csv"
 CATALOGO = NAIRA / "configs" / "metrics_catalog.yaml"
 EXPLICADAS = NAIRA / "docs" / "05_guias" / "metricas_explicadas.md"
@@ -183,7 +187,8 @@ def main() -> None:
     catalogo = {v["id"]: {"nombre": v["nombre"], "familia": v["familia"], "estado": v["estado"], "definicion": v.get("definicion", ""),
                           "preguntas": v.get("pregunta_gqm") or [], "motivo": v.get("motivo_estado") or "", "metodo": v.get("metodo", ""),
                           "insumos": v.get("insumos") or [], "unidad": v.get("unidad", ""), "micro": v.get("fuente_audio_valida") == "h2n"}
-                for v in yaml.safe_load(CATALOGO.read_text(encoding="utf-8"))["variables"]}
+                for v in yaml.safe_load(CATALOGO.read_text(encoding="utf-8"))["variables"]
+                if v["estado"] != "no_disponible"}      # fuera del modelo de métricas: requieren un insumo que las sesiones no produjeron
     gqm = yaml.safe_load(GQM.read_text(encoding="utf-8"))
     for d in gqm["subprocesos"]:                     # métricas de cada pregunta, desde el catálogo
         todas_dim = [k for k, v in catalogo.items() if any(q.startswith(d["id"] + " ") for q in v["preguntas"])]
@@ -194,7 +199,9 @@ def main() -> None:
         d["n_metricas"] = len(todas_dim)
     gqm.pop("nota_asociacion", None)
     with CSV.open(encoding="utf-8") as f:
-        todas = [r for r in csv.DictReader(f) if r["role"] == "participante"]   # sin moderadores, técnica, acompañantes ni voces desconocidas
+        todas = [r for r in csv.DictReader(f)
+                 if r["role"] == "participante"        # sin moderadores, técnica, acompañantes ni voces desconocidas
+                 and r["metric_id"] in catalogo]       # sin las variables descartadas del modelo de métricas
     fuentes: dict[str, set] = {}
     for r in todas:
         fuentes.setdefault(r["session_id"], set()).add(r["source_id"])
@@ -208,7 +215,7 @@ def main() -> None:
         v = r["value"]
         filas.append([r["session_id"], ses, gru, r["speaker_id"], r["device"], r["metric_id"], r["component"],
                       float(v) if v not in ("", "nan") else None, r["unit"], r["quality_flags"]])
-    exp = explicaciones()
+    exp = {k: v for k, v in explicaciones().items() if k in catalogo}   # solo las variables del modelo de métricas
     for k, v in catalogo.items():                    # respaldo: la definición del catálogo
         exp.setdefault(k, {"que": v["definicion"], "leer": "", "tesis": []})
     notas_quitadas = 0                               # se informa abajo: si NAIRA cambia la redacción, el patrón
@@ -230,7 +237,7 @@ def main() -> None:
     personas = {(x[0], x[3]) for x in filas}
     print("fuente por grupo: " + ", ".join(f"{k}={v}" for k, v in sorted(elegida.items())))
     print(f"tablero: {SALIDA}  ({SALIDA.stat().st_size / 1e6:.1f} MB, un solo archivo)\n{len(personas)} participante-sesión, {len({x[0] for x in filas})} grupos, {len(filas)} valores, "
-          f"{sum(1 for k in catalogo if exp[k]['que'])}/48 variables con explicación, {notas_quitadas} notas técnicas ocultas al usuario final\n"
+          f"{sum(1 for k in catalogo if exp[k]['que'])}/{len(catalogo)} variables con explicación, {notas_quitadas} notas técnicas ocultas al usuario final\n"
           "GQM: " + ", ".join(f'{d["id"]} {d["n_metricas"]} métricas' for d in gqm["subprocesos"]))
 
 

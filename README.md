@@ -1,4 +1,4 @@
-# Tablero NAIRA
+# Tablero de métricas del habla
 
 Métricas computacionales del habla de adultos mayores en sesiones grupales, organizadas según la
 metodología GQM de la tesis.
@@ -44,6 +44,16 @@ conda run -n naira-audio python generar_tablero.py
 
 El script lee `NAIRA/outputs/metrics_all.csv` y el resto de los insumos **sin modificar nada dentro de NAIRA**, y
 escribe `index.html` en la raíz.
+
+Por omisión busca NAIRA como carpeta hermana de este repositorio. Si está en otra ruta, se indica con la
+variable de entorno `NAIRA_DIR`:
+
+```
+NAIRA_DIR="C:/ruta/a/NAIRA" python generar_tablero.py
+```
+
+Las variables que el catálogo marca como `no_disponible` quedan fuera del tablero: no son parte del modelo de
+métricas de la tesis de investigación porque requieren un insumo que las sesiones no produjeron.
 
 ## Estructura
 

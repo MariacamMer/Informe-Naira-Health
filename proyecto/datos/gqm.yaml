@@ -45,13 +45,12 @@ subprocesos:
         procedimiento: >-
           Los lemas del participante se buscan en un léxico de estados mentales redactado en el proyecto, dividido en cognición
           (pensar, saber, creer), emoción (sentir) y volición (querer). Se informa cuántos aparecen por cada 100 palabras, en
-          total y por tipo. La competencia definicional compararía lo dicho con una definición de referencia mediante similitud
-          semántica, pero requiere una tarea de definición que las sesiones no incluyeron.
+          total y por tipo.
         interpretacion: >-
           Indica cuánto se verbalizan de forma explícita los estados mentales y de qué tipo. Verbalizarlos no equivale a
           atribuirlos correctamente a otros.
         limites: >-
-          El léxico es un sustituto propio, pendiente de validación por jueces. La competencia definicional no está disponible.
+          El léxico es un sustituto propio, pendiente de validación por jueces.
       - id: Q4
         titulo: Caracterización acústica
         texto: "¿Qué características acústicas presenta el habla producida durante las actividades orientadas a teoría de la mente?"

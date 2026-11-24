@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tablero NAIRA</title>
+<title>Tablero de métricas del habla</title>
 <script src="lib/plotly-2.35.2.min.js"></script>
 <style>
 :root {
@@ -260,7 +260,7 @@ footer code { font-size: 12px; }
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>Tablero NAIRA</h1>
+      <h1>Tablero de métricas del habla</h1>
       <p class="sub">Métricas computacionales del habla de adultos mayores en sesiones grupales, organizadas según la metodología GQM de la tesis.</p>
     </div>
     <div class="meta" id="meta"></div>
@@ -403,7 +403,6 @@ const CH = {
   empath: { t: "heat", series: ["joy:alegría", "trust:confianza", "anticipation:anticipación", "surprise:sorpresa", "sadness:tristeza", "fear:miedo", "anger:enojo", "disgust:asco"]
       .map(s => ["SEM_EMPATH." + s.split(":")[0], s.split(":")[1]]), v: ["SEM_EMPATH"], titulo: "Emociones en el contenido (categorías NRC)", u: "proporción de sus palabras", d: 3, wide: true, tag: "sustituto",
     leer: "Cuanto más oscura la celda, más presente está esa emoción en su vocabulario." },
-  defcomp: { t: "bar", k: "SEM_DEF_COMPETENCE.similitud_media", v: ["SEM_DEF_COMPETENCE"], titulo: "Competencia definicional", u: "0–1", d: 2, tag: "no disponible" },
   sentim: { t: "sentimiento", v: ["AFF_SENTIMENT"], titulo: "Sentimiento de los enunciados", u: "% de enunciados", d: 0, wide: true,
     leer: "Lo negativo queda a la izquierda del cero, lo positivo a la derecha y lo neutro repartido en el centro." },
   lexVal: { t: "dot", k: "AFF_LEX_VALENCE.media", v: ["AFF_LEX_VALENCE"], titulo: "Valencia léxica", u: "1 desagradable – 9 agradable", d: 2, med: true,
@@ -471,7 +470,7 @@ const CATS = [
     charts: ["palabras", "tipos", "mattr", "mtld", "mlu", "pron", "emoPN", "emoTot", "lexVal", "planoTexto"] },
   { id: "semantica", nombre: "Semánticas", c: "--cat-semantica",
     intro: "<b>De qué habla y cómo conecta con lo que se dice:</b> coherencia con el turno anterior, estados mentales, conceptos, y el sentimiento y las emociones del contenido.",
-    charts: ["simil", "mental", "conceptos", "defcomp", "empath", "sentim", "balanceTexto"] },
+    charts: ["simil", "mental", "conceptos", "empath", "sentim", "balanceTexto"] },
   { id: "acustica", nombre: "Acústicas", c: "--cat-acustica", micro: true,
     intro: "<b>Calidad y estabilidad de la voz.</b> Dependen del micrófono: los gráficos separan Jabra y Zoom H2essential. Se miden sobre habla conversacional, no sobre vocales sostenidas, por eso no se comparan con valores clínicos de referencia.",
     charts: ["jitShim", "hnr", "intens", "mfcc", "energia", "jitterStats", "shimmerStats", "mfccStats"] },
@@ -485,7 +484,7 @@ const FAM = Object.fromEntries(CATS.map(c => [c.id, c]));
 // textos (definición, objetivo, preguntas, procedimiento) desde gqm.yaml; métricas de cada pregunta, desde el catálogo (pregunta_gqm)
 const DIMC = { ToM: "--s7", EMP: "--s5", PS: "--s4", CS: "--s2" };
 const GQM_CH = {
-  "ToM Q1": ["mlu", "mtld"], "ToM Q2": ["pron"], "ToM Q3": ["mental", "defcomp"], "ToM Q4": ["mfcc"],
+  "ToM Q1": ["mlu", "mtld"], "ToM Q2": ["pron"], "ToM Q3": ["mental"], "ToM Q4": ["mfcc"],
   "EMP Q1": ["palabras", "emoPN", "emoTot"], "EMP Q2": ["sentim", "empath", "lexVal"], "EMP Q3": ["energia", "jitterStats", "shimmerStats", "logf0Stats", "mfccStats"],
   "PS Q1": ["palabras", "ritmo"], "PS Q2": ["jitShim", "hnr", "intens", "mfcc"], "PS Q3": ["rangoF0", "f0media", "f0sd", "prosEmo"], "PS Q4": ["planoTextoPS", "planoVoz"],
   "CS Q1": ["palabras", "tipos", "mattr", "mlu"], "CS Q2": ["simil", "conceptos"], "CS Q3": ["donas", "minutos", "tasaHabla", "f0media", "f0sd"],
